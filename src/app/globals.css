@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme inline {
+  --color-wsm-dark: #1a1a1a;
+  --color-wsm-darker: #111111;
+  --color-wsm-accent: #8b5a6b;
+  --color-wsm-accent-hover: #a06b7d;
+  --color-wsm-accent-light: #c49aaa;
+  --color-wsm-white: #ffffff;
+  --color-wsm-gray: #cccccc;
+  --color-wsm-gray-dark: #888888;
+  --font-heading: "Oswald", sans-serif;
+  --font-body: "Open Sans", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+a, button {
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+}
