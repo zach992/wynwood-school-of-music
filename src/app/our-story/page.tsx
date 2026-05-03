@@ -1,5 +1,17 @@
 import Image from "next/image";
 import Button from "@/components/Button";
+import ImageCarousel from "@/components/ImageCarousel";
+
+const facilityImages = [
+  { src: "/images/our-story/facility/facility-01.webp", alt: "Wynwood School of Music facility" },
+  { src: "/images/our-story/facility/facility-02.webp", alt: "Wynwood School of Music facility" },
+  { src: "/images/our-story/facility/facility-03.webp", alt: "Wynwood School of Music facility" },
+  { src: "/images/our-story/facility/facility-04.webp", alt: "Wynwood School of Music facility" },
+  { src: "/images/our-story/facility/facility-05.webp", alt: "Wynwood School of Music facility" },
+  { src: "/images/our-story/facility/facility-06.webp", alt: "Wynwood School of Music facility" },
+  { src: "/images/our-story/facility/facility-07.webp", alt: "Wynwood School of Music facility" },
+  { src: "/images/our-story/facility/facility-08.webp", alt: "Wynwood School of Music facility" },
+];
 
 export const metadata = {
   title: "Our Story | Wynwood School of Music",
@@ -89,12 +101,7 @@ export default function OurStoryPage() {
             accessories, and equipment.
           </p>
 
-          {/* Facility Photo Placeholder */}
-          <div className="relative w-full aspect-[16/9] bg-wsm-darker rounded overflow-hidden">
-            <div className="absolute inset-0 flex items-center justify-center text-wsm-gray-dark">
-              <span className="font-body text-sm">Facility Photo</span>
-            </div>
-          </div>
+          <ImageCarousel images={facilityImages} aspectClass="aspect-[4/3]" visible={2} />
         </div>
       </section>
 

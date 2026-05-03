@@ -95,7 +95,7 @@ export default function RepairPage() {
                 <br />
                 Saturday CLOSED
                 <br />
-                Sunday 10AM-5PM
+                Sunday 11AM-8PM
               </p>
             </div>
             <div>

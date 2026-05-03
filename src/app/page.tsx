@@ -1,22 +1,21 @@
 import Image from "next/image";
 import Button from "@/components/Button";
+import HeroCarousel from "@/components/HeroCarousel";
+
+const heroImages = [
+  { src: "/images/homepage/hero/hero-01.jpg", alt: "WSM students on stage at the Spring 2025 recital" },
+  { src: "/images/homepage/hero/hero-02.jpg", alt: "Young guitarist performing live" },
+  { src: "/images/homepage/hero/hero-03.jpg", alt: "WSM students performing together" },
+  { src: "/images/homepage/hero/hero-04.jpg", alt: "Acoustic guitar lesson at Wynwood School of Music" },
+  { src: "/images/homepage/hero/hero-05.jpg", alt: "Live band performance under stage lights" },
+];
 
 export default function HomePage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative flex items-center justify-center min-h-[80vh]">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/homepage/band-banner.jpg"
-            alt="Live performance at Wynwood School of Music"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-black/50" />
-        </div>
-        <div className="relative z-10 text-center px-4">
+      <HeroCarousel images={heroImages} className="min-h-[80vh]">
+        <div className="text-center px-4">
           <h1 className="font-heading text-5xl md:text-7xl lg:text-8xl uppercase font-bold text-white mb-8 max-w-4xl mx-auto leading-tight">
             A lifelong love of music starts here
           </h1>
@@ -24,7 +23,7 @@ export default function HomePage() {
             Sign Up
           </Button>
         </div>
-      </section>
+      </HeroCarousel>
 
       {/* Introduction Section */}
       <section className="bg-wsm-dark py-16 md:py-24 px-4">

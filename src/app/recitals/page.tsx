@@ -24,7 +24,7 @@ export default function RecitalsPage() {
             />
             <div className="absolute inset-0 bg-black/30" />
             <div className="relative z-10 mt-auto pb-12">
-              <Button href="#">Tickets</Button>
+              <Button href="https://www.eventbrite.com/e/wynwood-school-of-musics-spring-band-showcase-2026-tickets-1984639810097?aff=oddtdtcreator">Tickets</Button>
             </div>
           </div>
 
@@ -39,7 +39,7 @@ export default function RecitalsPage() {
             />
             <div className="absolute inset-0 bg-black/30" />
             <div className="relative z-10 mt-auto pb-12">
-              <Button href="#">Tickets</Button>
+              <Button href="https://www.eventbrite.com/e/wynwood-school-of-musics-spring-private-lesson-recitals-2026-tickets-1985597339092?aff=oddtdtcreator">Tickets</Button>
             </div>
           </div>
         </div>

@@ -13,8 +13,19 @@ export default function Button({ href, children, variant = "primary", className 
     primary: "bg-wsm-accent text-white hover:bg-wsm-accent-hover",
     outline: "border-2 border-wsm-accent text-wsm-accent hover:bg-wsm-accent hover:text-white",
   };
+  const classes = `${base} ${variants[variant]} ${className}`;
+  const isExternal = /^https?:\/\//.test(href);
+
+  if (isExternal) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" className={classes}>
+        {children}
+      </a>
+    );
+  }
+
   return (
-    <Link href={href} className={`${base} ${variants[variant]} ${className}`}>
+    <Link href={href} className={classes}>
       {children}
     </Link>
   );

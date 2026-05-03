@@ -212,8 +212,8 @@ export default function ProgramsAndPricingPage() {
 
           {/* Action Buttons Row */}
           <div className="flex flex-col sm:flex-row justify-around items-center gap-6 mt-12">
-            <Button href="#">Calendar + Pricing</Button>
-            <Button href="#">Payment + Cancellation Policies</Button>
+            <Button href="https://drive.google.com/file/d/16nOpF2bE_r0wGF8DSFIrZBd7Atz9Cvqy/view">Calendar + Pricing</Button>
+            <Button href="https://drive.google.com/file/d/1iO4gLJbIedw_CqpWmAEO4iafwoTbl8Xl/view">Payment + Cancellation Policies</Button>
           </div>
         </div>
       </section>

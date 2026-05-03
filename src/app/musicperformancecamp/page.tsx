@@ -131,10 +131,12 @@ export default function MusicPerformanceCampPage() {
               {/* Camp group photo */}
               <div className="relative w-full aspect-[4/3] mb-10">
                 <Image
-                  src="/images/bands/intro.jpg"
-                  alt="Music Performance Camp group photo"
+                  src="/images/camp/camp-hero.jpg"
+                  alt="Wynwood School of Music students performing as a band on stage"
                   fill
+                  sizes="(min-width: 768px) 50vw, 100vw"
                   className="object-cover"
+                  priority
                 />
               </div>
 
@@ -231,17 +233,28 @@ export default function MusicPerformanceCampPage() {
             <div className="w-full md:w-1/2 space-y-6">
               <div className="relative w-full aspect-[4/3]">
                 <Image
-                  src="/images/bands/testimonial.jpg"
-                  alt="Student performing at camp"
+                  src="/images/camp/camp-faq-2.jpg"
+                  alt="Campers performing live on stage"
                   fill
+                  sizes="(min-width: 768px) 50vw, 100vw"
                   className="object-cover"
                 />
               </div>
-              <div className="relative w-full aspect-[4/3]">
+              <div className="relative w-full aspect-[3/2]">
                 <Image
-                  src="/images/homepage/band-programs.jpg"
-                  alt="Student playing guitar at camp"
+                  src="/images/camp/camp-faq-3.webp"
+                  alt="Campers at Wynwood School of Music summer camp"
                   fill
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                  className="object-cover"
+                />
+              </div>
+              <div className="relative w-full aspect-[2/1]">
+                <Image
+                  src="/images/camp/camp-faq-1.jpg"
+                  alt="Young camper learning keyboard with an instructor"
+                  fill
+                  sizes="(min-width: 768px) 50vw, 100vw"
                   className="object-cover"
                 />
               </div>

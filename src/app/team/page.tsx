@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Button from "@/components/Button";
 import TeamMemberCard from "@/components/TeamMemberCard";
+import { teamBios } from "@/lib/team-bios";
 
 export const metadata = {
   title: "Team | Wynwood School of Music",
@@ -9,20 +10,23 @@ export const metadata = {
 };
 
 const instructors = [
-  { name: "Leo Cattani", role: "Keyboard, Trumpet, Music Theory", imageSrc: "/images/team/leo-cattani.png", slug: "leo" },
-  { name: "Alex Ibanez", role: "Drums, Percussion", imageSrc: "/images/team/alex-ibanez.png", slug: "alex" },
-  { name: "Vale Pe\u00f1aranda", role: "Voice, Keyboard, Music Production, Songwriting", imageSrc: "/images/team/vale-penaranda.jpg", slug: "vale" },
-  { name: "Augusto Di Catarina", role: "Voice, Guitar, Bass, Keyboard, Ukulele", imageSrc: "/images/team/augusto-di-catarina.png", slug: "augusto" },
-  { name: "Renzo Vargas", role: "Drums, Percussion", imageSrc: "/images/team/renzo-vargas.png", slug: "renzo" },
-  { name: "Angel Perez", role: "Keyboard, Music Theory", imageSrc: "/images/team/angel-perez.jpg", slug: "angel" },
-  { name: "Yamil Granda", role: "Bass, Guitar", imageSrc: "/images/team/yamil-granda.jpg", slug: "yamil" },
-  { name: "Patricio Acevedo", role: "Strings (Violin, Viola, Cello)", imageSrc: "/images/team/patricio-acevedo.png", slug: "patricio" },
-  { name: "Thania Sanz", role: "Voice, Guitar, Music Production", imageSrc: "/images/team/thania-sanz.png", slug: "thania" },
-  { name: "Sergio Zavala", role: "Guitar", imageSrc: "/images/team/sergio-zavala.png", slug: "sergio" },
-  { name: "AJ Hill", role: "Saxophone, Voice, Drums", imageSrc: "/images/team/aj-hill.png", slug: "aj" },
-  { name: "Jake Mongin", role: "Guitar, Music Theory", imageSrc: "/images/team/jake-mongin.png", slug: "jake" },
-  { name: "Nestor Rigaud", role: "Guitar, Bass, Music Production", imageSrc: "/images/team/nestor-rigaud.png", slug: "nestor" },
+  { name: "Leo Cattani", role: "Keyboard, Trumpet, Music Theory", imageSrc: "/images/team/leo-cattani.png", slug: "leo-cattani" },
+  { name: "Alex Ibanez", role: "Drums, Percussion", imageSrc: "/images/team/alex-ibanez.png", slug: "alex-ibanez" },
+  { name: "Vale Pe\u00f1aranda", role: "Voice, Keyboard, Music Production, Songwriting", imageSrc: "/images/team/vale-penaranda.jpg", slug: "vale-penaranda" },
+  { name: "Augusto Di Catarina", role: "Voice, Guitar, Bass, Keyboard, Ukulele", imageSrc: "/images/team/augusto-di-catarina.png", slug: "augusto-di-catarina" },
+  { name: "Renzo Vargas", role: "Drums, Percussion", imageSrc: "/images/team/renzo-vargas.png", slug: "renzo-vargas" },
+  { name: "Angel Perez", role: "Keyboard, Music Theory", imageSrc: "/images/team/angel-perez.jpg", slug: "angel-perez" },
+  { name: "Yamil Granda", role: "Bass, Guitar", imageSrc: "/images/team/yamil-granda.jpg", slug: "yamil-granda" },
+  { name: "Patricio Acevedo", role: "Strings (Violin, Viola, Cello)", imageSrc: "/images/team/patricio-acevedo.png", slug: "patricio-acevedo" },
+  { name: "Sergio Zavala", role: "Guitar", imageSrc: "/images/team/sergio-zavala.png", slug: "sergio-zavala" },
+  { name: "AJ Hill", role: "Saxophone, Voice, Drums", imageSrc: "/images/team/aj-hill.png", slug: "aj-hill" },
+  { name: "Jake Mongin", role: "Guitar, Music Theory", imageSrc: "/images/team/jake-mongin.png", slug: "jake-mongin" },
+  { name: "Nestor Rigaud", role: "Guitar, Bass, Music Production", imageSrc: "/images/team/nestor-rigaud.png", slug: "nestor-rigaud" },
 ];
+
+const bioSlugs = new Set(
+  teamBios.filter((b) => b.bioParagraphs.length > 0).map((b) => b.slug)
+);
 
 export default function TeamPage() {
   return (
@@ -94,9 +98,6 @@ export default function TeamPage() {
                 creating an infrastructure for musicians to support their growth
                 as they transform into phenomenal artists.
               </p>
-              <div className="mt-6">
-                <Button href="#">About Zach</Button>
-              </div>
             </div>
 
             {/* Sammy */}
@@ -127,9 +128,6 @@ export default function TeamPage() {
                 Juilliard, Harvard, NYU, Georgetown, Cornell, Vanderbilt, and
                 Penn State.
               </p>
-              <div className="mt-6">
-                <Button href="#">About Sammy</Button>
-              </div>
             </div>
           </div>
 
@@ -148,16 +146,19 @@ export default function TeamPage() {
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-12 gap-x-8">
-            {instructors.map((instructor) => (
-              <TeamMemberCard
-                key={instructor.slug}
-                name={instructor.name}
-                role={instructor.role}
-                imageSrc={instructor.imageSrc}
-                buttonLabel={`About ${instructor.name.split(" ")[0]}`}
-                buttonHref="#"
-              />
-            ))}
+            {instructors.map((instructor) => {
+              const hasBio = bioSlugs.has(instructor.slug);
+              return (
+                <TeamMemberCard
+                  key={instructor.slug}
+                  name={instructor.name}
+                  role={instructor.role}
+                  imageSrc={instructor.imageSrc}
+                  buttonLabel={hasBio ? `About ${instructor.name.split(" ")[0]}` : undefined}
+                  buttonHref={hasBio ? `/team/${instructor.slug}` : undefined}
+                />
+              );
+            })}
           </div>
         </div>
       </section>

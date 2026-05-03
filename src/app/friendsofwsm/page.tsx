@@ -1,5 +1,14 @@
 import Image from "next/image";
 import Button from "@/components/Button";
+import ImageCarousel from "@/components/ImageCarousel";
+
+const recipientImages = [
+  { src: "/images/friendsofwsm/recipients/recipient-01.webp", alt: "Current scholarship recipient performing" },
+  { src: "/images/friendsofwsm/recipients/recipient-02-magdalena-ruseva.webp", alt: "Magdalena Ruseva" },
+  { src: "/images/friendsofwsm/recipients/recipient-03-live-at-norm-fount.webp", alt: "Scholarship recipients live at Norm Fount" },
+  { src: "/images/friendsofwsm/recipients/recipient-04-spring-recital.webp", alt: "Scholarship recipient at WSM Spring Recital 2025" },
+  { src: "/images/friendsofwsm/recipients/recipient-05-spring-recital.webp", alt: "Scholarship recipient at WSM Spring Recital 2025" },
+];
 
 export const metadata = {
   title: "Friends of WSM | Wynwood School of Music",
@@ -78,10 +87,9 @@ export default function FriendsOfWSMPage() {
         />
         <div className="absolute inset-0 bg-black/50" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-          <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl uppercase font-bold text-white mb-8 max-w-4xl leading-tight">
+          <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl uppercase font-bold text-white max-w-4xl leading-tight">
             Friends of Wynwood School of Music
           </h1>
-          <Button href="#">Donate</Button>
         </div>
       </section>
 
@@ -139,21 +147,39 @@ export default function FriendsOfWSMPage() {
       {/* Mission Section */}
       <section className="bg-[#222222] px-4 py-16 md:py-20">
         <div className="max-w-5xl mx-auto">
-          <h2 className="font-heading text-3xl md:text-4xl uppercase font-bold text-white mb-6">
-            Mission
-          </h2>
-          <p className="font-body text-wsm-gray text-base leading-relaxed mb-6">
-            Friends of the Wynwood School of Music breaks down financial barriers
-            so young musicians can pursue their passion as a pathway to college
-            and career.
-          </p>
-          <p className="font-body text-wsm-gray text-base leading-relaxed mb-6">
-            Through scholarships for private lessons and band ensemble programs,
-            we equip students with mentorship, training, and performance
-            experiences that prepare them for college scholarships and
-            professional opportunities in the music and entertainment industry.
-          </p>
-          <Button href="#">Apply Here</Button>
+          <div className="flex flex-col md:flex-row gap-10 md:gap-14 items-start">
+            <div className="w-full md:w-[55%]">
+              <h2 className="font-heading text-3xl md:text-4xl uppercase font-bold text-white mb-6">
+                Mission
+              </h2>
+              <p className="font-body text-wsm-gray text-base leading-relaxed mb-6">
+                Friends of the Wynwood School of Music breaks down financial
+                barriers so young musicians can pursue their passion as a
+                pathway to college and career.
+              </p>
+              <p className="font-body text-wsm-gray text-base leading-relaxed mb-6">
+                Through scholarships for private lessons and band ensemble
+                programs, we equip students with mentorship, training, and
+                performance experiences that prepare them for college
+                scholarships and professional opportunities in the music and
+                entertainment industry.
+              </p>
+              <Button href="https://docs.google.com/forms/d/e/1FAIpQLSecKLf56CCA-BO4XOjU-E3yn9u-nrZyxVLrWL0Yoyy7ljtr4g/viewform">
+                Apply Here
+              </Button>
+            </div>
+            <div className="w-full md:w-[45%] shrink-0">
+              <div className="relative w-full aspect-video overflow-hidden rounded">
+                <iframe
+                  src="https://www.youtube.com/embed/1ks9BOYaIlo"
+                  title="Spotlight: Stella Rodriguez — Friends of Wynwood School of Music"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  className="absolute inset-0 w-full h-full border-0"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -196,9 +222,10 @@ export default function FriendsOfWSMPage() {
             <div className="w-full md:w-[45%] shrink-0">
               <div className="relative w-full aspect-[3/4]">
                 <Image
-                  src="/images/friendsofwsm/our-impact.jpg"
-                  alt="WSM scholarship student performing"
+                  src="/images/friendsofwsm/history.jpg"
+                  alt="Micaela Godoy, scholarship recipient, performing live"
                   fill
+                  sizes="(min-width: 768px) 45vw, 100vw"
                   className="object-cover"
                 />
               </div>
@@ -213,14 +240,7 @@ export default function FriendsOfWSMPage() {
           <h2 className="font-heading text-3xl md:text-4xl uppercase font-bold text-white mb-10 text-center">
             Current Scholarship Recipients
           </h2>
-          <div className="relative w-full aspect-[21/9] overflow-hidden rounded">
-            <Image
-              src="/images/friendsofwsm/hero.jpg"
-              alt="Current scholarship recipients performing live"
-              fill
-              className="object-cover"
-            />
-          </div>
+          <ImageCarousel images={recipientImages} aspectClass="aspect-[4/3]" visible={2} />
         </div>
       </section>
 
