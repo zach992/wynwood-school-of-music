@@ -85,20 +85,22 @@ export default function ContactPage() {
 
             {/* Performance Photos */}
             <div className="space-y-4">
-              <div className="relative w-full aspect-[4/3] overflow-hidden">
+              <div className="relative w-full aspect-[2/3] overflow-hidden">
                 <Image
                   src="/images/contact/performance-1.webp"
                   alt="Adult music lessons at Wynwood School of Music"
                   fill
                   className="object-cover"
+                  sizes="(min-width: 1024px) 320px, 100vw"
                 />
               </div>
-              <div className="relative w-full aspect-[4/3] overflow-hidden">
+              <div className="relative w-full aspect-[2/3] overflow-hidden">
                 <Image
                   src="/images/contact/performance-2.webp"
                   alt="Youth music lessons at Wynwood School of Music"
                   fill
                   className="object-cover"
+                  sizes="(min-width: 1024px) 320px, 100vw"
                 />
               </div>
             </div>

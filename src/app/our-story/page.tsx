@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Button from "@/components/Button";
 import ImageCarousel from "@/components/ImageCarousel";
+import SectionMark from "@/components/SectionMark";
 
 const facilityImages = [
   { src: "/images/our-story/facility/facility-01.webp", alt: "Wynwood School of Music facility" },
@@ -82,20 +83,13 @@ export default function OurStoryPage() {
       {/* Facility Section */}
       <section className="bg-wsm-dark px-4 py-12 md:py-16">
         <div className="max-w-5xl mx-auto">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="relative w-10 h-12 shrink-0">
-              <Image
-                src="/images/our-story/facility-icon.png"
-                alt=""
-                fill
-                className="object-contain"
-              />
-            </div>
-            <h2 className="font-heading text-3xl md:text-4xl uppercase font-bold text-white">
+          <div className="flex items-center gap-5 mb-6">
+            <SectionMark />
+            <h2 className="font-heading text-4xl md:text-5xl uppercase font-bold text-white tracking-tight">
               Facility
             </h2>
           </div>
-          <p className="font-body text-wsm-gray text-base leading-relaxed mb-8 md:ml-14">
+          <p className="font-body text-wsm-gray text-base leading-relaxed mb-8">
             Our custom-designed facility features 3 band rooms, 8 private
             lesson rooms, and a retail space for music instruments,
             accessories, and equipment.
@@ -112,20 +106,13 @@ export default function OurStoryPage() {
       {/* Location Section */}
       <section className="bg-wsm-dark px-4 py-12 md:py-16">
         <div className="max-w-5xl mx-auto">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="relative w-10 h-12 shrink-0">
-              <Image
-                src="/images/our-story/location-icon.png"
-                alt=""
-                fill
-                className="object-contain"
-              />
-            </div>
-            <h2 className="font-heading text-3xl md:text-4xl uppercase font-bold text-white">
+          <div className="flex items-center gap-5 mb-6">
+            <SectionMark />
+            <h2 className="font-heading text-4xl md:text-5xl uppercase font-bold text-white tracking-tight">
               Location
             </h2>
           </div>
-          <div className="md:ml-14">
+          <div>
             <p className="font-body text-wsm-gray text-base leading-relaxed mb-4">
               The Wynwood School of Music is a 3,000 square foot
               state-of-the-art music campus located at{" "}
@@ -150,20 +137,13 @@ export default function OurStoryPage() {
       {/* Parking Section */}
       <section className="bg-wsm-dark px-4 py-12 md:py-16">
         <div className="max-w-5xl mx-auto">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="relative w-10 h-12 shrink-0">
-              <Image
-                src="/images/our-story/parking-icon.png"
-                alt=""
-                fill
-                className="object-contain"
-              />
-            </div>
-            <h2 className="font-heading text-3xl md:text-4xl uppercase font-bold text-white">
+          <div className="flex items-center gap-5 mb-6">
+            <SectionMark />
+            <h2 className="font-heading text-4xl md:text-5xl uppercase font-bold text-white tracking-tight">
               Parking
             </h2>
           </div>
-          <p className="font-body text-wsm-gray text-base leading-relaxed md:ml-14">
+          <p className="font-body text-wsm-gray text-base leading-relaxed">
             A parking lot reserved for clients is located directly next to the
             school. Clients are also welcome to park along the streets using
             street parking.

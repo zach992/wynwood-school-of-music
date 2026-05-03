@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Button from "@/components/Button";
+import SectionMark from "@/components/SectionMark";
 
 export const metadata = {
   title: "Our Bands",
@@ -10,7 +11,7 @@ export const metadata = {
 const bands = [
   {
     name: "Rock Ambassadors",
-    level: "ADVANCED LEVEL \u2013 AUDITION ONLY",
+    level: "Advanced — Audition Only",
     description:
       "This audition-based ensemble, led by WSM co-founder Sammy Gonzalez Zeira, offers advanced music training, major performance opportunities, and leadership development through the YMU Student Ambassadors program.",
     image: "/images/bands/rock-ambassadors.jpg",
@@ -18,7 +19,7 @@ const bands = [
   },
   {
     name: "Rock Legends",
-    level: "INTERMEDIATE LEVEL",
+    level: "Intermediate",
     description:
       "Rock Legends is for students with a strong foundation who are ready for advanced techniques, tighter ensembles, and deeper collaboration as performing artists.",
     image: "/images/bands/rock-legends.jpg",
@@ -26,7 +27,7 @@ const bands = [
   },
   {
     name: "Rising Stars",
-    level: "BEGINNER LEVEL",
+    level: "Beginner",
     description:
       "Rising Stars connects private lessons to band rehearsals, helping students build confidence, rhythm, and teamwork as they step into live performance.",
     image: "/images/bands/rising-stars.jpg",
@@ -34,7 +35,7 @@ const bands = [
   },
   {
     name: "Rock Juniors",
-    level: "INTRO LEVEL",
+    level: "Intro",
     description:
       "Rock Juniors introduces young musicians to playing together while building rhythm, listening skills, and confidence in a fun, age-appropriate setting.",
     image: "/images/bands/rock-juniors.jpg",
@@ -58,12 +59,12 @@ export default function OurBandsPage() {
       {/* Introduction */}
       <section className="bg-wsm-dark px-4 py-12 md:py-16">
         <div className="max-w-5xl mx-auto">
-          <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-start">
-            <div className="w-full md:w-[50%]">
-              <h2 className="font-heading text-xl md:text-2xl uppercase font-bold text-white mb-6 leading-snug">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+            <div>
+              <h2 className="font-heading text-3xl md:text-4xl uppercase font-bold text-white mb-6 leading-snug">
                 Play Together. Grow Together. Perform Together.
               </h2>
-              <p className="font-body text-wsm-gray text-base leading-relaxed">
+              <p className="font-body text-wsm-gray text-base leading-relaxed mb-8">
                 Our 90-minute weekly band programs are designed so musicians at
                 any stage can be part of a real band. With four clearly defined
                 levels, from first-time players to advanced performers, students
@@ -73,116 +74,143 @@ export default function OurBandsPage() {
                 confidence, musicianship, and stage presence through real
                 performance experiences.
               </p>
+              <Button href="/contact">Sign Up Today</Button>
             </div>
-            <div className="w-full md:w-[50%]">
-              <div className="relative w-full aspect-[4/3]">
-                <Image
-                  src="/images/bands/intro.jpg"
-                  alt="Students performing live at Wynwood School of Music"
-                  fill
-                  className="object-cover"
-                  priority
-                />
-              </div>
+            <div className="relative w-full aspect-[4/3]">
+              <Image
+                src="/images/bands/intro.jpg"
+                alt="Students performing live at Wynwood School of Music"
+                fill
+                className="object-cover"
+                sizes="(min-width: 768px) 50vw, 100vw"
+                priority
+              />
             </div>
-          </div>
-          <div className="flex justify-center mt-10">
-            <Button href="/contact">Sign Up Today!</Button>
           </div>
         </div>
       </section>
 
+      <div className="max-w-5xl mx-auto px-4">
+        <hr className="border-wsm-gray-dark" />
+      </div>
+
       {/* Band Pathways Heading */}
       <section className="bg-wsm-dark px-4 py-12 md:py-16">
-        <div className="max-w-5xl mx-auto text-center">
-          <h2 className="font-heading text-4xl md:text-5xl uppercase font-bold text-white mb-6">
-            Band Pathways
-          </h2>
-          <p className="font-body text-white text-lg md:text-xl">
-            4 levels designed so musicians at any stage can be part of a real
-            band
+        <div className="max-w-5xl mx-auto">
+          <p className="font-body text-wsm-accent text-sm font-semibold uppercase tracking-[0.25em] mb-4">
+            Four Levels
           </p>
-          <hr className="border-wsm-gray-dark mt-10" />
+          <div className="flex items-center gap-5">
+            <SectionMark />
+            <h2 className="font-heading text-4xl md:text-5xl uppercase font-bold text-white tracking-tight">
+              Band Pathways
+            </h2>
+          </div>
+          <p className="font-body text-wsm-gray text-base md:text-lg leading-relaxed mt-6 max-w-2xl">
+            Designed so musicians at any stage can be part of a real band — with
+            a clear path from first rehearsal to the live stage.
+          </p>
         </div>
       </section>
 
       {/* Band Levels */}
-      {bands.map((band, index) => (
-        <section key={band.name} className="bg-wsm-dark px-4 py-8 md:py-12">
-          <div className="max-w-5xl mx-auto">
-            <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center">
-              {/* Image */}
-              <div className="w-full md:w-[45%] shrink-0">
-                <div className="relative w-full aspect-[4/3]">
-                  <Image
-                    src={band.image}
-                    alt={band.alt}
-                    fill
-                    className="object-cover"
-                  />
+      {bands.map((band, index) => {
+        const isReversed = index % 2 === 1;
+        const numeral = String(index + 1).padStart(2, "0");
+        return (
+          <section key={band.name} className="bg-wsm-dark px-4 py-10 md:py-14">
+            <div className="max-w-5xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+                {/* Image */}
+                <div className={isReversed ? "md:order-2" : ""}>
+                  <div className="relative w-full aspect-[4/3]">
+                    <Image
+                      src={band.image}
+                      alt={band.alt}
+                      fill
+                      className="object-cover"
+                      sizes="(min-width: 768px) 50vw, 100vw"
+                    />
+                  </div>
+                </div>
+
+                {/* Text */}
+                <div className={`relative ${isReversed ? "md:order-1" : ""}`}>
+                  <span
+                    aria-hidden
+                    className="font-heading font-bold leading-none select-none block mb-4 text-[110px] md:text-[160px]"
+                    style={{
+                      color: "transparent",
+                      WebkitTextStroke: "1.5px rgba(255,255,255,0.22)",
+                      transform: "skewX(-19deg)",
+                      transformOrigin: "left bottom",
+                      display: "inline-block",
+                      letterSpacing: "-0.04em",
+                    }}
+                  >
+                    {numeral}
+                  </span>
+                  <p className="font-body text-wsm-accent text-xs md:text-sm font-semibold uppercase tracking-[0.25em] mb-3">
+                    {band.level}
+                  </p>
+                  <h3 className="font-heading text-3xl md:text-4xl uppercase font-bold text-white mb-5 leading-tight">
+                    {band.name}
+                  </h3>
+                  <p className="font-body text-wsm-gray text-base md:text-lg leading-relaxed">
+                    {band.description}
+                  </p>
                 </div>
               </div>
-
-              {/* Text */}
-              <div className="w-full md:w-[55%]">
-                <h3 className="font-heading text-3xl md:text-5xl uppercase font-bold text-white mb-4">
-                  {band.name}
-                </h3>
-                <p className="font-heading text-base md:text-lg uppercase font-bold text-white mb-4 underline">
-                  {band.level}
-                </p>
-                <p className="font-body text-wsm-gray text-base md:text-lg leading-relaxed">
-                  {band.description}
-                </p>
-              </div>
             </div>
-            <hr className="border-wsm-gray-dark mt-10" />
-          </div>
-        </section>
-      ))}
+          </section>
+        );
+      })}
 
       {/* CTA Section */}
-      <section className="bg-wsm-dark px-4 py-12 md:py-16">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="font-heading text-4xl md:text-5xl uppercase font-bold text-white mb-4">
+      <section className="bg-wsm-dark px-4 py-16 md:py-20">
+        <div className="max-w-5xl mx-auto text-center">
+          <div className="flex justify-center mb-6">
+            <SectionMark size={48} />
+          </div>
+          <h2 className="font-heading text-4xl md:text-5xl uppercase font-bold text-white mb-4 tracking-tight">
             Ready to Join a Band?
           </h2>
-          <p className="font-heading text-base md:text-lg uppercase font-bold text-white mb-8">
-            Meet Your Future Bandmates — and Start Something Awesome.
+          <p className="font-body text-wsm-gray text-base md:text-lg uppercase tracking-wider mb-10">
+            Meet your future bandmates &mdash; and start something awesome.
           </p>
           <div className="flex justify-center">
-            <Button href="/contact">Sign Up Today!</Button>
+            <Button href="/contact">Sign Up Today</Button>
           </div>
         </div>
       </section>
 
+      <div className="max-w-5xl mx-auto px-4">
+        <hr className="border-wsm-gray-dark" />
+      </div>
+
       {/* Testimonial */}
       <section className="bg-wsm-dark px-4 py-12 md:py-16">
         <div className="max-w-5xl mx-auto">
-          <div className="relative overflow-hidden">
-            <div className="flex flex-col md:flex-row">
-              {/* Quote overlay */}
-              <div className="relative z-10 bg-wsm-darker/90 p-8 md:p-12 md:w-[50%]">
-                <blockquote className="font-heading text-xl md:text-2xl text-white leading-snug">
-                  &ldquo;The incredible opportunities to be part of a band and
-                  also give back in the music arena has been wonderful. We are
-                  grateful to be a part of such a great school and
-                  organization.&rdquo;
-                </blockquote>
-                <p className="font-body text-wsm-gray text-sm mt-6 italic">
-                  - Lisa, Parent
-                </p>
-              </div>
-
-              {/* Background image */}
-              <div className="relative md:w-[50%] aspect-[4/3] md:aspect-auto">
-                <Image
-                  src="/images/bands/testimonial.jpg"
-                  alt="Students performing at Wynwood School of Music"
-                  fill
-                  className="object-cover grayscale"
-                />
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-12 items-stretch">
+            <div className="md:col-span-5 relative aspect-[4/3] md:aspect-auto md:min-h-[360px]">
+              <Image
+                src="/images/bands/testimonial.jpg"
+                alt="Students performing at Wynwood School of Music"
+                fill
+                className="object-cover"
+                sizes="(min-width: 768px) 42vw, 100vw"
+              />
+            </div>
+            <div className="md:col-span-7 bg-wsm-accent/85 p-8 md:p-12 flex flex-col justify-center">
+              <blockquote className="font-body text-white text-lg md:text-xl italic font-bold leading-relaxed">
+                &ldquo;The incredible opportunities to be part of a band and
+                also give back in the music arena has been wonderful. We are
+                grateful to be a part of such a great school and
+                organization.&rdquo;
+              </blockquote>
+              <p className="font-body text-white/80 text-sm mt-5">
+                &mdash; Lisa, Parent
+              </p>
             </div>
           </div>
         </div>

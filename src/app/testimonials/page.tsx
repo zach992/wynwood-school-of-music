@@ -254,7 +254,7 @@ export default function TestimonialsPage() {
       <section className="bg-wsm-dark px-4 py-12 md:py-16">
         <div className="max-w-5xl mx-auto">
           <h2 className="font-heading text-3xl md:text-4xl uppercase font-bold text-white mb-8">
-            Testimonials
+            Parent Testimonials
           </h2>
           <div className="divide-y divide-wsm-gray-dark/40">
             {testimonials.map((t) => (

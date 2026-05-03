@@ -3,20 +3,27 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
+export interface HeroCarouselImage {
+  src: string;
+  alt: string;
+  /** CSS object-position value, e.g. "center 15%" or "25% 15%" */
+  objectPosition?: string;
+  /** Multiplier > 1 to zoom in further (crops dead space). Default = 1. */
+  scale?: number;
+}
+
 interface HeroCarouselProps {
-  images: { src: string; alt: string }[];
+  images: HeroCarouselImage[];
   intervalMs?: number;
   children: React.ReactNode;
   className?: string;
-  overlayClass?: string;
 }
 
 export default function HeroCarousel({
   images,
   intervalMs = 7500,
   children,
-  className = "min-h-[80vh]",
-  overlayClass = "bg-black/50",
+  className = "min-h-[90vh]",
 }: HeroCarouselProps) {
   const [index, setIndex] = useState(0);
 
@@ -29,7 +36,9 @@ export default function HeroCarousel({
   }, [images.length, intervalMs]);
 
   return (
-    <section className={`relative flex items-center justify-center overflow-hidden ${className}`}>
+    <section
+      className={`relative flex flex-col justify-end items-center overflow-hidden ${className}`}
+    >
       <div className="absolute inset-0 z-0">
         {images.map((img, i) => (
           <div
@@ -45,30 +54,34 @@ export default function HeroCarousel({
               fill
               sizes="100vw"
               className="object-cover"
+              style={{
+                ...(img.objectPosition ? { objectPosition: img.objectPosition } : {}),
+                ...(img.scale && img.scale !== 1
+                  ? { transform: `scale(${img.scale})`, transformOrigin: "center" }
+                  : {}),
+              }}
               priority={i === 0}
             />
           </div>
         ))}
-        <div className={`absolute inset-0 ${overlayClass}`} />
+
+        {/* Uniform translucent wash so the nav reads against any photo */}
+        <div className="absolute inset-0 bg-black/35" />
+
+        {/* Bottom scrim that deepens behind the headline area */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(0,0,0,0) 45%, rgba(0,0,0,0.45) 75%, rgba(0,0,0,0.75) 100%)",
+          }}
+        />
       </div>
 
-      <div className="relative z-10 w-full">{children}</div>
-
-      {images.length > 1 && (
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex gap-2">
-          {images.map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => setIndex(i)}
-              aria-label={`Show hero image ${i + 1}`}
-              className={`h-1.5 rounded-full transition-all duration-500 ${
-                i === index ? "w-10 bg-white" : "w-1.5 bg-white/50 hover:bg-white/80"
-              }`}
-            />
-          ))}
-        </div>
-      )}
+      {/* Content sits in the bottom third (rule of thirds) */}
+      <div className="relative z-10 w-full text-center px-4 pb-[16vh] md:pb-[14vh]">
+        {children}
+      </div>
     </section>
   );
 }

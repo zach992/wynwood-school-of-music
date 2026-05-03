@@ -76,29 +76,43 @@ export default function PrivateLessonsPage() {
             Private Lesson Pillars
           </h2>
 
-          <div className="space-y-8">
-            <div>
-              <h3 className="font-body text-xl font-semibold text-white mb-4">
-                1. Youth Private Lessons
-              </h3>
-              <p className="font-body text-wsm-gray text-base leading-relaxed">
-                Personal one on one instruction designed for young musicians at
-                every stage. Lessons focus on building strong fundamentals,
-                confidence, and creativity while supporting each student&apos;s
-                individual interests and pace of growth.
-              </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+            {/* Text */}
+            <div className="space-y-8">
+              <div>
+                <h3 className="font-body text-xl font-semibold text-white mb-4">
+                  1. Youth Private Lessons
+                </h3>
+                <p className="font-body text-wsm-gray text-base leading-relaxed">
+                  Personal one on one instruction designed for young musicians at
+                  every stage. Lessons focus on building strong fundamentals,
+                  confidence, and creativity while supporting each student&apos;s
+                  individual interests and pace of growth.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-body text-xl font-semibold text-white mb-4">
+                  2. Adult Private Lessons
+                </h3>
+                <p className="font-body text-wsm-gray text-base leading-relaxed">
+                  Private lessons built around your goals, schedule, and musical
+                  interests. Whether you are returning to music or starting for
+                  the first time, our instructors help adults build skills, deepen
+                  understanding, and enjoy the process of making music.
+                </p>
+              </div>
             </div>
 
-            <div>
-              <h3 className="font-body text-xl font-semibold text-white mb-4">
-                2. Adult Private Lessons
-              </h3>
-              <p className="font-body text-wsm-gray text-base leading-relaxed">
-                Private lessons built around your goals, schedule, and musical
-                interests. Whether you are returning to music or starting for
-                the first time, our instructors help adults build skills, deepen
-                understanding, and enjoy the process of making music.
-              </p>
+            {/* Image — landscape keyboard student */}
+            <div className="relative w-full aspect-[3/2]">
+              <Image
+                src="/images/private-lessons/pillars-keyboard.webp"
+                alt="Young pianist focused at the keyboard during a private lesson"
+                fill
+                className="object-cover"
+                sizes="(min-width: 768px) 50vw, 100vw"
+              />
             </div>
           </div>
         </div>
@@ -111,62 +125,63 @@ export default function PrivateLessonsPage() {
       {/* Measured Achievement */}
       <section className="bg-wsm-dark px-4 py-12 md:py-16">
         <div className="max-w-5xl mx-auto">
-          <h2 className="font-heading text-2xl md:text-3xl uppercase font-bold text-white mb-6">
-            Measured Achievement in Private Lessons
-          </h2>
-          <p className="font-body text-wsm-gray text-base leading-relaxed mb-8">
-            At Wynwood School of Music, private lessons aren&apos;t just about
-            learning songs&mdash;they&apos;re about real, measurable growth.
-            Every lesson follows a clear structure designed to help each student
-            progress at their own pace while building a strong musical
-            foundation.
-          </p>
-
-          <div className="space-y-6">
-            <div>
-              <p className="font-body text-white text-base mb-1">
-                <span className="italic font-bold">1. Technique:</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+            {/* Heading + intro + pillar list, all wrapped inside the left column */}
+            <div className="space-y-5">
+              <h2 className="font-heading text-2xl md:text-3xl uppercase font-bold text-white mb-2">
+                Measured Achievement in Private Lessons
+              </h2>
+              <p className="font-body text-wsm-gray text-base leading-relaxed">
+                At Wynwood School of Music, private lessons aren&apos;t just
+                about learning songs&mdash;they&apos;re about real, measurable
+                growth. Every lesson follows a clear structure designed to help
+                each student progress at their own pace while building a strong
+                musical foundation.
               </p>
               <p className="font-body text-wsm-gray text-base leading-relaxed">
+                <span className="italic font-bold text-white">1. Technique:</span>{" "}
                 Think of this as training for your fingers, hands, and ears. We
                 focus on warm-ups, scales, arpeggios, and speed drills to build
                 coordination, control, and confidence.
               </p>
-            </div>
 
-            <div>
-              <p className="font-body text-white text-base mb-1">
-                <span className="italic font-bold">2. Music Literacy:</span>
-              </p>
               <p className="font-body text-wsm-gray text-base leading-relaxed">
+                <span className="italic font-bold text-white">
+                  2. Music Literacy:
+                </span>{" "}
                 Music is a language, and fluency matters. We blend reading,
                 theory, and ear training based on your goals&mdash;whether
                 you&apos;re preparing for auditions or just want to better
                 understand what you&apos;re playing.
               </p>
-            </div>
 
-            <div>
-              <p className="font-body text-white text-base mb-1">
-                <span className="italic font-bold">3. Repertoire:</span>
-              </p>
               <p className="font-body text-wsm-gray text-base leading-relaxed">
+                <span className="italic font-bold text-white">3. Repertoire:</span>{" "}
                 Together, we build a set of songs that inspire and challenge you.
                 From classic rock to jazz, pop, or originals, we focus on music
                 that brings your skills to life.
               </p>
-            </div>
 
-            <div>
-              <p className="font-body text-white text-base mb-1">
-                <span className="font-bold">Recitals & Performances:</span>
-              </p>
               <p className="font-body text-wsm-gray text-base leading-relaxed">
+                <span className="font-bold text-white">
+                  Recitals &amp; Performances:
+                </span>{" "}
                 Each semester includes check-ins, personalized feedback, and an
                 optional recital to showcase your growth. Whether it&apos;s your
                 first performance or a polished piece, these moments mark how far
                 you&apos;ve come&mdash;and where you&apos;re going next.
               </p>
+            </div>
+
+            {/* Image — portrait performer */}
+            <div className="relative w-full aspect-[4/5]">
+              <Image
+                src="/images/private-lessons/achievement-singing.webp"
+                alt="Young performer singing on stage at a Wynwood School of Music recital"
+                fill
+                className="object-cover"
+                sizes="(min-width: 768px) 50vw, 100vw"
+              />
             </div>
           </div>
         </div>

@@ -86,9 +86,9 @@ export default function ProgramsAndPricingPage() {
             Program Pillars
           </h2>
 
-          <div className="flex flex-col md:flex-row gap-8 md:gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
             {/* Text content */}
-            <div className="w-full md:w-1/2">
+            <div>
               <h3 className="font-body text-xl font-semibold text-white mb-4">
                 1. Private Lessons
               </h3>
@@ -118,16 +118,15 @@ export default function ProgramsAndPricingPage() {
               </p>
             </div>
 
-            {/* Image */}
-            <div className="w-full md:w-1/2">
-              <div className="relative w-full aspect-[3/4]">
-                <Image
-                  src="/images/programs/drum-lessons.jpg"
-                  alt="Child playing drums at Wynwood School of Music"
-                  fill
-                  className="object-cover"
-                />
-              </div>
+            {/* Image — aspect tuned to roughly match the text block height */}
+            <div className="relative w-full aspect-square">
+              <Image
+                src="/images/programs/drum-lessons.jpg"
+                alt="Child playing drums at Wynwood School of Music"
+                fill
+                className="object-cover"
+                sizes="(min-width: 768px) 50vw, 100vw"
+              />
             </div>
           </div>
         </div>
@@ -210,10 +209,18 @@ export default function ProgramsAndPricingPage() {
             </div>
           </div>
 
-          {/* Action Buttons Row */}
-          <div className="flex flex-col sm:flex-row justify-around items-center gap-6 mt-12">
-            <Button href="https://drive.google.com/file/d/16nOpF2bE_r0wGF8DSFIrZBd7Atz9Cvqy/view">Calendar + Pricing</Button>
-            <Button href="https://drive.google.com/file/d/1iO4gLJbIedw_CqpWmAEO4iafwoTbl8Xl/view">Payment + Cancellation Policies</Button>
+          {/* Action Buttons — same grid as columns so each button centers under its column */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mt-12">
+            <div className="flex justify-center">
+              <Button href="https://drive.google.com/file/d/16nOpF2bE_r0wGF8DSFIrZBd7Atz9Cvqy/view">
+                Calendar + Pricing
+              </Button>
+            </div>
+            <div className="flex justify-center">
+              <Button href="https://drive.google.com/file/d/1iO4gLJbIedw_CqpWmAEO4iafwoTbl8Xl/view">
+                Payment + Cancellation Policies
+              </Button>
+            </div>
           </div>
         </div>
       </section>

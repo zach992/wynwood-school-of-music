@@ -10,36 +10,42 @@ export const metadata = {
 export default function RecitalsPage() {
   return (
     <>
-      {/* Event Cards */}
-      <section className="bg-wsm-dark">
-        <div className="grid md:grid-cols-2">
-          {/* Band Showcase Card */}
-          <div className="relative flex flex-col items-center justify-center min-h-[60vh]">
-            <Image
-              src="/images/recitals/band-showcase.png"
-              alt="Spring 2026 Band Showcase — Friday, May 15th at Inkub8"
-              fill
-              className="object-cover"
-              priority
-            />
-            <div className="absolute inset-0 bg-black/30" />
-            <div className="relative z-10 mt-auto pb-12">
-              <Button href="https://www.eventbrite.com/e/wynwood-school-of-musics-spring-band-showcase-2026-tickets-1984639810097?aff=oddtdtcreator">Tickets</Button>
+      {/* Event Flyers */}
+      <section className="bg-wsm-dark px-4 py-12 md:py-16">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12">
+            {/* Band Showcase */}
+            <div className="flex flex-col items-center">
+              <Image
+                src="/images/recitals/spring-2026-band-showcase.webp"
+                alt="Spring 2026 Band Showcase — Friday, May 15th at Inkub8"
+                width={1500}
+                height={1942}
+                className="w-full h-auto"
+                priority
+              />
+              <div className="mt-8">
+                <Button href="https://www.eventbrite.com/e/wynwood-school-of-musics-spring-band-showcase-2026-tickets-1984639810097?aff=oddtdtcreator">
+                  Tickets
+                </Button>
+              </div>
             </div>
-          </div>
 
-          {/* Private Lesson Recitals Card */}
-          <div className="relative flex flex-col items-center justify-center min-h-[60vh]">
-            <Image
-              src="/images/recitals/private-lesson-recitals.png"
-              alt="Spring 2026 Private Lesson Recitals — May 16-17 at Inkub8"
-              fill
-              className="object-cover"
-              priority
-            />
-            <div className="absolute inset-0 bg-black/30" />
-            <div className="relative z-10 mt-auto pb-12">
-              <Button href="https://www.eventbrite.com/e/wynwood-school-of-musics-spring-private-lesson-recitals-2026-tickets-1985597339092?aff=oddtdtcreator">Tickets</Button>
+            {/* Private Lesson Recitals */}
+            <div className="flex flex-col items-center">
+              <Image
+                src="/images/recitals/spring-2026-private-lesson-recitals.webp"
+                alt="Spring 2026 Private Lesson Recitals — May 16-17 at Inkub8"
+                width={1500}
+                height={1941}
+                className="w-full h-auto"
+                priority
+              />
+              <div className="mt-8">
+                <Button href="https://www.eventbrite.com/e/wynwood-school-of-musics-spring-private-lesson-recitals-2026-tickets-1985597339092?aff=oddtdtcreator">
+                  Tickets
+                </Button>
+              </div>
             </div>
           </div>
         </div>

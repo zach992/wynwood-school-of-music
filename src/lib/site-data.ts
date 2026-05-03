@@ -77,6 +77,5 @@ export const navLinks = [
       { label: "Tickets - Spring 2026", href: "/recitals" },
     ],
   },
-  { label: "Repair", href: "/repair" },
   { label: "Contact Us", href: "/contact" },
 ];
