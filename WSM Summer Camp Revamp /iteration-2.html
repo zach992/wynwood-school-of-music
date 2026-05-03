@@ -1,0 +1,1933 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Music Performance Camp — Wynwood School of Music</title>
+<meta name="description" content="Five days. One band. Their first real show. Music Performance Camp in Wynwood, Miami — ages 8–14. No experience needed." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Instrument+Serif:ital@0;1&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg: #0b0a0c;
+    --bg-elev: #141115;
+    --bg-card: #191519;
+    --line: rgba(245, 238, 228, 0.12);
+    --line-strong: rgba(245, 238, 228, 0.22);
+    --text: #f5eee4;
+    --muted: #a39b92;
+    --muted-2: #706a63;
+    --purple: #8b5375;
+    --purple-hot: #b87099;
+    --purple-ink: #2a1520;
+    --yellow: #ffd84d;
+    --success: #6ee7b7;
+    --radius: 14px;
+    --radius-lg: 22px;
+    --container: 1240px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Manrope", system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  img { max-width: 100%; display: block; }
+  button { font-family: inherit; cursor: pointer; }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.9 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    mix-blend-mode: overlay;
+  }
+
+  .container {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 28px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .display {
+    font-family: "Anton", Impact, sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+  .serif-it {
+    font-family: "Instrument Serif", "Times New Roman", serif;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+  .eyebrow {
+    font-family: "Manrope", sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--purple);
+  }
+  .h1 { font-size: clamp(56px, 9vw, 132px); }
+  .h2 { font-size: clamp(40px, 6vw, 76px); }
+  .h3 { font-size: clamp(28px, 3.4vw, 44px); }
+  .kicker {
+    font-family: "Manrope", sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ===== Urgency ===== */
+  .urgency {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--yellow);
+    color: #1a120a;
+    border-bottom: 1px solid rgba(0,0,0,0.25);
+  }
+  .urgency-inner {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 10px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    font-weight: 600;
+    font-size: 14px;
+    flex-wrap: wrap;
+  }
+  .urgency-label { display: inline-flex; align-items: center; gap: 10px; }
+  .urgency-label::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #1a120a;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.45; transform: scale(0.85); }
+  }
+  .urgency-count {
+    display: inline-flex;
+    gap: 10px;
+    font-family: "Anton", sans-serif;
+    font-size: 18px;
+    letter-spacing: 0.02em;
+  }
+  .urgency-count span b {
+    font-weight: 400;
+    display: inline-block;
+    min-width: 30px;
+    text-align: center;
+    padding: 2px 6px;
+    background: #1a120a;
+    color: var(--yellow);
+    border-radius: 6px;
+    margin-right: 4px;
+  }
+  .urgency-count span small {
+    font-family: "Manrope", sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    opacity: 0.75;
+  }
+  .urgency-cta {
+    color: #1a120a;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-weight: 700;
+  }
+
+  /* ===== Nav ===== */
+  .nav { position: relative; z-index: 20; border-bottom: 1px solid var(--line); }
+  .nav-inner {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 22px 28px;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+  .logo { flex-shrink: 0; display: block; line-height: 0; }
+  .logo img { height: 56px; width: auto; display: block; }
+  .logo.logo-sm img { height: 42px; }
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    margin-left: auto;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .nav-links a { color: var(--text); transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--purple-hot); }
+
+  /* ===== Buttons ===== */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 28px;
+    border: 0;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    transition: transform 0.15s, box-shadow 0.25s, background 0.2s;
+  }
+  .btn-primary { background: var(--purple); color: var(--text); }
+  .btn-primary:hover {
+    background: var(--purple-hot);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 30px -10px rgba(184, 112, 153, 0.55);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--line-strong);
+  }
+  .btn-ghost:hover { border-color: var(--text); }
+  .btn-yellow { background: var(--yellow); color: #1a120a; }
+  .btn-yellow:hover { background: #ffe47a; }
+  .btn-sm { padding: 11px 18px; font-size: 12px; }
+  .btn .arrow { transition: transform 0.2s; }
+  .btn:hover .arrow { transform: translateX(3px); }
+
+  /* ===== Hero ===== */
+  .hero { position: relative; padding: 90px 0 70px; overflow: hidden; }
+  .hero::before {
+    content: "";
+    position: absolute;
+    top: -80px;
+    right: -240px;
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(139, 83, 117, 0.25), transparent 65%);
+    filter: blur(24px);
+    pointer-events: none;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 60px;
+    align-items: center;
+  }
+  @media (max-width: 960px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+  }
+  .hero-eyebrow { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; }
+  .hero-eyebrow .tick { width: 38px; height: 1px; background: var(--purple); }
+  .hero h1 { margin: 0 0 26px; }
+  .hero h1 em {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--purple-hot);
+    text-transform: none;
+    letter-spacing: -0.01em;
+  }
+  .hero-sub {
+    font-size: 19px;
+    color: var(--muted);
+    max-width: 560px;
+    margin: 0 0 30px;
+    line-height: 1.55;
+  }
+  .hero-sub b { color: var(--text); font-weight: 600; }
+  .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 40px; }
+  .hero-facts {
+    display: flex;
+    gap: 34px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+  .hero-fact .label {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted-2);
+    margin-bottom: 6px;
+  }
+  .hero-fact .value {
+    font-family: "Anton", sans-serif;
+    font-size: 24px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .hero-stage {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    box-shadow: 0 40px 80px -40px rgba(0,0,0,0.8);
+  }
+  .hero-stage img { width: 100%; height: 100%; object-fit: cover; }
+  .hero-stage::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 45%, rgba(11,10,12,0.92));
+  }
+  .hero-stage .play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: var(--purple);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    border: 0;
+    box-shadow: 0 0 0 0 rgba(139,83,117,0.55);
+    animation: ring 2.2s infinite;
+  }
+  .hero-stage .play svg { width: 28px; height: 28px; margin-left: 4px; }
+  @keyframes ring {
+    0% { box-shadow: 0 0 0 0 rgba(139,83,117,0.55); }
+    70% { box-shadow: 0 0 0 26px rgba(139,83,117,0); }
+    100% { box-shadow: 0 0 0 0 rgba(139,83,117,0); }
+  }
+  .hero-stage .caption {
+    position: absolute;
+    bottom: 26px;
+    left: 26px;
+    right: 26px;
+    z-index: 2;
+  }
+  .hero-stage .caption .tag {
+    display: inline-block;
+    background: var(--yellow);
+    color: #1a120a;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+  }
+  .hero-stage .caption h4 {
+    margin: 0;
+    font-family: "Anton", sans-serif;
+    font-size: 26px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .hero-stage .caption p {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: rgba(245,238,228,0.85);
+    font-style: italic;
+    font-family: "Instrument Serif", serif;
+    font-size: 17px;
+  }
+
+  /* ===== Section ===== */
+  section { position: relative; padding: 110px 0; }
+  @media (max-width: 760px) { section { padding: 72px 0; } }
+  .section-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+    margin-bottom: 60px;
+    flex-wrap: wrap;
+  }
+  .section-head .left { max-width: 820px; }
+  .section-head h2 { margin: 14px 0 0; }
+  .section-head h2 em {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    color: var(--purple-hot);
+    text-transform: none;
+    letter-spacing: -0.01em;
+  }
+  .section-head .sub {
+    max-width: 320px;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .section-number {
+    font-family: "Anton", sans-serif;
+    font-size: 14px;
+    color: var(--muted-2);
+    letter-spacing: 0.18em;
+  }
+
+  /* ===== THE WEEK timeline (hero narrative section) ===== */
+  .week {
+    background: linear-gradient(180deg, var(--bg) 0%, var(--bg-elev) 100%);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .week-day {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    padding: 60px 0;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+  }
+  .week-day:last-child { border-bottom: 0; }
+  .week-day:nth-child(even) .week-text { order: 2; }
+  .week-day:nth-child(even) .week-photo { order: 1; }
+  @media (max-width: 960px) {
+    .week-day { grid-template-columns: 1fr; gap: 34px; padding: 44px 0; }
+    .week-day:nth-child(even) .week-text,
+    .week-day:nth-child(even) .week-photo { order: unset; }
+  }
+
+  .week-text { position: relative; }
+  .week-label {
+    font-family: "Anton", sans-serif;
+    font-size: clamp(80px, 13vw, 180px);
+    line-height: 0.85;
+    color: var(--text);
+    letter-spacing: 0.01em;
+    margin: 0 0 10px;
+    text-transform: uppercase;
+  }
+  .week-label .num {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--purple-hot);
+    letter-spacing: -0.02em;
+    font-size: 0.55em;
+    margin-right: 0.15em;
+    vertical-align: 0.35em;
+  }
+  .week-quote {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-size: clamp(22px, 2.5vw, 30px);
+    line-height: 1.25;
+    color: var(--purple-hot);
+    margin: 0 0 18px;
+    letter-spacing: -0.005em;
+  }
+  .week-body {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 520px;
+    margin: 0;
+  }
+  .week-body b { color: var(--text); font-weight: 600; }
+
+  .week-photo {
+    position: relative;
+    aspect-ratio: 5 / 6;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 40px 80px -50px rgba(0,0,0,0.9);
+  }
+  .week-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s ease;
+  }
+  .week-day:hover .week-photo img { transform: scale(1.03); }
+  .week-photo .tag {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    background: rgba(11,10,12,0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--line-strong);
+    color: var(--text);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 999px;
+  }
+
+  /* ===== The feeling (emotional outcome) ===== */
+  .feeling {
+    text-align: left;
+    padding: 110px 0 70px;
+  }
+  .feeling-main {
+    font-family: "Anton", sans-serif;
+    font-size: clamp(42px, 6vw, 82px);
+    line-height: 0.95;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    max-width: 960px;
+    margin: 18px 0 30px;
+  }
+  .feeling-main em {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    color: var(--purple-hot);
+    text-transform: none;
+    letter-spacing: -0.01em;
+  }
+  .feeling-sub {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-size: 24px;
+    color: var(--muted);
+    margin: 0 0 60px;
+    max-width: 580px;
+  }
+  .takeaways {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 20px;
+  }
+  @media (max-width: 760px) { .takeaways { grid-template-columns: 1fr; } }
+  .takeaway {
+    padding: 32px 28px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .takeaway .mark {
+    font-family: "Anton", sans-serif;
+    font-size: 32px;
+    color: var(--purple-hot);
+    line-height: 1;
+  }
+  .takeaway strong {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+  }
+  .takeaway p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  /* ===== Proof strip ===== */
+  .proof {
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 34px 0;
+    background: var(--bg-elev);
+  }
+  .proof-inner {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+  }
+  @media (max-width: 760px) { .proof-inner { grid-template-columns: repeat(2, 1fr); } }
+  .proof-item .num {
+    font-family: "Anton", sans-serif;
+    font-size: 42px;
+    line-height: 1;
+    color: var(--purple-hot);
+    margin-bottom: 8px;
+  }
+  .proof-item .copy { font-size: 13px; color: var(--muted); line-height: 1.4; }
+
+  /* ===== Testimonials ===== */
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  @media (max-width: 960px) { .testimonials-grid { grid-template-columns: 1fr; } }
+  .testimonial {
+    padding: 34px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+  }
+  .testimonial .stars {
+    display: inline-flex;
+    gap: 2px;
+    color: var(--yellow);
+    margin-bottom: 14px;
+  }
+  .testimonial blockquote {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.35;
+    margin: 0 0 28px;
+    letter-spacing: -0.01em;
+  }
+  .testimonial .who {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+  }
+  .testimonial .who img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
+  .testimonial .who strong { display: block; font-size: 14px; font-weight: 600; }
+  .testimonial .who small { color: var(--muted); font-size: 12px; }
+
+  /* ===== Instructors ===== */
+  .instructors-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  @media (max-width: 960px) { .instructors-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 540px) { .instructors-grid { grid-template-columns: 1fr; } }
+  .instructor-photo {
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 18px;
+    position: relative;
+    background: var(--bg-card);
+  }
+  .instructor-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+  .instructor:hover .instructor-photo img { transform: scale(1.04); }
+  .instructor-photo .badge {
+    position: absolute;
+    bottom: 14px;
+    left: 14px;
+    background: var(--purple);
+    color: var(--text);
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .instructor h4 {
+    font-family: "Anton", sans-serif;
+    font-weight: 400;
+    font-size: 22px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin: 0 0 4px;
+  }
+  .instructor .role {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--purple-hot);
+    margin-bottom: 10px;
+  }
+  .instructor p { margin: 0; font-size: 14px; line-height: 1.5; color: var(--muted); }
+
+  /* ===== Gallery ===== */
+  .gallery {
+    background: var(--bg-elev);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .gallery-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 32px; }
+  .gallery-tabs button {
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 9px 18px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+  .gallery-tabs button.active {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+  }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-rows: 120px;
+    gap: 12px;
+  }
+  .gallery-grid .g {
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+    background: var(--bg-card);
+  }
+  .gallery-grid .g img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s, filter 0.3s;
+  }
+  .gallery-grid .g:hover img { transform: scale(1.05); filter: brightness(1.08); }
+  .g-1 { grid-column: span 6; grid-row: span 3; }
+  .g-2 { grid-column: span 3; grid-row: span 2; }
+  .g-3 { grid-column: span 3; grid-row: span 2; }
+  .g-4 { grid-column: span 3; grid-row: span 2; }
+  .g-5 { grid-column: span 3; grid-row: span 2; }
+  .g-6 { grid-column: span 4; grid-row: span 2; }
+  .g-7 { grid-column: span 4; grid-row: span 2; }
+  .g-8 { grid-column: span 4; grid-row: span 2; }
+  @media (max-width: 760px) {
+    .gallery-grid { grid-template-columns: repeat(4, 1fr); grid-auto-rows: 100px; }
+    .g-1 { grid-column: span 4; grid-row: span 2; }
+    .g-2, .g-3, .g-4, .g-5 { grid-column: span 2; grid-row: span 2; }
+    .g-6, .g-7, .g-8 { grid-column: span 4; grid-row: span 2; }
+  }
+
+  /* ===== Sessions ===== */
+  .sessions-wrap { position: relative; }
+  .pricing-toggle {
+    display: inline-flex;
+    gap: 10px;
+    padding: 6px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    margin-bottom: 32px;
+  }
+  .pricing-toggle button {
+    background: transparent;
+    border: 0;
+    padding: 10px 20px;
+    border-radius: 999px;
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+  .pricing-toggle button.active { background: var(--purple); color: var(--text); }
+
+  .sessions-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 960px) { .sessions-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 540px) { .sessions-grid { grid-template-columns: 1fr; } }
+  .session {
+    position: relative;
+    padding: 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    transition: border-color 0.2s, transform 0.15s, box-shadow 0.25s;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .session:hover { border-color: var(--line-strong); transform: translateY(-2px); }
+  .session.selected {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 1px var(--purple), 0 20px 40px -20px rgba(139,83,117,0.4);
+  }
+  .session.bridge {
+    background: linear-gradient(180deg, rgba(255,216,77,0.05), var(--bg-card));
+    border-color: rgba(255,216,77,0.3);
+  }
+  .session.full { opacity: 0.45; cursor: not-allowed; }
+  .session .flag {
+    position: absolute;
+    top: -10px;
+    left: 18px;
+    background: var(--yellow);
+    color: #1a120a;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 3px;
+  }
+  .session.full .flag { background: #333; color: var(--muted); }
+  .session-header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .session-code { font-family: "Anton", sans-serif; font-size: 34px; letter-spacing: 0.04em; line-height: 1; }
+  .session-dates { font-size: 12px; color: var(--muted); text-align: right; line-height: 1.4; }
+  .session-dates strong { display: block; color: var(--text); font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .capacity { display: flex; flex-direction: column; gap: 6px; }
+  .capacity-bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; position: relative; }
+  .capacity-bar::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: var(--fill, 0%);
+    background: var(--purple);
+    transition: width 0.6s ease;
+  }
+  .capacity-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .capacity-label .hot { color: var(--yellow); }
+  .session-cta {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+  .session-price { font-family: "Anton", sans-serif; font-size: 22px; }
+  .session-price s { color: var(--muted-2); font-size: 15px; margin-right: 6px; }
+  .session-select {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--purple-hot);
+    font-weight: 700;
+  }
+
+  .bundle-cart {
+    margin-top: 28px;
+    padding: 28px;
+    background: linear-gradient(180deg, rgba(139,83,117,0.12), rgba(139,83,117,0.03));
+    border: 1px solid rgba(139,83,117,0.4);
+    border-radius: var(--radius-lg);
+    display: grid;
+    grid-template-columns: 1.3fr 1fr auto;
+    gap: 24px;
+    align-items: center;
+  }
+  @media (max-width: 760px) { .bundle-cart { grid-template-columns: 1fr; } }
+  .bundle-cart h4 {
+    margin: 0 0 6px;
+    font-family: "Anton", sans-serif;
+    font-weight: 400;
+    font-size: 22px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .bundle-cart .selected-list { font-size: 14px; color: var(--muted); line-height: 1.5; }
+  .bundle-math { font-size: 13px; color: var(--muted); line-height: 1.7; }
+  .bundle-math .line { display: flex; justify-content: space-between; }
+  .bundle-math .line.discount { color: var(--yellow); }
+  .bundle-math .line.total {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+    color: var(--text);
+    font-family: "Anton", sans-serif;
+    font-size: 24px;
+  }
+
+  .discounts-row { display: flex; gap: 18px; margin-top: 18px; flex-wrap: wrap; }
+  .discount-chip {
+    padding: 8px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+  }
+  .discount-chip b { color: var(--purple-hot); }
+
+  /* ===== Aftercare ===== */
+  .aftercare-card {
+    padding: 38px 42px;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(120deg, rgba(255,216,77,0.12), rgba(139,83,117,0.1));
+    border: 1px solid rgba(255,216,77,0.25);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 30px;
+    align-items: center;
+    margin-top: 40px;
+  }
+  @media (max-width: 760px) { .aftercare-card { grid-template-columns: 1fr; } }
+  .aftercare-card .mark {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: var(--yellow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .aftercare-card .mark svg { width: 28px; height: 28px; color: #1a120a; }
+  .aftercare-card .copy h4 {
+    margin: 0 0 4px;
+    font-family: "Anton", sans-serif;
+    font-weight: 400;
+    font-size: 26px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .aftercare-card .copy p { margin: 0; color: var(--muted); font-size: 15px; }
+  .aftercare-card .price {
+    text-align: right;
+    font-family: "Anton", sans-serif;
+    font-size: 42px;
+    color: var(--yellow);
+    line-height: 1;
+  }
+  .aftercare-card .price small {
+    display: block;
+    font-family: "Manrope", sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  /* ===== Practical (compact schedule) ===== */
+  .practical {
+    background: var(--bg-elev);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .practical-grid {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 60px;
+  }
+  @media (max-width: 960px) { .practical-grid { grid-template-columns: 1fr; } }
+  .practical-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .practical-list li {
+    display: grid;
+    grid-template-columns: 88px 1fr;
+    gap: 18px;
+    padding: 14px 0;
+    border-top: 1px solid var(--line);
+    align-items: baseline;
+  }
+  .practical-list li:first-child { border-top: 0; padding-top: 0; }
+  .practical-list .time {
+    font-family: "Anton", sans-serif;
+    font-size: 16px;
+    color: var(--purple-hot);
+    letter-spacing: 0.04em;
+  }
+  .practical-list .activity { font-size: 15px; color: var(--text); }
+  .practical-list .activity small { display: block; color: var(--muted); font-size: 13px; margin-top: 2px; }
+
+  .practical-aside {
+    padding: 36px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+  }
+  .practical-aside h4 {
+    font-family: "Anton", sans-serif;
+    font-weight: 400;
+    font-size: 26px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin: 0 0 10px;
+  }
+  .practical-aside p { color: var(--muted); margin: 0 0 18px; }
+  .showcase-callout {
+    padding: 18px 22px;
+    border-radius: var(--radius);
+    background: linear-gradient(120deg, rgba(139,83,117,0.18), rgba(139,83,117,0.04));
+    border: 1px solid rgba(139,83,117,0.35);
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .showcase-callout .icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--purple);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .showcase-callout .icon svg { width: 18px; height: 18px; }
+  .showcase-callout strong { display: block; font-size: 14px; letter-spacing: 0.02em; }
+  .showcase-callout small { color: var(--muted); font-size: 13px; }
+
+  /* ===== FAQ ===== */
+  .faq-email { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 50px; align-items: start; }
+  @media (max-width: 960px) { .faq-email { grid-template-columns: 1fr; } }
+  .faq-list { list-style: none; padding: 0; margin: 0; }
+  .faq-item { border-top: 1px solid var(--line); }
+  .faq-item:last-child { border-bottom: 1px solid var(--line); }
+  .faq-item summary {
+    padding: 22px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: 600;
+    list-style: none;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after {
+    content: "+";
+    font-family: "Anton", sans-serif;
+    font-size: 28px;
+    color: var(--purple-hot);
+    line-height: 1;
+  }
+  .faq-item[open] summary::after { content: "−"; }
+  .faq-item .answer { padding: 0 0 24px; color: var(--muted); line-height: 1.6; max-width: 680px; }
+
+  .email-card {
+    padding: 36px;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(180deg, rgba(139,83,117,0.14), rgba(139,83,117,0.02));
+    border: 1px solid rgba(139,83,117,0.3);
+    position: sticky;
+    top: 80px;
+  }
+  .email-card h4 {
+    margin: 0 0 10px;
+    font-family: "Anton", sans-serif;
+    font-weight: 400;
+    font-size: 26px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .email-card p { margin: 0 0 22px; color: var(--muted); font-size: 14px; }
+  .email-form { display: flex; flex-direction: column; gap: 10px; }
+  .email-form input {
+    padding: 14px 16px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+  }
+  .email-form input:focus { outline: none; border-color: var(--purple); }
+  .email-form button {
+    padding: 14px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--purple);
+    color: var(--text);
+    font-family: inherit;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 13px;
+  }
+  .email-form button:hover { background: var(--purple-hot); }
+  .email-form .success { color: var(--success); font-size: 13px; padding: 8px 0 0; display: none; }
+  .email-form.done input, .email-form.done button { display: none; }
+  .email-form.done .success { display: block; }
+
+  /* ===== Final CTA ===== */
+  .final-cta {
+    background: linear-gradient(140deg, var(--purple) 0%, #3e2235 100%);
+    padding: 110px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .final-cta::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(255,216,77,0.18), transparent 40%),
+      radial-gradient(circle at 85% 70%, rgba(255,255,255,0.12), transparent 40%);
+    pointer-events: none;
+  }
+  .final-cta h2 { margin: 0 0 20px; font-size: clamp(50px, 8vw, 100px); }
+  .final-cta h2 em {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    text-transform: none;
+    letter-spacing: -0.01em;
+  }
+  .final-cta p { margin: 0 auto 36px; font-size: 18px; max-width: 620px; }
+  .final-cta .btn-yellow { padding: 20px 36px; font-size: 15px; }
+
+  /* ===== Footer ===== */
+  footer {
+    padding: 60px 0 40px;
+    border-top: 1px solid var(--line);
+    background: var(--bg);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+  @media (max-width: 760px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+  .footer-col h5 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 16px;
+  }
+  .footer-col a {
+    display: block;
+    padding: 4px 0;
+    color: var(--text);
+    font-size: 14px;
+  }
+  .footer-col a:hover { color: var(--purple-hot); }
+  .footer-col p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
+  .footer-bottom {
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 13px;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  /* ===== Modal ===== */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0,0,0,0.75);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    max-width: 540px;
+    width: 100%;
+    padding: 40px;
+    position: relative;
+  }
+  .modal h3 {
+    font-family: "Anton", sans-serif;
+    font-weight: 400;
+    font-size: 30px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin: 0 0 8px;
+  }
+  .modal p { color: var(--muted); margin: 0 0 22px; }
+  .modal-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    color: var(--text);
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-field { margin-bottom: 14px; }
+  .modal-field label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .modal-field input, .modal-field select {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+  }
+  .modal-field input:focus, .modal-field select:focus { outline: none; border-color: var(--purple); }
+  .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .modal .summary-box {
+    padding: 16px;
+    border-radius: 10px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    margin-bottom: 22px;
+    font-size: 14px;
+  }
+  .modal .summary-box .line { display: flex; justify-content: space-between; padding: 4px 0; color: var(--muted); }
+  .modal .summary-box .line.total {
+    font-family: "Anton", sans-serif;
+    font-size: 22px;
+    color: var(--text);
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+    margin-top: 6px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Urgency -->
+<div class="urgency">
+  <div class="urgency-inner">
+    <span class="urgency-label">Early Bird Ends May 15 — Save $50 per week</span>
+    <span class="urgency-count" id="countdown">
+      <span><b id="cd-d">00</b><small>Days</small></span>
+      <span><b id="cd-h">00</b><small>Hrs</small></span>
+      <span><b id="cd-m">00</b><small>Min</small></span>
+      <span><b id="cd-s">00</b><small>Sec</small></span>
+    </span>
+    <a href="#sessions" class="urgency-cta">Reserve now →</a>
+  </div>
+</div>
+
+<!-- Nav -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="logo" aria-label="Wynwood School of Music">
+      <img src="logo.png" alt="Wynwood School of Music" />
+    </a>
+    <div class="nav-links">
+      <a href="#">Home</a>
+      <a href="#">About Us</a>
+      <a href="#">Programs</a>
+      <a href="#" class="active">Summer Camp</a>
+      <a href="#">Recitals</a>
+      <a href="#">Repair</a>
+      <a href="#">Contact</a>
+    </div>
+    <a href="#sessions" class="btn btn-primary btn-sm">Save Your Spot</a>
+  </div>
+</nav>
+
+<!-- ===== Hero — transformation angle ===== -->
+<header class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-eyebrow">
+          <span class="tick"></span>
+          <span class="eyebrow">Music Performance Camp · Wynwood, Miami</span>
+        </div>
+        <h1 class="display h1">
+          Five days.<br/>One band.<br/>Their first <em>real show.</em>
+        </h1>
+        <p class="hero-sub">
+          Monday morning, most of our campers <b>have never played a chord.</b> Friday afternoon, they're on our stage playing multiple songs to a room full of family and friends. <b>Every week, all summer.</b>
+        </p>
+        <div class="hero-ctas">
+          <a href="#sessions" class="btn btn-primary">Reserve a Week <span class="arrow">→</span></a>
+          <a href="#friday" class="btn btn-ghost">Watch a Friday Set</a>
+        </div>
+        <div class="hero-facts">
+          <div class="hero-fact">
+            <div class="label">Ages</div>
+            <div class="value">8 – 14</div>
+          </div>
+          <div class="hero-fact">
+            <div class="label">Hours</div>
+            <div class="value">9 AM – 3:30 PM</div>
+          </div>
+          <div class="hero-fact">
+            <div class="label">Per Week</div>
+            <div class="value"><s style="opacity:.5; font-size:16px;">$425</s> $375*</div>
+          </div>
+          <div class="hero-fact">
+            <div class="label">Experience</div>
+            <div class="value">None Needed</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-stage" id="friday">
+        <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1200&q=80" alt="Young musicians on stage at Friday showcase" />
+        <button class="play" aria-label="Play Friday showcase video">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M8 5v14l11-7L8 5Z" fill="currentColor"/></svg>
+        </button>
+        <div class="caption">
+          <span class="tag">Friday · 3:00 PM · Live</span>
+          <h4>This is where Monday was pointing.</h4>
+          <p>"My daughter had never touched a guitar. She played lead on three songs. I cried."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Proof strip -->
+<section class="proof" style="padding: 34px 0;">
+  <div class="container">
+    <div class="proof-inner">
+      <div class="proof-item">
+        <div class="num">500+</div>
+        <div class="copy">Kids who have played<br/>our Friday stage</div>
+      </div>
+      <div class="proof-item">
+        <div class="num">68%</div>
+        <div class="copy">Of campers have never<br/>played an instrument before</div>
+      </div>
+      <div class="proof-item">
+        <div class="num">100%</div>
+        <div class="copy">Perform a full set<br/>with a live band by Friday</div>
+      </div>
+      <div class="proof-item">
+        <div class="num">4.9★</div>
+        <div class="copy">Parent rating across<br/>80+ reviews</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== THE WEEK — narrative hero feature ===== -->
+<section class="week">
+  <div class="container">
+    <div class="section-head">
+      <div class="left">
+        <div class="section-number">— 01</div>
+        <h2 class="display h2">Monday they've <em>never played.</em><br/>Friday they're <em>performing.</em></h2>
+      </div>
+      <p class="sub">Each session runs Monday–Friday. No experience needed. Here's how a week actually unfolds from the inside.</p>
+    </div>
+
+    <div class="week-day">
+      <div class="week-text">
+        <h3 class="week-label"><span class="num">01</span>MON</h3>
+        <p class="week-quote">"I don't know anybody here yet."</p>
+        <p class="week-body">By lunchtime they've picked an instrument, met their bandmates, and played their first notes together. <b>Half the room is in the same boat.</b> Nobody's judging. By the end of the day, they've already made a friend.</p>
+      </div>
+      <div class="week-photo">
+        <span class="tag">First day · Wynwood studio</span>
+        <img src="https://images.unsplash.com/photo-1519508234439-4f23643125c1?auto=format&fit=crop&w=1000&q=80" alt="Kids meeting on the first day of camp" />
+      </div>
+    </div>
+
+    <div class="week-day">
+      <div class="week-text">
+        <h3 class="week-label"><span class="num">02</span>TUE</h3>
+        <p class="week-quote">"Wait — I can actually do this?"</p>
+        <p class="week-body">Their first full song starts to come together. Instructors break down each part; the band runs it from the top. <b>The lightbulb usually hits on Tuesday.</b> So does the first real laugh of the week.</p>
+      </div>
+      <div class="week-photo">
+        <span class="tag">Day 2 · First full song</span>
+        <img src="https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&w=1000&q=80" alt="Camper at the drum kit" />
+      </div>
+    </div>
+
+    <div class="week-day">
+      <div class="week-text">
+        <h3 class="week-label"><span class="num">03</span>WED</h3>
+        <p class="week-quote">"I'm a drummer now, apparently."</p>
+        <p class="week-body">They know their part. They know the setlist. They've made friends they text after camp. <b>They're telling you about their band over dinner.</b> You've never heard them this excited about anything.</p>
+      </div>
+      <div class="week-photo">
+        <span class="tag">Day 3 · Band in sync</span>
+        <img src="https://images.unsplash.com/photo-1560265036-021b3652b4ee?auto=format&fit=crop&w=1000&q=80" alt="Band in rehearsal" />
+      </div>
+    </div>
+
+    <div class="week-day">
+      <div class="week-text">
+        <h3 class="week-label"><span class="num">04</span>THU</h3>
+        <p class="week-quote">"Dress rehearsal — loud."</p>
+        <p class="week-body">Full runs with amps cranked and stage lights on. Nerves and excitement show up at the same time. <b>Tomorrow's real.</b> Everyone — beginner, intermediate, nervous, cocky — walks out a little taller.</p>
+      </div>
+      <div class="week-photo">
+        <span class="tag">Day 4 · Dress rehearsal</span>
+        <img src="https://images.unsplash.com/photo-1516873240891-4bf014598ab4?auto=format&fit=crop&w=1000&q=80" alt="Microphone on stage" />
+      </div>
+    </div>
+
+    <div class="week-day">
+      <div class="week-text">
+        <h3 class="week-label"><span class="num">05</span>FRI</h3>
+        <p class="week-quote">"Doors at 2:45. They're on."</p>
+        <p class="week-body">You walk in. Lights. Amps. Parents with phones up. Your kid on stage playing a full set with their band — covers, originals, a solo they practiced all week. Then a standing ovation. <b>They won't shut up about it for weeks.</b></p>
+      </div>
+      <div class="week-photo">
+        <span class="tag">Day 5 · Live showcase</span>
+        <img src="https://images.unsplash.com/photo-1501612780327-45045538702b?auto=format&fit=crop&w=1000&q=80" alt="Kids performing on stage at the Friday showcase" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== The feeling (emotional outcome) ===== -->
+<section class="feeling">
+  <div class="container">
+    <div class="section-number">— 02</div>
+    <h2 class="feeling-main">They leave knowing what it feels like<br/>to <em>finish a song</em> and hear<br/>a room <em>clap for them.</em></h2>
+    <p class="feeling-sub">That's the thing they come back for. Everything else is bonus.</p>
+
+    <div class="takeaways">
+      <div class="takeaway">
+        <div class="mark">01</div>
+        <strong>A live show under their belt</strong>
+        <p>Multiple songs, a real audience, a real band. They've done something most adults never will.</p>
+      </div>
+      <div class="takeaway">
+        <div class="mark">02</div>
+        <strong>A friend group they keep</strong>
+        <p>The texts that start during Lunch + Community Hour don't stop when camp ends. We've watched it for 12 years.</p>
+      </div>
+      <div class="takeaway">
+        <div class="mark">03</div>
+        <strong>The quiet confidence of "I did that"</strong>
+        <p>The thing you can't teach in a workshop. They leave a little different than they walked in.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Testimonials ===== -->
+<section>
+  <div class="container">
+    <div class="section-head">
+      <div class="left">
+        <div class="section-number">— 03</div>
+        <h2 class="display h2">What parents <em>actually say</em><br/>after Friday.</h2>
+      </div>
+      <p class="sub">Every quote below is from a parent whose child came to WSM Camp in the last two summers.</p>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial">
+        <div class="stars">★★★★★</div>
+        <blockquote>"My daughter hadn't touched an instrument in her life. By Friday she was singing lead in a five-piece band. I sat in the back and cried the whole set."</blockquote>
+        <div class="who">
+          <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80" alt="Parent" />
+          <div>
+            <strong>Elena R.</strong>
+            <small>Parent · Session B 2025</small>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <div class="stars">★★★★★</div>
+        <blockquote>"We've done three different summer camps. This is the one he asked to come back to on day two. That's it. That's my whole review."</blockquote>
+        <div class="who">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80" alt="Parent" />
+          <div>
+            <strong>David O.</strong>
+            <small>Parent · Sessions A + C 2025</small>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <div class="stars">★★★★★</div>
+        <blockquote>"The Friday show isn't a 'kid recital.' It feels like an actual concert. My son still talks about his guitar solo six months later."</blockquote>
+        <div class="who">
+          <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=200&q=80" alt="Parent" />
+          <div>
+            <strong>Priya K.</strong>
+            <small>Parent · Sessions E 2024 &amp; D 2025</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Instructors ===== -->
+<section style="background: var(--bg-elev); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+  <div class="container">
+    <div class="section-head">
+      <div class="left">
+        <div class="section-number">— 04</div>
+        <h2 class="display h2">The people who get your kid<br/>from <em>shy</em> to <em>showing off.</em></h2>
+      </div>
+      <p class="sub">Every instructor is a working, gigging musician who teaches because they love it. They don't just teach parts — they teach kids to love the stage.</p>
+    </div>
+    <div class="instructors-grid">
+      <div class="instructor">
+        <div class="instructor-photo">
+          <img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=600&q=80" alt="Camp Director" />
+          <span class="badge">Camp Director</span>
+        </div>
+        <h4>Marcus Rivera</h4>
+        <div class="role">Founder · Guitar</div>
+        <p>Berklee-trained, 18 years teaching Miami's young musicians. The guy who will get your kid to play their first solo.</p>
+      </div>
+      <div class="instructor">
+        <div class="instructor-photo">
+          <img src="https://images.unsplash.com/photo-1549213783-8284d0336c4f?auto=format&fit=crop&w=600&q=80" alt="Voice Instructor" />
+          <span class="badge">Voice</span>
+        </div>
+        <h4>Nina Cardozo</h4>
+        <div class="role">Vocal Coach</div>
+        <p>Frost School of Music MFA. Specializes in turning "I can't sing" into "I just sang lead."</p>
+      </div>
+      <div class="instructor">
+        <div class="instructor-photo">
+          <img src="https://images.unsplash.com/photo-1589156229687-496a31ad1d1f?auto=format&fit=crop&w=600&q=80" alt="Drums Instructor" />
+          <span class="badge">Drums</span>
+        </div>
+        <h4>Desmond Pope</h4>
+        <div class="role">Drums · Percussion</div>
+        <p>Touring drummer. Can get a kid who's never held a stick playing a full song before Tuesday lunch.</p>
+      </div>
+      <div class="instructor">
+        <div class="instructor-photo">
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80" alt="Keys Instructor" />
+          <span class="badge">Keys · Bass</span>
+        </div>
+        <h4>Isabel Ferrer</h4>
+        <div class="role">Keys · Bass · Theory</div>
+        <p>Session keyboardist across Miami's studio circuit. The one who makes music theory feel like a cheat code.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Gallery ===== -->
+<section class="gallery">
+  <div class="container">
+    <div class="section-head">
+      <div class="left">
+        <div class="section-number">— 05</div>
+        <h2 class="display h2">Inside a <em>week at camp.</em></h2>
+      </div>
+      <div class="gallery-tabs">
+        <button class="active">All Moments</button>
+        <button>First Day</button>
+        <button>Rehearsals</button>
+        <button>Friday Showcases</button>
+      </div>
+    </div>
+    <div class="gallery-grid">
+      <div class="g g-1"><img src="https://images.unsplash.com/photo-1460723237483-7a6dc9d0b212?auto=format&fit=crop&w=1400&q=80" alt="Full band on stage" /></div>
+      <div class="g g-2"><img src="https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&w=800&q=80" alt="Drummer close-up" /></div>
+      <div class="g g-3"><img src="https://images.unsplash.com/photo-1519508234439-4f23643125c1?auto=format&fit=crop&w=800&q=80" alt="Guitar lesson" /></div>
+      <div class="g g-4"><img src="https://images.unsplash.com/photo-1565708097881-bbc2849a5b0f?auto=format&fit=crop&w=800&q=80" alt="Keyboard practice" /></div>
+      <div class="g g-5"><img src="https://images.unsplash.com/photo-1516873240891-4bf014598ab4?auto=format&fit=crop&w=800&q=80" alt="Microphone setup" /></div>
+      <div class="g g-6"><img src="https://images.unsplash.com/photo-1501612780327-45045538702b?auto=format&fit=crop&w=1000&q=80" alt="Showcase crowd" /></div>
+      <div class="g g-7"><img src="https://images.unsplash.com/photo-1507838153414-b4b713384a76?auto=format&fit=crop&w=1000&q=80" alt="Young singer" /></div>
+      <div class="g g-8"><img src="https://images.unsplash.com/photo-1470019693664-1d202d2c0907?auto=format&fit=crop&w=1000&q=80" alt="Workshop group" /></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Sessions ===== -->
+<section id="sessions">
+  <div class="container sessions-wrap">
+    <div class="section-head">
+      <div class="left">
+        <div class="section-number">— 06</div>
+        <h2 class="display h2">Pick your <em>week.</em></h2>
+      </div>
+      <div class="pricing-toggle">
+        <button class="active" data-pricing="early">Early Bird · Through May 15</button>
+        <button data-pricing="standard">Standard</button>
+      </div>
+    </div>
+    <p style="max-width: 720px; color: var(--muted); margin: -20px 0 32px; font-size: 15px;">
+      Click a session to add it to your cart. Pick multiple to unlock bundle savings. Book online, no phone calls.
+    </p>
+    <div class="sessions-grid" id="sessions-grid"></div>
+
+    <div class="discounts-row">
+      <div class="discount-chip"><b>Save $25/wk</b> — Book 2+ sessions</div>
+      <div class="discount-chip"><b>Save $50/wk</b> — Book 3+ sessions</div>
+      <div class="discount-chip"><b>10% off</b> — Each additional sibling</div>
+      <div class="discount-chip"><b>Save $50/wk</b> — Early Bird through May 15</div>
+    </div>
+
+    <div class="bundle-cart" id="bundle-cart">
+      <div>
+        <h4>Your Cart</h4>
+        <div class="selected-list" id="selected-list">No sessions selected yet — tap a week above to begin.</div>
+      </div>
+      <div class="bundle-math" id="bundle-math">
+        <div class="line"><span>Base</span><span>$0</span></div>
+      </div>
+      <button class="btn btn-primary" id="cart-checkout" disabled style="opacity: 0.4; pointer-events: none;">Reserve &amp; Checkout <span class="arrow">→</span></button>
+    </div>
+
+    <!-- Aftercare featured inside the sessions section -->
+    <div class="aftercare-card">
+      <div class="mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M12 7v5l3 2"/>
+        </svg>
+      </div>
+      <div class="copy">
+        <h4>Extended Care Until 5 PM</h4>
+        <p>For working parents: supervised jam, homework space, decompress time from 3:30 – 5:00 PM. Add per day, no commitment required.</p>
+      </div>
+      <div class="price">
+        $25<small>Per day</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Practical (schedule, tucked down) ===== -->
+<section class="practical">
+  <div class="container">
+    <div class="section-head">
+      <div class="left">
+        <div class="section-number">— 07</div>
+        <h2 class="display h2">The <em>practical stuff.</em></h2>
+      </div>
+      <p class="sub">For parents who want to know exactly what a camp day looks like. The short version: structured enough to progress fast, loose enough that kids actually want to come back on day two.</p>
+    </div>
+    <div class="practical-grid">
+      <ul class="practical-list">
+        <li><div class="time">9:00</div><div class="activity">Drop-Off, Warm-Up &amp; Bonding<small>Coffee for parents. Kids jam loosely while the room fills.</small></div></li>
+        <li><div class="time">10:00</div><div class="activity">Music Education Workshops<small>Theory, ear training, and songwriting — the way musicians actually use them.</small></div></li>
+        <li><div class="time">11:00</div><div class="activity">Band Rehearsal<small>Every camper plays in a band grouped by skill level.</small></div></li>
+        <li><div class="time">12:15</div><div class="activity">Lunch + Community Hour<small>Unplug, hang out, make friends. Half the magic happens here.</small></div></li>
+        <li><div class="time">1:15</div><div class="activity">Instrument Sectionals<small>Small-group coaching by instrument.</small></div></li>
+        <li><div class="time">2:30</div><div class="activity">Band Rehearsal (Round 2)<small>Afternoon run-throughs.</small></div></li>
+        <li><div class="time">3:30</div><div class="activity">Dismissal + Pickup / Aftercare begins</div></li>
+      </ul>
+      <div class="practical-aside">
+        <h4>Friday = Showtime</h4>
+        <p>Every session ends with a live 3:00 PM Friday showcase at our Wynwood stage. Families, friends, lights, amps — the full experience. It's what every day of the week has been pointing toward.</p>
+        <div class="showcase-callout">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 2v20M2 12h20" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <strong>All families invited — free entry</strong>
+            <small>Doors open 2:45 PM Fridays. Arrive early, it fills up.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FAQ + Email capture ===== -->
+<section>
+  <div class="container">
+    <div class="section-head">
+      <div class="left">
+        <div class="section-number">— 08</div>
+        <h2 class="display h2">Answers to <em>everything else.</em></h2>
+      </div>
+    </div>
+    <div class="faq-email">
+      <ul class="faq-list">
+        <details class="faq-item" open>
+          <summary>Does my child need any prior experience?</summary>
+          <div class="answer">Absolutely not — and most don't. About 68% of our campers have never played an instrument before. Beginners and advanced students are placed into small groups with musicians at a similar level. No one gets lost, no one gets held back.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Which instruments can my child learn?</summary>
+          <div class="answer">Voice, guitar, keyboard, bass, and drums. Kids try things on Monday and land on a primary by Tuesday — it's totally fine to show up not knowing which one.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does my child need to bring their own instrument?</summary>
+          <div class="answer">We encourage it (practicing on the same instrument you rehearse on matters), but we have loaner instruments on a first-come basis for families who don't have one yet.</div>
+        </details>
+        <details class="faq-item">
+          <summary>How does registration and payment work?</summary>
+          <div class="answer">Pick your sessions above, check out online with a 50% deposit. The remaining balance is charged to the card on file on the first day of each session. No phone tag.</div>
+        </details>
+        <details class="faq-item">
+          <summary>What's the cancellation policy?</summary>
+          <div class="answer">Cancel 14+ days before your session starts for a full deposit refund. 7–13 days: 50% refund. 0–6 days: deposit is non-refundable. Family illness is handled case-by-case.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Do you offer aftercare?</summary>
+          <div class="answer">Yes — 3:30–5:00 PM, $25/day, no commitment. Add it day-of or for the whole week. Private lessons after camp are also available as a separate program.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Will there be lunch breaks?</summary>
+          <div class="answer">Yes. Lunch + Community Hour runs 12:15–1:15 daily. Kids bring their own or order delivery as a group. This is also when friendships form — which, no exaggeration, is half the reason kids come back.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Where can we park?</summary>
+          <div class="answer">Parking lot along the western wall of the school. Additional parking along 29th Street and 13th Ave.</div>
+        </details>
+      </ul>
+
+      <div class="email-card">
+        <h4>Not ready yet?</h4>
+        <p>Get camp updates, early-bird reminders, and clips from our Friday showcases. One email a month — nothing spammy.</p>
+        <form class="email-form" onsubmit="event.preventDefault(); this.classList.add('done');">
+          <input type="text" placeholder="Parent's first name" required />
+          <input type="email" placeholder="Email address" required />
+          <button type="submit">Keep me posted</button>
+          <div class="success">✓ You're on the list. See you Friday.</div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Final CTA ===== -->
+<section class="final-cta">
+  <div class="container">
+    <h2 class="display">Your kid's<br/><em>summer story</em><br/>starts Monday.</h2>
+    <p>Early bird pricing ends May 15. Sessions fill in the order reserved — most popular weeks sell out first.</p>
+    <a href="#sessions" class="btn btn-yellow">Reserve a Week <span class="arrow">→</span></a>
+  </div>
+</section>
+
+<!-- ===== Footer ===== -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="logo logo-sm" style="margin-bottom: 18px;">
+          <img src="logo.png" alt="Wynwood School of Music" />
+        </div>
+        <p>Professional music education, kid-energy environment. In the heart of Miami's Wynwood Arts District since 2014.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Programs</h5>
+        <a href="#">Private Lessons</a>
+        <a href="#">Group Classes</a>
+        <a href="#">Summer Camp</a>
+        <a href="#">Adult Programs</a>
+      </div>
+      <div class="footer-col">
+        <h5>Visit</h5>
+        <a href="#">Directions &amp; Parking</a>
+        <a href="#">Recitals Calendar</a>
+        <a href="#">Contact Us</a>
+        <a href="#">FAQ</a>
+      </div>
+      <div class="footer-col">
+        <h5>Follow</h5>
+        <a href="#">Instagram</a>
+        <a href="#">Facebook</a>
+        <a href="#">YouTube</a>
+        <a href="#">TikTok</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Wynwood School of Music. All rights reserved.</span>
+      <span>Made with love in Wynwood, Miami.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Reservation modal -->
+<div class="modal-backdrop" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h3>Reserve Your Spot</h3>
+    <p>A 50% deposit secures your sessions. Balance is charged to this card on the first day of each session.</p>
+    <div class="summary-box" id="modal-summary"></div>
+    <div class="modal-row">
+      <div class="modal-field"><label>Camper's Name</label><input type="text" placeholder="First &amp; last" /></div>
+      <div class="modal-field"><label>Age</label><input type="number" min="8" max="14" placeholder="8–14" /></div>
+    </div>
+    <div class="modal-field">
+      <label>Primary Instrument</label>
+      <select>
+        <option>Not sure yet — we'll help them pick</option>
+        <option>Voice</option>
+        <option>Guitar</option>
+        <option>Keyboard</option>
+        <option>Bass</option>
+        <option>Drums</option>
+      </select>
+    </div>
+    <div class="modal-row">
+      <div class="modal-field"><label>Parent Email</label><input type="email" placeholder="you@example.com" /></div>
+      <div class="modal-field"><label>Parent Phone</label><input type="tel" placeholder="(305) ..." /></div>
+    </div>
+    <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 6px;" onclick="alert('In the live site this button routes to Sawyer / Jumbula / Stripe checkout for a 50% deposit. Demo only.'); closeModal();">
+      Proceed to Secure Checkout <span class="arrow">→</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  const deadline = new Date('2026-05-15T23:59:59-04:00').getTime();
+  const pad = (n) => String(n).padStart(2, '0');
+  function tick() {
+    const now = Date.now();
+    let diff = Math.max(0, deadline - now);
+    const d = Math.floor(diff / 864e5); diff -= d * 864e5;
+    const h = Math.floor(diff / 36e5); diff -= h * 36e5;
+    const m = Math.floor(diff / 6e4); diff -= m * 6e4;
+    const s = Math.floor(diff / 1e3);
+    document.getElementById('cd-d').textContent = pad(d);
+    document.getElementById('cd-h').textContent = pad(h);
+    document.getElementById('cd-m').textContent = pad(m);
+    document.getElementById('cd-s').textContent = pad(s);
+  }
+  tick(); setInterval(tick, 1000);
+
+  const sessions = [
+    { code: 'A',   dates: 'June 15 – June 19',      month: 'Jun', capacity: 32, sold: 22 },
+    { code: 'B',   dates: 'June 22 – June 26',      month: 'Jun', capacity: 32, sold: 28, flag: 'Almost full' },
+    { code: 'B.5', dates: 'June 29 – July 3',       month: 'Jun/Jul', capacity: 24, sold: 6, flag: 'New! Bridge Week', bridge: true, priceOverride: 375 },
+    { code: 'C',   dates: 'July 6 – July 10',       month: 'Jul', capacity: 32, sold: 18 },
+    { code: 'D',   dates: 'July 13 – July 17',      month: 'Jul', capacity: 32, sold: 14 },
+    { code: 'E',   dates: 'July 20 – July 24',      month: 'Jul', capacity: 32, sold: 11 },
+    { code: 'F',   dates: 'July 27 – July 31',      month: 'Jul', capacity: 32, sold: 8 },
+    { code: 'G',   dates: 'August 3 – August 7',    month: 'Aug', capacity: 32, sold: 32, flag: 'Waitlist', full: true }
+  ];
+  const selected = new Set();
+  let pricingMode = 'early';
+  const BASE_EARLY = 375, BASE_STANDARD = 425;
+  function basePrice() { return pricingMode === 'early' ? BASE_EARLY : BASE_STANDARD; }
+
+  function renderSessions() {
+    const grid = document.getElementById('sessions-grid');
+    grid.innerHTML = sessions.map(s => {
+      const fillPct = Math.round((s.sold / s.capacity) * 100);
+      const spotsLeft = s.capacity - s.sold;
+      const displayPrice = (s.priceOverride && pricingMode === 'early') ? s.priceOverride
+        : (s.bridge && pricingMode === 'standard') ? 400 : basePrice();
+      const origPrice = pricingMode === 'early' ? BASE_STANDARD : null;
+      const hot = fillPct >= 80 && !s.full;
+      return `
+        <div class="session ${s.full ? 'full' : ''} ${s.bridge ? 'bridge' : ''} ${selected.has(s.code) ? 'selected' : ''}" data-code="${s.code}">
+          ${s.flag ? `<span class="flag">${s.flag}</span>` : ''}
+          <div class="session-header">
+            <div class="session-code">${s.code}</div>
+            <div class="session-dates"><strong>${s.month}</strong>${s.dates}</div>
+          </div>
+          <div class="capacity">
+            <div class="capacity-bar" style="--fill: ${fillPct}%;"></div>
+            <div class="capacity-label">
+              <span>${s.full ? 'Sold out' : spotsLeft + ' spots left'}</span>
+              <span class="${hot ? 'hot' : ''}">${s.full ? '—' : (hot ? '🔥 Filling fast' : fillPct + '% full')}</span>
+            </div>
+          </div>
+          <div class="session-cta">
+            <div class="session-price">${origPrice && !s.bridge ? `<s>$${origPrice}</s>` : ''}$${displayPrice}</div>
+            <div class="session-select">${selected.has(s.code) ? 'Added ✓' : (s.full ? 'Join Waitlist' : 'Add Session')}</div>
+          </div>
+        </div>`;
+    }).join('');
+    grid.querySelectorAll('.session').forEach(el => {
+      el.addEventListener('click', () => {
+        const code = el.dataset.code;
+        const s = sessions.find(x => x.code === code);
+        if (s.full) return alert('This session is full. Sign up for camp updates below to join the waitlist.');
+        if (selected.has(code)) selected.delete(code); else selected.add(code);
+        renderSessions(); renderCart();
+      });
+    });
+  }
+
+  function renderCart() {
+    const list = document.getElementById('selected-list');
+    const math = document.getElementById('bundle-math');
+    const checkout = document.getElementById('cart-checkout');
+    const picks = [...selected].map(c => sessions.find(s => s.code === c));
+    if (picks.length === 0) {
+      list.textContent = 'No sessions selected yet — tap a week above to begin.';
+      math.innerHTML = `<div class="line"><span>Base</span><span>$0</span></div>`;
+      checkout.setAttribute('disabled', ''); checkout.style.opacity = 0.4; checkout.style.pointerEvents = 'none';
+      return;
+    }
+    list.innerHTML = picks.map(p => `<div>Session ${p.code} · <span style="color:var(--muted)">${p.dates}</span></div>`).join('');
+    const base = picks.reduce((sum, p) => sum + ((p.priceOverride && pricingMode === 'early') ? p.priceOverride : basePrice()), 0);
+    let bundleDiscount = 0;
+    if (picks.length === 2) bundleDiscount = 25 * picks.length;
+    else if (picks.length >= 3) bundleDiscount = 50 * picks.length;
+    const total = base - bundleDiscount;
+    math.innerHTML = `
+      <div class="line"><span>${picks.length} session${picks.length > 1 ? 's' : ''} · ${pricingMode === 'early' ? 'Early Bird' : 'Standard'}</span><span>$${base}</span></div>
+      ${bundleDiscount ? `<div class="line discount"><span>Bundle discount (${picks.length}-week)</span><span>−$${bundleDiscount}</span></div>` : ''}
+      <div class="line total"><span>Total</span><span>$${total}</span></div>
+      <div style="font-size:12px; color: var(--muted); margin-top:6px;">50% deposit today · balance on first day</div>`;
+    checkout.removeAttribute('disabled'); checkout.style.opacity = 1; checkout.style.pointerEvents = 'auto';
+  }
+
+  document.querySelectorAll('.pricing-toggle button').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.pricing-toggle button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      pricingMode = b.dataset.pricing;
+      renderSessions(); renderCart();
+    });
+  });
+  renderSessions(); renderCart();
+
+  document.getElementById('cart-checkout').addEventListener('click', () => {
+    if (selected.size === 0) return;
+    const picks = [...selected].map(c => sessions.find(s => s.code === c));
+    const base = picks.reduce((sum, p) => sum + ((p.priceOverride && pricingMode === 'early') ? p.priceOverride : basePrice()), 0);
+    let bundleDiscount = 0;
+    if (picks.length === 2) bundleDiscount = 25 * picks.length;
+    else if (picks.length >= 3) bundleDiscount = 50 * picks.length;
+    const total = base - bundleDiscount;
+    const deposit = Math.round(total / 2);
+    document.getElementById('modal-summary').innerHTML = `
+      ${picks.map(p => `<div class="line"><span>Session ${p.code} · ${p.dates}</span><span>$${(p.priceOverride && pricingMode === 'early') ? p.priceOverride : basePrice()}</span></div>`).join('')}
+      ${bundleDiscount ? `<div class="line" style="color:var(--yellow)"><span>Bundle discount</span><span>−$${bundleDiscount}</span></div>` : ''}
+      <div class="line total"><span>Total</span><span>$${total}</span></div>
+      <div class="line"><span>Deposit today</span><span>$${deposit}</span></div>`;
+    document.getElementById('modal').classList.add('open');
+  });
+  function closeModal() { document.getElementById('modal').classList.remove('open'); }
+  document.getElementById('modal').addEventListener('click', (e) => { if (e.target === document.getElementById('modal')) closeModal(); });
+  window.closeModal = closeModal;
+
+  document.querySelector('.hero-stage .play').addEventListener('click', () => {
+    alert('Demo only — this would open the Friday Showcase highlight video. In the live site, embed a real Vimeo/YouTube here.');
+  });
+  document.querySelectorAll('.gallery-tabs button').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.gallery-tabs button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
