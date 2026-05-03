@@ -3,6 +3,7 @@ import "./globals.css";
 import AnnouncementBar from "@/components/AnnouncementBar";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ScrollToTop from "@/components/ScrollToTop";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.wynwoodschoolofmusic.com"),
@@ -55,6 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* <link rel="stylesheet" href="https://use.typekit.net/KIT_ID.css" /> */}
       </head>
       <body className="bg-wsm-dark text-white font-body min-h-screen flex flex-col">
+        <ScrollToTop />
         <AnnouncementBar />
         <Header />
         <main className="flex-1">{children}</main>
