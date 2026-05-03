@@ -2,7 +2,7 @@ import Image from "next/image";
 import Button from "@/components/Button";
 
 export const metadata = {
-  title: "Programs & Pricing | Wynwood School of Music",
+  title: "Programs & Pricing",
   description:
     "Explore private lessons and band programs at the Wynwood School of Music. Led by professional musicians in Miami's Wynwood Art District.",
 };

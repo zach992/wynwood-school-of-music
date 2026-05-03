@@ -2,7 +2,7 @@ import Image from "next/image";
 import RepairForm from "@/components/RepairForm";
 
 export const metadata = {
-  title: "Repair | Wynwood School of Music",
+  title: "Repair",
   description:
     "Guitar, bass, and amplifier repair services at the Wynwood School of Music in Miami. Quick turnaround, reasonable prices, and expert service.",
 };

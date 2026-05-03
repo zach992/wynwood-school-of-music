@@ -2,7 +2,7 @@ import Image from "next/image";
 import Button from "@/components/Button";
 
 export const metadata = {
-  title: "Recitals | Wynwood School of Music",
+  title: "Recitals",
   description:
     "Upcoming recitals and showcases at the Wynwood School of Music. Get tickets for our Spring 2026 events.",
 };

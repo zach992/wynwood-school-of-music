@@ -11,7 +11,7 @@ const recipientImages = [
 ];
 
 export const metadata = {
-  title: "Friends of WSM | Wynwood School of Music",
+  title: "Friends of WSM",
   description:
     "Friends of the Wynwood School of Music breaks down financial barriers so young musicians can pursue their passion as a pathway to college and career.",
 };

@@ -2,7 +2,7 @@ import Image from "next/image";
 import ContactForm from "@/components/ContactForm";
 
 export const metadata = {
-  title: "Contact Us | Wynwood School of Music",
+  title: "Contact Us",
   description:
     "Sign up for private music lessons or band programs at the Wynwood School of Music in Miami. Contact us today to start your musical journey.",
 };

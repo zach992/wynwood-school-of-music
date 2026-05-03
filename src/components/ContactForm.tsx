@@ -132,7 +132,6 @@ export default function ContactForm() {
           required
           value={formData.dob}
           onChange={handleChange}
-          placeholder="mm/dd/yyyy"
           className={`${inputClass} max-w-[200px]`}
         />
       </div>

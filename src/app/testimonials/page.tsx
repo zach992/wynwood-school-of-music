@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 export const metadata = {
-  title: "Testimonials | Wynwood School of Music",
+  title: "Testimonials",
   description:
     "Hear from current students, alumni, and parents about their experiences at the Wynwood School of Music.",
 };

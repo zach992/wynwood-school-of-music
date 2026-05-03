@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Privacy Policy | Wynwood School of Music",
+  title: "Privacy Policy",
   description:
     "Privacy Policy for the Wynwood School of Music website. Learn how we collect, use, and protect your personal information.",
 };

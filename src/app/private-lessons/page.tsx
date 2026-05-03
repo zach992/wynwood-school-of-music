@@ -1,7 +1,8 @@
+import Image from "next/image";
 import Button from "@/components/Button";
 
 export const metadata = {
-  title: "Private Lessons | Wynwood School of Music",
+  title: "Private Lessons",
   description:
     "Private music lessons for all ages at the Wynwood School of Music. One-on-one instruction with professional musicians in Miami's Wynwood Art District.",
 };
@@ -38,8 +39,17 @@ export default function PrivateLessonsPage() {
       {/* Testimonial Quote Block */}
       <section className="bg-wsm-dark px-4 py-12 md:py-16">
         <div className="max-w-5xl mx-auto">
-          <div className="flex justify-end">
-            <div className="w-full md:w-3/5 bg-wsm-accent/85 p-8 md:p-12">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-0 md:gap-0 items-stretch">
+            <div className="md:col-span-5 relative aspect-[4/3] md:aspect-auto md:min-h-[360px]">
+              <Image
+                src="/images/private-lessons/sax.webp"
+                alt="Saxophonist performing at the Wynwood School of Music"
+                fill
+                sizes="(min-width: 768px) 42vw, 100vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="md:col-span-7 bg-wsm-accent/85 p-8 md:p-12 flex items-center">
               <p className="font-body text-white text-lg md:text-xl italic font-bold leading-relaxed">
                 &ldquo;Private lessons helped me reconnect with music in a way I
                 never had time for before. The progress has been real and

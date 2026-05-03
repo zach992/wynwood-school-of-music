@@ -2,7 +2,7 @@ import Image from "next/image";
 import Button from "@/components/Button";
 
 export const metadata = {
-  title: "Music Performance Camp | Wynwood School of Music",
+  title: "Music Performance Camp",
   description:
     "Join our annual Music Performance Camp for ages 8-14. A fully immersive experience where students step into the life of a performing musician.",
 };

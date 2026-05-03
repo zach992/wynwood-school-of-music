@@ -18,10 +18,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const bio = teamBios.find((b) => b.slug === slug);
-  if (!bio) return { title: "Not Found | Wynwood School of Music" };
+  if (!bio) return { title: "Not Found" };
   const description = bio.bioParagraphs[0]?.slice(0, 200) ?? "";
   return {
-    title: `${bio.name} | Wynwood School of Music`,
+    title: bio.name,
     description,
   };
 }

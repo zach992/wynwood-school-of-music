@@ -2,7 +2,7 @@ import Image from "next/image";
 import Button from "@/components/Button";
 
 export const metadata = {
-  title: "Our Bands | Wynwood School of Music",
+  title: "Our Bands",
   description:
     "Explore our band programs at Wynwood School of Music. Four levels from intro to advanced, designed so musicians at any stage can be part of a real band.",
 };
