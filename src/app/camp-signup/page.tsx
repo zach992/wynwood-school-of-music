@@ -1,20 +1,20 @@
 import Image from "next/image";
-import ContactForm from "@/components/ContactForm";
+import CampSignupForm from "@/components/CampSignupForm";
 
 export const metadata = {
-  title: "Contact Us",
+  title: "Save Your Spot! Sign Up for Summer Camp",
   description:
-    "Sign up for private music lessons or band programs at the Wynwood School of Music in Miami. Contact us today to start your musical journey.",
+    "Reserve your child's spot in the Wynwood School of Music Summer Performance Camp. Limited sessions available June through August.",
 };
 
-export default function ContactPage() {
+export default function CampSignupPage() {
   return (
     <>
       {/* Page Heading */}
       <section className="bg-wsm-dark px-4 pt-10 md:pt-14 pb-6">
         <div className="max-w-5xl mx-auto">
           <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl uppercase font-black text-white leading-tight">
-            Start Your Musical Journey Today
+            Save Your Spot! Sign Up for Summer Camp!
           </h1>
           <hr className="border-wsm-gray-dark mt-6" />
         </div>
@@ -25,27 +25,19 @@ export default function ContactPage() {
         <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10 lg:gap-14">
           {/* Left column — Intro + Form */}
           <div>
-            {/* Intro Text */}
             <div className="mb-8">
-              <p className="font-body text-wsm-gray text-sm leading-relaxed mb-4">
-                If you or your child is interested in signing up for a private
-                lesson or band program, please fill out the form below and our
-                team will contact you within 24 hours.
-              </p>
               <p className="font-body text-wsm-gray text-sm leading-relaxed">
-                Please note: Private lessons may be taken in-person or
-                virtually. Band rehearsals take place in-person here at the
-                school.
+                Please fill out the form below and someone from our team will
+                reach out to you to secure your child&rsquo;s spot in our
+                summer camp sessions!
               </p>
             </div>
 
-            {/* Contact Form */}
-            <ContactForm />
+            <CampSignupForm />
           </div>
 
           {/* Right column — Contact Info + Photos */}
           <div>
-            {/* Contact Info */}
             <div className="mb-8">
               <h2 className="font-heading text-2xl uppercase font-black text-white mb-6">
                 Contact Us
@@ -83,21 +75,21 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* Performance Photos */}
+            {/* Camp Photos */}
             <div className="space-y-4">
-              <div className="relative w-full aspect-[2/3] overflow-hidden">
+              <div className="relative w-full aspect-[4/3] overflow-hidden">
                 <Image
-                  src="/images/contact/performance-1.webp"
-                  alt="Adult music lessons at Wynwood School of Music"
+                  src="/images/camp/camp-hero.jpg"
+                  alt="Wynwood School of Music summer camp performance"
                   fill
                   className="object-cover"
                   sizes="(min-width: 1024px) 320px, 100vw"
                 />
               </div>
-              <div className="relative w-full aspect-[2/3] overflow-hidden">
+              <div className="relative w-full aspect-[4/3] overflow-hidden">
                 <Image
-                  src="/images/contact/performance-2.webp"
-                  alt="Youth music lessons at Wynwood School of Music"
+                  src="/images/camp/camp-faq-3.webp"
+                  alt="Campers at Wynwood School of Music summer camp"
                   fill
                   className="object-cover"
                   sizes="(min-width: 1024px) 320px, 100vw"

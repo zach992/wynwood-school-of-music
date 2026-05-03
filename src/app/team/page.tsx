@@ -34,7 +34,7 @@ export default function TeamPage() {
       {/* Page Heading */}
       <section className="bg-wsm-dark px-4 pt-12 pb-4">
         <div className="max-w-5xl mx-auto">
-          <h1 className="font-heading text-5xl md:text-6xl uppercase font-bold text-white">
+          <h1 className="font-heading text-5xl md:text-6xl uppercase font-black text-white">
             Team
           </h1>
           <hr className="border-wsm-gray-dark mt-6" />
@@ -44,7 +44,7 @@ export default function TeamPage() {
       {/* Subheading */}
       <section className="bg-wsm-dark px-4 py-8">
         <div className="max-w-5xl mx-auto">
-          <h2 className="font-heading text-xl md:text-2xl uppercase font-bold text-white leading-snug">
+          <h2 className="font-heading text-xl md:text-2xl uppercase font-black text-white leading-snug">
             With a Combined 30+ Years of Educational Experience, Zach and Sammy
             Have Dedicated Their Lives to Building Miami&apos;s Music Community
           </h2>
@@ -80,7 +80,7 @@ export default function TeamPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
             {/* Zach */}
             <div>
-              <h3 className="font-heading text-xl md:text-2xl uppercase font-bold text-white mb-6">
+              <h3 className="font-heading text-xl md:text-2xl uppercase font-black text-white mb-6">
                 Zach Larmer, Founder
               </h3>
               <p className="font-body text-wsm-gray text-base leading-relaxed mb-4">
@@ -102,7 +102,7 @@ export default function TeamPage() {
 
             {/* Sammy */}
             <div>
-              <h3 className="font-heading text-xl md:text-2xl uppercase font-bold text-white mb-6">
+              <h3 className="font-heading text-xl md:text-2xl uppercase font-black text-white mb-6">
                 Sammy Gonzalez Zeira, Founder
               </h3>
               <p className="font-body text-wsm-gray text-base leading-relaxed mb-4">
@@ -141,7 +141,7 @@ export default function TeamPage() {
       {/* Instructors Section */}
       <section className="bg-wsm-dark px-4 py-12 md:py-16">
         <div className="max-w-5xl mx-auto">
-          <h2 className="font-heading text-4xl md:text-5xl uppercase font-bold text-white mb-12">
+          <h2 className="font-heading text-4xl md:text-5xl uppercase font-black text-white mb-12">
             Instructors
           </h2>
 

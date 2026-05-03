@@ -1,5 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
+
+/*
+  Brand typography: Acumin Pro Condensed (Adobe Fonts).
+  The font is licensed via Adobe Fonts — to load it, create a web project at
+  https://fonts.adobe.com containing "Acumin Pro Condensed" and paste the
+  generated <link> tag into src/app/layout.tsx (placeholder is already there).
+  Until then, the stack falls back to Barlow Condensed (close shape) and
+  Helvetica per the brand's e-signature spec.
+*/
 
 @theme inline {
   --color-wsm-dark: #000000;
@@ -10,8 +19,8 @@
   --color-wsm-white: #ffffff;
   --color-wsm-gray: #cccccc;
   --color-wsm-gray-dark: #888888;
-  --font-heading: "Barlow Condensed", sans-serif;
-  --font-body: "Barlow Condensed", sans-serif;
+  --font-heading: "acumin-pro-condensed", "Barlow Condensed", "Helvetica Neue", Helvetica, sans-serif;
+  --font-body: "acumin-pro-condensed", "Barlow Condensed", "Helvetica Neue", Helvetica, sans-serif;
 }
 
 html {
@@ -21,19 +30,23 @@ html {
 body {
   background-color: #000000;
   color: #ffffff;
-  font-size: 1.2rem;
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 h1 {
   font-size: 3.75rem;
-  font-weight: 800;
-  text-transform: uppercase;
 }
 
 h3 {
   font-size: 1.625rem;
-  font-weight: 800;
-  text-transform: uppercase;
 }
 
 a, button {

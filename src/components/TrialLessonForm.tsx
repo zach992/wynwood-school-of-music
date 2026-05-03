@@ -4,70 +4,63 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { HoneypotField, useFormGuard } from "./FormGuard";
 
-const subjects = [
-  "Acoustic Guitar",
-  "Cello",
+const instruments = [
+  "Guitar",
+  "Bass",
   "Drums",
-  "Electric Bass",
-  "Electric Guitar",
   "Keyboard",
-  "Music Production",
-  "Music Theory",
-  "Musical Theater (Voice)",
-  "Saxophone",
-  "Songwriting",
-  "Spoken Word / Poetry",
-  "Trumpet",
-  "Ukulele",
-  "Viola",
-  "Violin",
   "Voice",
+  "Horns (Saxophone, Trumpet)",
+  "Strings (Violin, Viola, Cello)",
+  "Music Production",
 ];
 
-export default function ContactForm() {
+const experienceLevels = [
+  "Never Played",
+  "Some Experience",
+  "Currently Taking Lessons",
+];
+
+export default function TrialLessonForm() {
   const router = useRouter();
   const guard = useFormGuard();
   const [formData, setFormData] = useState({
     studentFirstName: "",
     studentLastName: "",
     dob: "",
-    lessonType: "",
-    subjects: [] as string[],
+    instrument: "",
     experience: "",
     parentFirstName: "",
     parentLastName: "",
-    parentPhone: "",
     parentEmail: "",
+    parentPhone: "",
     hearAboutUs: "",
+    notes: "",
   });
+
   function handleChange(
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   }
 
-  function handleSubjectToggle(subject: string) {
-    setFormData((prev) => ({
-      ...prev,
-      subjects: prev.subjects.includes(subject)
-        ? prev.subjects.filter((s) => s !== subject)
-        : [...prev.subjects, subject],
-    }));
-  }
-
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (guard.isLikelyBot()) return;
-    console.log("Contact form submitted:", { ...formData, ...guard.payload() });
-    router.push("/thank-you");
+    console.log("Trial lesson form submitted:", { ...formData, ...guard.payload() });
+    router.push("/your-trial");
   }
 
   const inputClass =
     "w-full bg-white border border-gray-300 text-wsm-dark font-body text-sm py-2 px-3 focus:outline-none focus:border-wsm-accent transition-colors";
   const labelClass = "block font-body text-white text-sm font-semibold mb-1";
   const requiredBadge = (
-    <span className="text-wsm-gray-dark text-xs font-normal ml-1">(required)</span>
+    <span className="text-wsm-gray-dark text-xs font-normal ml-1">
+      (required)
+    </span>
   );
 
   return (
@@ -108,103 +101,66 @@ export default function ContactForm() {
       {/* Date of Birth */}
       <div>
         <label className={labelClass}>
-          Student&apos;s Date of Birth {requiredBadge}
+          Student Date of Birth {requiredBadge}
         </label>
-        <p className="font-body text-wsm-gray-dark text-xs mb-2">
-          Students under 6 years of age at the discretion of our teachers.
-          <br />
-          No students under 4 years of age.
-        </p>
         <input
           type="date"
           name="dob"
           required
           value={formData.dob}
           onChange={handleChange}
-          className={`${inputClass} max-w-[200px]`}
+          className={`${inputClass} max-w-[200px] mt-2`}
         />
       </div>
 
-      {/* Lesson Type */}
+      {/* Instrument */}
       <div>
-        <p className={labelClass}>
-          Private lessons or a band program? {requiredBadge}
-        </p>
-        <p className="font-body text-wsm-gray-dark text-xs mb-3">
-          Band programs require enrollment in private lessons.
-        </p>
-        <div className="space-y-2">
-          <label className="flex items-center gap-3 cursor-pointer group">
-            <input
-              type="radio"
-              name="lessonType"
-              value="Private Lessons"
-              required
-              checked={formData.lessonType === "Private Lessons"}
-              onChange={handleChange}
-              className="accent-wsm-accent"
-            />
-            <span className="font-body text-wsm-gray text-sm group-hover:text-white transition-colors">
-              Private Lessons
-            </span>
-          </label>
-          <label className="flex items-center gap-3 cursor-pointer group">
-            <input
-              type="radio"
-              name="lessonType"
-              value="Band and Private Lesson"
-              checked={formData.lessonType === "Band and Private Lesson"}
-              onChange={handleChange}
-              className="accent-wsm-accent"
-            />
-            <span className="font-body text-wsm-gray text-sm group-hover:text-white transition-colors">
-              Band and Private Lesson
-            </span>
-          </label>
-        </div>
-      </div>
-
-      {/* Subjects */}
-      <div>
-        <p className={labelClass}>Subject(s) {requiredBadge}</p>
-        <div className="mt-2 space-y-2">
-          {subjects.map((subject) => (
-            <label
-              key={subject}
-              className="flex items-center gap-3 cursor-pointer group"
-            >
-              <input
-                type="checkbox"
-                checked={formData.subjects.includes(subject)}
-                onChange={() => handleSubjectToggle(subject)}
-                className="accent-wsm-accent"
-              />
-              <span className="font-body text-wsm-gray text-sm group-hover:text-white transition-colors">
-                {subject}
-              </span>
-            </label>
+        <label className={labelClass}>Instrument {requiredBadge}</label>
+        <select
+          name="instrument"
+          required
+          value={formData.instrument}
+          onChange={handleChange}
+          className={`${inputClass} mt-2`}
+        >
+          <option value="">Select an Instrument from the Dropdown</option>
+          {instruments.map((inst) => (
+            <option key={inst} value={inst}>
+              {inst}
+            </option>
           ))}
-        </div>
+        </select>
       </div>
 
       {/* Experience */}
       <div>
         <label className={labelClass}>
-          How many years of experience do you or your child have? {requiredBadge}
+          Experience Level {requiredBadge}
         </label>
-        <input
-          type="text"
+        <select
           name="experience"
           required
           value={formData.experience}
           onChange={handleChange}
           className={`${inputClass} mt-2`}
-        />
+        >
+          <option value="">Select an option</option>
+          {experienceLevels.map((level) => (
+            <option key={level} value={level}>
+              {level}
+            </option>
+          ))}
+        </select>
       </div>
 
-      {/* Parent / Guardian Name */}
+      {/* Parent Name */}
       <div>
-        <p className={labelClass}>Parent / Guardian Name</p>
+        <p className={labelClass}>
+          Parent / Guardian Name
+          <span className="block text-wsm-gray-dark text-xs font-normal mt-1">
+            If Student is Under 18 Years of Age
+          </span>
+        </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
           <div>
             <label className="block font-body text-wsm-gray text-xs mb-1">
@@ -213,6 +169,7 @@ export default function ContactForm() {
             <input
               type="text"
               name="parentFirstName"
+              required
               value={formData.parentFirstName}
               onChange={handleChange}
               className={inputClass}
@@ -225,6 +182,7 @@ export default function ContactForm() {
             <input
               type="text"
               name="parentLastName"
+              required
               value={formData.parentLastName}
               onChange={handleChange}
               className={inputClass}
@@ -233,25 +191,10 @@ export default function ContactForm() {
         </div>
       </div>
 
-      {/* Parent Phone */}
-      <div>
-        <label className={labelClass}>
-          Parent / Guardian Phone Number {requiredBadge}
-        </label>
-        <input
-          type="tel"
-          name="parentPhone"
-          required
-          value={formData.parentPhone}
-          onChange={handleChange}
-          className={`${inputClass} mt-2`}
-        />
-      </div>
-
       {/* Parent Email */}
       <div>
         <label className={labelClass}>
-          Parent / Guardian Email {requiredBadge}
+          Parent/Guardian Email {requiredBadge}
         </label>
         <input
           type="email"
@@ -263,33 +206,61 @@ export default function ContactForm() {
         />
       </div>
 
+      {/* Parent Phone */}
+      <div>
+        <label className={labelClass}>
+          Parent/Guardian Phone {requiredBadge}
+        </label>
+        <input
+          type="tel"
+          name="parentPhone"
+          required
+          value={formData.parentPhone}
+          onChange={handleChange}
+          className={`${inputClass} mt-2`}
+        />
+      </div>
+
       {/* How did you hear about us */}
       <div>
         <label className={labelClass}>
-          How did you hear about us? {requiredBadge}
+          How Did You Hear About Us? {requiredBadge}
         </label>
-        <p className="font-body text-wsm-gray-dark text-xs mb-2">
-          Referred by a friend, Facebook, Instagram, Google, Print Advertising, Other
-        </p>
         <input
           type="text"
           name="hearAboutUs"
           required
           value={formData.hearAboutUs}
           onChange={handleChange}
-          className={inputClass}
+          className={`${inputClass} mt-2`}
+        />
+      </div>
+
+      {/* Anything else */}
+      <div>
+        <label className={labelClass}>Anything Else?</label>
+        <p className="font-body text-wsm-gray-dark text-xs mb-2">
+          Let us know any additional information that can help us ensure the
+          best trial experience for you!
+        </p>
+        <textarea
+          name="notes"
+          rows={3}
+          value={formData.notes}
+          onChange={handleChange}
+          className={`${inputClass} resize-y`}
         />
       </div>
 
       <HoneypotField value={guard.honeypot} onChange={guard.setHoneypot} />
 
       {/* Submit */}
-      <div className="pt-4 text-center">
+      <div className="pt-4">
         <button
           type="submit"
           className="inline-block rounded-full bg-wsm-accent text-white px-10 py-3 text-sm font-semibold uppercase tracking-wider hover:bg-wsm-accent-hover transition-colors"
         >
-          Sign Up
+          Claim Your Free Trial Lesson
         </button>
       </div>
     </form>

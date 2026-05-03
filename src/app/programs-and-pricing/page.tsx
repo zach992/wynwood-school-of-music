@@ -13,7 +13,7 @@ export default function ProgramsAndPricingPage() {
       {/* Page Heading */}
       <section className="bg-wsm-dark px-4 pt-12 pb-4">
         <div className="max-w-5xl mx-auto">
-          <h1 className="font-heading text-5xl md:text-6xl uppercase font-bold text-white">
+          <h1 className="font-heading text-5xl md:text-6xl uppercase font-black text-white">
             Programs & Pricing
           </h1>
           <hr className="border-wsm-gray-dark mt-6" />
@@ -23,7 +23,7 @@ export default function ProgramsAndPricingPage() {
       {/* Introduction */}
       <section className="bg-wsm-dark px-4 py-12 md:py-16">
         <div className="max-w-5xl mx-auto">
-          <h2 className="font-heading text-2xl md:text-3xl uppercase font-bold text-white mb-6">
+          <h2 className="font-heading text-2xl md:text-3xl uppercase font-black text-white mb-6">
             Learn From Professional Musicians
           </h2>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-6">
@@ -82,7 +82,7 @@ export default function ProgramsAndPricingPage() {
       {/* Program Pillars */}
       <section className="bg-wsm-dark px-4 py-12 md:py-16">
         <div className="max-w-5xl mx-auto">
-          <h2 className="font-heading text-2xl md:text-3xl uppercase font-bold text-white mb-8">
+          <h2 className="font-heading text-2xl md:text-3xl uppercase font-black text-white mb-8">
             Program Pillars
           </h2>
 
@@ -142,7 +142,7 @@ export default function ProgramsAndPricingPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-8">
             {/* Private Lessons Column */}
             <div className="text-center">
-              <h3 className="font-heading text-2xl md:text-3xl uppercase font-bold text-white mb-8">
+              <h3 className="font-heading text-2xl md:text-3xl uppercase font-black text-white mb-8">
                 Private Lessons
               </h3>
 
@@ -174,7 +174,7 @@ export default function ProgramsAndPricingPage() {
 
             {/* Band Programs Column */}
             <div className="text-center">
-              <h3 className="font-heading text-2xl md:text-3xl uppercase font-bold text-white mb-8">
+              <h3 className="font-heading text-2xl md:text-3xl uppercase font-black text-white mb-8">
                 Band Programs
               </h3>
 

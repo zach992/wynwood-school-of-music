@@ -21,7 +21,7 @@ export default function RepairPage() {
         />
         <div className="absolute inset-0 bg-black/40 flex items-end pb-8 md:pb-12 px-4">
           <div className="max-w-5xl mx-auto w-full">
-            <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl uppercase font-bold text-white drop-shadow-lg">
+            <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl uppercase font-black text-white drop-shadow-lg">
               Repair Shop Is Open!
             </h1>
           </div>
@@ -65,7 +65,7 @@ export default function RepairPage() {
           {/* Left - Address & Phone */}
           <div className="space-y-6">
             <div>
-              <h3 className="font-heading text-lg uppercase font-bold text-white mb-2">
+              <h3 className="font-heading text-lg uppercase font-black text-white mb-2">
                 Address
               </h3>
               <p className="font-body text-wsm-gray text-sm leading-relaxed">
@@ -75,7 +75,7 @@ export default function RepairPage() {
               </p>
             </div>
             <div>
-              <h3 className="font-heading text-lg uppercase font-bold text-white mb-2">
+              <h3 className="font-heading text-lg uppercase font-black text-white mb-2">
                 Phone Number
               </h3>
               <p className="font-body text-wsm-gray text-sm">305-359-5515</p>
@@ -85,7 +85,7 @@ export default function RepairPage() {
           {/* Right - Hours & Turnaround */}
           <div className="space-y-6">
             <div>
-              <h3 className="font-heading text-lg uppercase font-bold text-white mb-2">
+              <h3 className="font-heading text-lg uppercase font-black text-white mb-2">
                 Workshop Hours
               </h3>
               <p className="font-body text-wsm-gray text-sm leading-relaxed">
@@ -99,7 +99,7 @@ export default function RepairPage() {
               </p>
             </div>
             <div>
-              <h3 className="font-heading text-lg uppercase font-bold text-white mb-2">
+              <h3 className="font-heading text-lg uppercase font-black text-white mb-2">
                 Expected Turn Around Time
               </h3>
               <p className="font-body text-wsm-gray text-sm leading-relaxed">
@@ -135,7 +135,7 @@ export default function RepairPage() {
       {/* Repairs & Services Pricing */}
       <section className="bg-wsm-dark px-4 py-12 md:py-16">
         <div className="max-w-5xl mx-auto">
-          <h2 className="font-heading text-3xl md:text-4xl uppercase font-bold text-white text-center mb-4">
+          <h2 className="font-heading text-3xl md:text-4xl uppercase font-black text-white text-center mb-4">
             Repairs &amp; Services
           </h2>
           <p className="font-body text-wsm-gray text-sm text-center mb-10">
@@ -148,7 +148,7 @@ export default function RepairPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12">
             {/* Left Column - Restringing/Setup */}
             <div>
-              <h3 className="font-heading text-lg uppercase font-bold text-white mb-6">
+              <h3 className="font-heading text-lg uppercase font-black text-white mb-6">
                 Guitar &amp; Bass Restringing/Setup:
               </h3>
               <div className="space-y-6">
@@ -193,7 +193,7 @@ export default function RepairPage() {
 
             {/* Right Column - Additional Services */}
             <div>
-              <h3 className="font-heading text-lg uppercase font-bold text-white mb-6">
+              <h3 className="font-heading text-lg uppercase font-black text-white mb-6">
                 Guitar &amp; Bass Addt&apos;l Services/Repairs:
               </h3>
               <ul className="space-y-2 font-body text-sm">
@@ -350,10 +350,10 @@ export default function RepairPage() {
       {/* Contact Form */}
       <section className="bg-wsm-darker px-4 py-12 md:py-16">
         <div className="max-w-3xl mx-auto">
-          <h2 className="font-heading text-2xl md:text-3xl uppercase font-bold text-white text-center mb-2">
+          <h2 className="font-heading text-2xl md:text-3xl uppercase font-black text-white text-center mb-2">
             Need a Repair or Service?
           </h2>
-          <h2 className="font-heading text-2xl md:text-3xl uppercase font-bold text-white text-center mb-10">
+          <h2 className="font-heading text-2xl md:text-3xl uppercase font-black text-white text-center mb-10">
             Contact Us Today!
           </h2>
           <RepairForm />

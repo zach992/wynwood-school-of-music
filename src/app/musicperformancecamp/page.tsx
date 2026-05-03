@@ -76,7 +76,7 @@ export default function MusicPerformanceCampPage() {
       {/* Page Heading */}
       <section className="bg-wsm-dark px-4 pt-12 pb-4">
         <div className="max-w-5xl mx-auto">
-          <h1 className="font-heading text-5xl md:text-6xl uppercase font-bold text-white">
+          <h1 className="font-heading text-5xl md:text-6xl uppercase font-black text-white">
             Your Camp Experience
           </h1>
           <hr className="border-wsm-gray-dark mt-6" />
@@ -207,7 +207,7 @@ export default function MusicPerformanceCampPage() {
       {/* FAQ Section */}
       <section className="bg-wsm-dark px-4 py-12 md:py-16">
         <div className="max-w-5xl mx-auto">
-          <h2 className="font-heading text-4xl md:text-5xl uppercase font-bold text-white mb-4">
+          <h2 className="font-heading text-4xl md:text-5xl uppercase font-black text-white mb-4">
             Answers To All Your Questions
           </h2>
           <hr className="border-wsm-gray-dark mb-10" />

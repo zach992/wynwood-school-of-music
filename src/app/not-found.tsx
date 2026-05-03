@@ -11,7 +11,7 @@ export default function NotFound() {
         <p className="font-heading text-wsm-accent text-sm md:text-base uppercase tracking-[0.4em] mb-6">
           404 — Page Not Found
         </p>
-        <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl uppercase font-bold text-white leading-tight mb-8">
+        <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl uppercase font-black text-white leading-tight mb-8">
           Lost a Note Somewhere?
         </h1>
         <p className="font-body text-wsm-gray text-base md:text-lg leading-relaxed mb-10 max-w-lg mx-auto">

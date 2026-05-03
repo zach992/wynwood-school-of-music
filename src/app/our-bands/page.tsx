@@ -49,7 +49,7 @@ export default function OurBandsPage() {
       {/* Page Heading */}
       <section className="bg-wsm-dark px-4 pt-12 pb-4">
         <div className="max-w-5xl mx-auto">
-          <h1 className="font-heading text-5xl md:text-6xl uppercase font-bold text-white">
+          <h1 className="font-heading text-5xl md:text-6xl uppercase font-black text-white">
             Band Programs
           </h1>
           <hr className="border-wsm-gray-dark mt-6" />
@@ -61,7 +61,7 @@ export default function OurBandsPage() {
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
             <div>
-              <h2 className="font-heading text-3xl md:text-4xl uppercase font-bold text-white mb-6 leading-snug">
+              <h2 className="font-heading text-3xl md:text-4xl uppercase font-black text-white mb-6 leading-snug">
                 Play Together. Grow Together. Perform Together.
               </h2>
               <p className="font-body text-wsm-gray text-base leading-relaxed mb-8">
@@ -78,7 +78,7 @@ export default function OurBandsPage() {
             </div>
             <div className="relative w-full aspect-[4/3]">
               <Image
-                src="/images/bands/intro.jpg"
+                src="/images/bands/intro-v2.jpg"
                 alt="Students performing live at Wynwood School of Music"
                 fill
                 className="object-cover"
@@ -102,7 +102,7 @@ export default function OurBandsPage() {
           </p>
           <div className="flex items-center gap-5">
             <SectionMark />
-            <h2 className="font-heading text-4xl md:text-5xl uppercase font-bold text-white tracking-tight">
+            <h2 className="font-heading text-4xl md:text-5xl uppercase font-black text-white tracking-tight">
               Band Pathways
             </h2>
           </div>
@@ -153,7 +153,7 @@ export default function OurBandsPage() {
                   <p className="font-body text-wsm-accent text-xs md:text-sm font-semibold uppercase tracking-[0.25em] mb-3">
                     {band.level}
                   </p>
-                  <h3 className="font-heading text-3xl md:text-4xl uppercase font-bold text-white mb-5 leading-tight">
+                  <h3 className="font-heading text-3xl md:text-4xl uppercase font-black text-white mb-5 leading-tight">
                     {band.name}
                   </h3>
                   <p className="font-body text-wsm-gray text-base md:text-lg leading-relaxed">
@@ -172,7 +172,7 @@ export default function OurBandsPage() {
           <div className="flex justify-center mb-6">
             <SectionMark size={48} />
           </div>
-          <h2 className="font-heading text-4xl md:text-5xl uppercase font-bold text-white mb-4 tracking-tight">
+          <h2 className="font-heading text-4xl md:text-5xl uppercase font-black text-white mb-4 tracking-tight">
             Ready to Join a Band?
           </h2>
           <p className="font-body text-wsm-gray text-base md:text-lg uppercase tracking-wider mb-10">

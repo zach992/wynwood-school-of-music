@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { HoneypotField, useFormGuard } from "./FormGuard";
 
 const services = [
   "Guitar/Bass Restringing - $30 (+$5 Non-Standard Tuning System)",
@@ -27,6 +28,7 @@ const services = [
 ];
 
 export default function RepairForm() {
+  const guard = useFormGuard();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -51,14 +53,15 @@ export default function RepairForm() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    console.log("Repair form submitted:", formData);
+    if (guard.isLikelyBot()) return;
+    console.log("Repair form submitted:", { ...formData, ...guard.payload() });
     setSubmitted(true);
   }
 
   if (submitted) {
     return (
       <div className="text-center py-12">
-        <h3 className="font-heading text-2xl uppercase font-bold text-white mb-4">
+        <h3 className="font-heading text-2xl uppercase font-black text-white mb-4">
           Thank You!
         </h3>
         <p className="font-body text-wsm-gray">
@@ -143,6 +146,8 @@ export default function RepairForm() {
           ))}
         </div>
       </div>
+
+      <HoneypotField value={guard.honeypot} onChange={guard.setHoneypot} />
 
       {/* Submit */}
       <div className="pt-4">

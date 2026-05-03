@@ -45,6 +45,15 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        {/*
+          Adobe Fonts kit for Acumin Pro Condensed (brand primary typeface).
+          Replace KIT_ID below with your kit ID from https://fonts.adobe.com after
+          creating a web project containing "Acumin Pro Condensed" in weights
+          400 (Regular) and 900 (Ultra Black). Then uncomment.
+        */}
+        {/* <link rel="stylesheet" href="https://use.typekit.net/KIT_ID.css" /> */}
+      </head>
       <body className="bg-wsm-dark text-white font-body min-h-screen flex flex-col">
         <AnnouncementBar />
         <Header />

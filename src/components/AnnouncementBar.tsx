@@ -11,7 +11,7 @@ export default function AnnouncementBar() {
 
   return (
     <div className="bg-wsm-accent text-white text-center text-sm py-2 px-4 relative">
-      <Link href={siteData.announcement.link} className="hover:underline font-semibold tracking-wide">
+      <Link href={siteData.announcement.link} className="hover:underline font-black uppercase tracking-wider">
         {siteData.announcement.text}
       </Link>
       <button

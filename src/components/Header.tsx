@@ -27,14 +27,14 @@ export default function Header() {
           : "bg-transparent border-b border-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20">
+      <div className="max-w-5xl mx-auto px-4 flex items-center justify-between h-20">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0">
           <Image
-            src="/images/logo.png"
+            src="/images/logo-v3.png"
             alt="Wynwood School of Music"
             width={180}
-            height={60}
+            height={70}
             className="h-14 w-auto"
             priority
           />

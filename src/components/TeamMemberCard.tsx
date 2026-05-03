@@ -15,7 +15,7 @@ export default function TeamMemberCard({ name, role, imageSrc, buttonLabel, butt
       <div className="w-48 h-48 rounded-full overflow-hidden mb-4 bg-wsm-darker">
         <Image src={imageSrc} alt={name} width={192} height={192} className="object-cover w-full h-full" />
       </div>
-      <h4 className="font-heading text-lg font-bold uppercase">{name}</h4>
+      <h4 className="font-heading text-lg font-black uppercase">{name}</h4>
       <p className="text-sm text-wsm-gray mt-1">{role}</p>
       {buttonLabel && buttonHref && (
         <div className="mt-3">

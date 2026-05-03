@@ -174,7 +174,7 @@ function ProfileCard({
         />
       </div>
       <div className="flex-1 text-center sm:text-left">
-        <h3 className="font-heading text-xl uppercase font-bold text-white mb-3">
+        <h3 className="font-heading text-xl uppercase font-black text-white mb-3">
           {name}
         </h3>
         <p className="font-body text-wsm-gray text-sm leading-relaxed">
@@ -191,7 +191,7 @@ export default function TestimonialsPage() {
       {/* Page Heading */}
       <section className="bg-wsm-dark px-4 pt-12 pb-4">
         <div className="max-w-5xl mx-auto">
-          <h1 className="font-heading text-5xl md:text-6xl uppercase font-bold text-white">
+          <h1 className="font-heading text-5xl md:text-6xl uppercase font-black text-white">
             Our Success
           </h1>
           <p className="font-body text-wsm-gray text-base leading-relaxed mt-6">
@@ -207,7 +207,7 @@ export default function TestimonialsPage() {
       {/* Current Students Section */}
       <section className="bg-wsm-dark px-4 py-12 md:py-16">
         <div className="max-w-5xl mx-auto">
-          <h2 className="font-heading text-3xl md:text-4xl uppercase font-bold text-white mb-4">
+          <h2 className="font-heading text-3xl md:text-4xl uppercase font-black text-white mb-4">
             Current Students
           </h2>
           <div className="divide-y divide-wsm-gray-dark/40">
@@ -230,7 +230,7 @@ export default function TestimonialsPage() {
       {/* Alumni Section */}
       <section className="bg-wsm-dark px-4 py-12 md:py-16">
         <div className="max-w-5xl mx-auto">
-          <h2 className="font-heading text-3xl md:text-4xl uppercase font-bold text-white mb-4">
+          <h2 className="font-heading text-3xl md:text-4xl uppercase font-black text-white mb-4">
             Alumni
           </h2>
           <div className="divide-y divide-wsm-gray-dark/40">
@@ -253,14 +253,14 @@ export default function TestimonialsPage() {
       {/* Text Testimonials Section */}
       <section className="bg-wsm-dark px-4 py-12 md:py-16">
         <div className="max-w-5xl mx-auto">
-          <h2 className="font-heading text-3xl md:text-4xl uppercase font-bold text-white mb-8">
+          <h2 className="font-heading text-3xl md:text-4xl uppercase font-black text-white mb-8">
             Parent Testimonials
           </h2>
           <div className="divide-y divide-wsm-gray-dark/40">
             {testimonials.map((t) => (
               <div key={t.name} className="py-8">
                 <div className="flex items-baseline gap-3 mb-3">
-                  <h3 className="font-heading text-lg uppercase font-bold text-white">
+                  <h3 className="font-heading text-lg uppercase font-black text-white">
                     {t.name}
                   </h3>
                   <span className="font-body text-wsm-accent text-sm">

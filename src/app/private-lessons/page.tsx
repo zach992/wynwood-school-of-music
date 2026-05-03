@@ -13,7 +13,7 @@ export default function PrivateLessonsPage() {
       {/* Page Heading */}
       <section className="bg-wsm-dark px-4 pt-12 pb-4">
         <div className="max-w-5xl mx-auto">
-          <h1 className="font-heading text-5xl md:text-6xl uppercase font-bold text-white">
+          <h1 className="font-heading text-5xl md:text-6xl uppercase font-black text-white">
             Private Lessons
           </h1>
           <hr className="border-wsm-gray-dark mt-6" />
@@ -23,7 +23,7 @@ export default function PrivateLessonsPage() {
       {/* Introduction */}
       <section className="bg-wsm-dark px-4 py-12 md:py-16">
         <div className="max-w-5xl mx-auto">
-          <h2 className="font-heading text-2xl md:text-3xl uppercase font-bold text-white mb-6">
+          <h2 className="font-heading text-2xl md:text-3xl uppercase font-black text-white mb-6">
             Learn. Grow. Perform.
           </h2>
           <p className="font-body text-wsm-gray text-base leading-relaxed">
@@ -72,7 +72,7 @@ export default function PrivateLessonsPage() {
       {/* Private Lesson Pillars */}
       <section className="bg-wsm-dark px-4 py-12 md:py-16">
         <div className="max-w-5xl mx-auto">
-          <h2 className="font-heading text-2xl md:text-3xl uppercase font-bold text-white mb-8">
+          <h2 className="font-heading text-2xl md:text-3xl uppercase font-black text-white mb-8">
             Private Lesson Pillars
           </h2>
 
@@ -128,7 +128,7 @@ export default function PrivateLessonsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
             {/* Heading + intro + pillar list, all wrapped inside the left column */}
             <div className="space-y-5">
-              <h2 className="font-heading text-2xl md:text-3xl uppercase font-bold text-white mb-2">
+              <h2 className="font-heading text-2xl md:text-3xl uppercase font-black text-white mb-2">
                 Measured Achievement in Private Lessons
               </h2>
               <p className="font-body text-wsm-gray text-base leading-relaxed">

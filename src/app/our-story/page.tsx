@@ -26,7 +26,7 @@ export default function OurStoryPage() {
       {/* Page Heading */}
       <section className="bg-wsm-dark px-4 pt-12 pb-4">
         <div className="max-w-5xl mx-auto">
-          <h1 className="font-heading text-5xl md:text-6xl uppercase font-bold text-white">
+          <h1 className="font-heading text-5xl md:text-6xl uppercase font-black text-white">
             Our Story
           </h1>
           <hr className="border-wsm-gray-dark mt-6" />
@@ -52,7 +52,7 @@ export default function OurStoryPage() {
 
             {/* Founders Text */}
             <div className="w-full md:w-[60%]">
-              <h2 className="font-heading text-2xl md:text-3xl uppercase font-bold text-white mb-6 leading-snug">
+              <h2 className="font-heading text-2xl md:text-3xl uppercase font-black text-white mb-6 leading-snug">
                 We Believe in the Power of Music Education
               </h2>
               <p className="font-body text-wsm-gray text-base leading-relaxed mb-6">
@@ -85,7 +85,7 @@ export default function OurStoryPage() {
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center gap-5 mb-6">
             <SectionMark />
-            <h2 className="font-heading text-4xl md:text-5xl uppercase font-bold text-white tracking-tight">
+            <h2 className="font-heading text-4xl md:text-5xl uppercase font-black text-white tracking-tight">
               Facility
             </h2>
           </div>
@@ -108,7 +108,7 @@ export default function OurStoryPage() {
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center gap-5 mb-6">
             <SectionMark />
-            <h2 className="font-heading text-4xl md:text-5xl uppercase font-bold text-white tracking-tight">
+            <h2 className="font-heading text-4xl md:text-5xl uppercase font-black text-white tracking-tight">
               Location
             </h2>
           </div>
@@ -139,7 +139,7 @@ export default function OurStoryPage() {
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center gap-5 mb-6">
             <SectionMark />
-            <h2 className="font-heading text-4xl md:text-5xl uppercase font-bold text-white tracking-tight">
+            <h2 className="font-heading text-4xl md:text-5xl uppercase font-black text-white tracking-tight">
               Parking
             </h2>
           </div>

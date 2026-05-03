@@ -87,7 +87,7 @@ export default function FriendsOfWSMPage() {
         />
         <div className="absolute inset-0 bg-black/50" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-          <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl uppercase font-bold text-white max-w-4xl leading-tight">
+          <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl uppercase font-black text-white max-w-4xl leading-tight">
             Friends of Wynwood School of Music
           </h1>
         </div>
@@ -108,7 +108,7 @@ export default function FriendsOfWSMPage() {
               </div>
             </div>
             <div className="w-full md:w-[55%]">
-              <h2 className="font-heading text-3xl md:text-4xl uppercase font-bold text-white mb-6">
+              <h2 className="font-heading text-3xl md:text-4xl uppercase font-black text-white mb-6">
                 Our Impact
               </h2>
               <p className="font-body text-wsm-gray text-base leading-relaxed mb-6">
@@ -149,7 +149,7 @@ export default function FriendsOfWSMPage() {
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col md:flex-row gap-10 md:gap-14 items-start">
             <div className="w-full md:w-[55%]">
-              <h2 className="font-heading text-3xl md:text-4xl uppercase font-bold text-white mb-6">
+              <h2 className="font-heading text-3xl md:text-4xl uppercase font-black text-white mb-6">
                 Mission
               </h2>
               <p className="font-body text-wsm-gray text-base leading-relaxed mb-6">
@@ -188,7 +188,7 @@ export default function FriendsOfWSMPage() {
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col md:flex-row gap-10 md:gap-14">
             <div className="w-full md:w-[55%]">
-              <h2 className="font-heading text-3xl md:text-4xl uppercase font-bold text-white mb-6">
+              <h2 className="font-heading text-3xl md:text-4xl uppercase font-black text-white mb-6">
                 History
               </h2>
               <p className="font-body text-wsm-gray text-base leading-relaxed mb-4">
@@ -237,7 +237,7 @@ export default function FriendsOfWSMPage() {
       {/* Current Scholarship Recipients */}
       <section className="bg-wsm-dark px-4 py-16 md:py-20">
         <div className="max-w-5xl mx-auto">
-          <h2 className="font-heading text-3xl md:text-4xl uppercase font-bold text-white mb-10 text-center">
+          <h2 className="font-heading text-3xl md:text-4xl uppercase font-black text-white mb-10 text-center">
             Current Scholarship Recipients
           </h2>
           <ImageCarousel images={recipientImages} aspectClass="aspect-[4/3]" visible={2} />
@@ -247,7 +247,7 @@ export default function FriendsOfWSMPage() {
       {/* Alumni Scholarship Recipients */}
       <section className="bg-wsm-dark px-4 py-16 md:py-20">
         <div className="max-w-5xl mx-auto">
-          <h2 className="font-heading text-3xl md:text-4xl uppercase font-bold text-white mb-10 text-center">
+          <h2 className="font-heading text-3xl md:text-4xl uppercase font-black text-white mb-10 text-center">
             Alumni Scholarship Recipients
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">

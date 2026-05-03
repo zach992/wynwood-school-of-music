@@ -18,7 +18,7 @@ function SocialIcon({ href, label, children }: { href: string; label: string; ch
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
-      className="w-10 h-10 bg-black rounded-full flex items-center justify-center text-white hover:bg-wsm-accent transition-colors"
+      className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-white hover:bg-wsm-accent transition-colors"
     >
       {children}
     </a>
@@ -27,13 +27,13 @@ function SocialIcon({ href, label, children }: { href: string; label: string; ch
 
 export default function Footer() {
   return (
-    <footer className="bg-white text-black">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <footer className="bg-wsm-dark text-white border-t border-white/10">
+      <div className="max-w-5xl mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {/* Free Trial */}
           <div>
             <h3 className="font-heading text-2xl uppercase mb-4">Free Trial Lesson</h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-wsm-gray text-sm mb-6">
               Your first lesson is on us, sign up and start today!
             </p>
             <Button href="/contact">Sign Up!</Button>
@@ -42,12 +42,12 @@ export default function Footer() {
           {/* Quick Links */}
           <div>
             <h3 className="font-heading text-2xl uppercase mb-4">Quick Links</h3>
-            <ul className="space-y-2 mb-6">
+            <ul className="space-y-2 mb-6 text-sm">
               {quickLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-gray-600 hover:text-wsm-accent transition-colors"
+                    className="text-wsm-gray hover:text-wsm-accent transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -85,7 +85,7 @@ export default function Footer() {
           {/* Contact */}
           <div>
             <h3 className="font-heading text-2xl uppercase mb-4">Contact Us</h3>
-            <div className="space-y-3 text-gray-600 text-sm">
+            <div className="space-y-3 text-wsm-gray text-sm">
               <p>
                 {siteData.address.street}<br />
                 {siteData.address.city}, {siteData.address.state} {siteData.address.zip}
@@ -101,16 +101,16 @@ export default function Footer() {
                 </a>
               </p>
               <div>
-                <p className="font-semibold text-black mb-1">Hours</p>
+                <p className="font-black uppercase tracking-wider text-white text-xs mb-1">Hours</p>
                 {siteData.hours.regular.map((h) => (
                   <p key={h.days}>{h.days}: {h.time}</p>
                 ))}
               </div>
               <div>
-                <p className="font-semibold text-black mb-1">Holiday Closures</p>
+                <p className="font-black uppercase tracking-wider text-white text-xs mb-1">Holiday Closures</p>
                 {Object.entries(siteData.hours.holidayClosures).map(([season, dates]) => (
                   <div key={season} className="mb-2">
-                    <p className="font-medium text-black">{season}</p>
+                    <p className="font-bold text-white">{season}</p>
                     {dates.map((d) => (
                       <p key={d}>{d}</p>
                     ))}
@@ -123,7 +123,7 @@ export default function Footer() {
       </div>
 
       {/* Copyright */}
-      <div className="border-t border-gray-200 py-6 text-center text-sm text-gray-500">
+      <div className="border-t border-white/10 py-6 text-center text-sm text-wsm-gray-dark">
         <p>&copy; {new Date().getFullYear()} {siteData.name}. All rights reserved.</p>
       </div>
     </footer>

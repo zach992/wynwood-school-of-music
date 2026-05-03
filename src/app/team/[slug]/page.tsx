@@ -66,7 +66,7 @@ export default async function BioPage({
       {/* Heading — left-aligned */}
       <section className="bg-wsm-dark px-4 pt-6 pb-4">
         <div className="max-w-5xl mx-auto">
-          <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl uppercase font-bold text-white leading-tight">
+          <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl uppercase font-black text-white leading-tight">
             {bio.name}
           </h1>
           {bio.role && (

@@ -10,7 +10,7 @@ export default function PrivacyPolicyPage() {
       {/* Page Heading */}
       <section className="bg-wsm-dark px-4 pt-12 pb-4">
         <div className="max-w-5xl mx-auto">
-          <h1 className="font-heading text-5xl md:text-6xl uppercase font-bold text-white">
+          <h1 className="font-heading text-5xl md:text-6xl uppercase font-black text-white">
             Privacy Policy
           </h1>
           <hr className="border-wsm-gray-dark mt-6" />
@@ -36,7 +36,7 @@ export default function PrivacyPolicyPage() {
             may differ from those in your home country.
           </p>
 
-          <h2 className="font-heading text-xl md:text-2xl uppercase font-bold text-white mb-4">
+          <h2 className="font-heading text-xl md:text-2xl uppercase font-black text-white mb-4">
             Information We Collect
           </h2>
 
@@ -58,7 +58,7 @@ export default function PrivacyPolicyPage() {
             session duration, browser type, and IP addresses.
           </p>
 
-          <h2 className="font-heading text-xl md:text-2xl uppercase font-bold text-white mb-4">
+          <h2 className="font-heading text-xl md:text-2xl uppercase font-black text-white mb-4">
             Cookies and Tracking
           </h2>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-4">
@@ -73,7 +73,7 @@ export default function PrivacyPolicyPage() {
             engagement metrics.
           </p>
 
-          <h2 className="font-heading text-xl md:text-2xl uppercase font-bold text-white mb-4">
+          <h2 className="font-heading text-xl md:text-2xl uppercase font-black text-white mb-4">
             Device Information
           </h2>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-8">
@@ -82,7 +82,7 @@ export default function PrivacyPolicyPage() {
             location services through your device settings.
           </p>
 
-          <h2 className="font-heading text-xl md:text-2xl uppercase font-bold text-white mb-4">
+          <h2 className="font-heading text-xl md:text-2xl uppercase font-black text-white mb-4">
             Payment Processing
           </h2>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-8">
@@ -91,7 +91,7 @@ export default function PrivacyPolicyPage() {
             standards.
           </p>
 
-          <h2 className="font-heading text-xl md:text-2xl uppercase font-bold text-white mb-4">
+          <h2 className="font-heading text-xl md:text-2xl uppercase font-black text-white mb-4">
             Online Advertising
           </h2>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-8">
@@ -100,7 +100,7 @@ export default function PrivacyPolicyPage() {
             and on partner websites.
           </p>
 
-          <h2 className="font-heading text-xl md:text-2xl uppercase font-bold text-white mb-4">
+          <h2 className="font-heading text-xl md:text-2xl uppercase font-black text-white mb-4">
             How We Use and Share Your Information
           </h2>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-4">
@@ -122,7 +122,7 @@ export default function PrivacyPolicyPage() {
             contractual protections required.
           </p>
 
-          <h2 className="font-heading text-xl md:text-2xl uppercase font-bold text-white mb-4">
+          <h2 className="font-heading text-xl md:text-2xl uppercase font-black text-white mb-4">
             Your Rights and Choices
           </h2>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-4">
@@ -147,7 +147,7 @@ export default function PrivacyPolicyPage() {
             uniform, so we do not currently respond to these signals.
           </p>
 
-          <h2 className="font-heading text-xl md:text-2xl uppercase font-bold text-white mb-4">
+          <h2 className="font-heading text-xl md:text-2xl uppercase font-black text-white mb-4">
             Children&apos;s Privacy
           </h2>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-8">
@@ -159,7 +159,7 @@ export default function PrivacyPolicyPage() {
             consent.
           </p>
 
-          <h2 className="font-heading text-xl md:text-2xl uppercase font-bold text-white mb-4">
+          <h2 className="font-heading text-xl md:text-2xl uppercase font-black text-white mb-4">
             Security
           </h2>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-8">
@@ -169,7 +169,7 @@ export default function PrivacyPolicyPage() {
             impenetrable.
           </p>
 
-          <h2 className="font-heading text-xl md:text-2xl uppercase font-bold text-white mb-4">
+          <h2 className="font-heading text-xl md:text-2xl uppercase font-black text-white mb-4">
             Changes to This Policy
           </h2>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-8">
@@ -178,7 +178,7 @@ export default function PrivacyPolicyPage() {
             material changes where required by law.
           </p>
 
-          <h2 className="font-heading text-xl md:text-2xl uppercase font-bold text-white mb-4">
+          <h2 className="font-heading text-xl md:text-2xl uppercase font-black text-white mb-4">
             Contact Us
           </h2>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-2">
