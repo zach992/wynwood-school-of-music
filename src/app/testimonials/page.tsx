@@ -4,6 +4,7 @@ export const metadata = {
   title: "Testimonials",
   description:
     "Hear from current students, alumni, and parents about their experiences at the Wynwood School of Music.",
+  alternates: { canonical: "/testimonials" },
 };
 
 const currentStudents = [

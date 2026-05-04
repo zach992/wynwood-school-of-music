@@ -5,6 +5,7 @@ export const metadata = {
   title: "Recitals",
   description:
     "Upcoming recitals and showcases at the Wynwood School of Music. Get tickets for our Spring 2026 events.",
+  alternates: { canonical: "/recitals" },
 };
 
 export default function RecitalsPage() {

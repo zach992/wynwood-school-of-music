@@ -5,6 +5,7 @@ export const metadata = {
   title: "Contact Us",
   description:
     "Sign up for private music lessons or band programs at the Wynwood School of Music in Miami. Contact us today to start your musical journey.",
+  alternates: { canonical: "/contact" },
 };
 
 export default function ContactPage() {

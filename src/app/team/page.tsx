@@ -7,6 +7,7 @@ export const metadata = {
   title: "Team",
   description:
     "Meet the team behind Wynwood School of Music — founders Zach Larmer and Sammy Gonzalez Zeira, plus our world-class instructors.",
+  alternates: { canonical: "/team" },
 };
 
 type Instructor = { name: string; role: string; imageSrc: string; slug: string; imagePosition?: string };

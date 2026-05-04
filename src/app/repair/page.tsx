@@ -5,6 +5,7 @@ export const metadata = {
   title: "Repair",
   description:
     "Guitar, bass, and amplifier repair services at the Wynwood School of Music in Miami. Quick turnaround, reasonable prices, and expert service.",
+  alternates: { canonical: "/repair" },
 };
 
 export default function RepairPage() {

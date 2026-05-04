@@ -23,6 +23,7 @@ export async function generateMetadata({
   return {
     title: bio.name,
     description,
+    alternates: { canonical: `/team/${bio.slug}` },
   };
 }
 

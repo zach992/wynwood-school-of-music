@@ -5,6 +5,7 @@ export const metadata = {
   title: "Private Lessons",
   description:
     "Private music lessons for all ages at the Wynwood School of Music. One-on-one instruction with professional musicians in Miami's Wynwood Art District.",
+  alternates: { canonical: "/private-lessons" },
 };
 
 export default function PrivateLessonsPage() {
