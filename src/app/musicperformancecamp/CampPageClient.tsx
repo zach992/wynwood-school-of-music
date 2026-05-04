@@ -8,24 +8,31 @@ type Session = {
   month: string;
   capacity: number;
   sold: number;
+  startISO: string; // YYYY-MM-DD, used to auto-disable past sessions
   flag?: string;
   bridge?: boolean;
   full?: boolean;
 };
 
 const SESSIONS: Session[] = [
-  { code: "A", dates: "June 15 – June 19", month: "Jun", capacity: 24, sold: 13 },
-  { code: "B", dates: "June 22 – June 26", month: "Jun", capacity: 24, sold: 16 },
-  { code: "B.5", dates: "June 29 – July 3", month: "Jun/Jul", capacity: 24, sold: 5, flag: "New! Bridge Week", bridge: true },
-  { code: "C", dates: "July 6 – July 10", month: "Jul", capacity: 24, sold: 11 },
-  { code: "D", dates: "July 13 – July 17", month: "Jul", capacity: 24, sold: 8 },
-  { code: "E", dates: "July 20 – July 24", month: "Jul", capacity: 24, sold: 14 },
-  { code: "F", dates: "July 27 – July 31", month: "Jul", capacity: 24, sold: 9 },
-  { code: "G", dates: "August 3 – August 7", month: "Aug", capacity: 24, sold: 6 },
+  { code: "A", dates: "June 15 – June 19", month: "Jun", capacity: 24, sold: 13, startISO: "2026-06-15" },
+  { code: "B", dates: "June 22 – June 26", month: "Jun", capacity: 24, sold: 16, startISO: "2026-06-22" },
+  { code: "B.5", dates: "June 29 – July 3", month: "Jun/Jul", capacity: 24, sold: 5, startISO: "2026-06-29", flag: "New! Bridge Week", bridge: true },
+  { code: "C", dates: "July 6 – July 10", month: "Jul", capacity: 24, sold: 11, startISO: "2026-07-06" },
+  { code: "D", dates: "July 13 – July 17", month: "Jul", capacity: 24, sold: 8, startISO: "2026-07-13" },
+  { code: "E", dates: "July 20 – July 24", month: "Jul", capacity: 24, sold: 14, startISO: "2026-07-20" },
+  { code: "F", dates: "July 27 – July 31", month: "Jul", capacity: 24, sold: 9, startISO: "2026-07-27" },
+  { code: "G", dates: "August 3 – August 7", month: "Aug", capacity: 24, sold: 6, startISO: "2026-08-03" },
 ];
 
 const BASE_EARLY = 375;
 const BASE_STANDARD = 425;
+
+// Early Bird ends end-of-day May 15 in WSM's local timezone (US Eastern, EDT in May).
+// After this moment the discount turns off automatically. Matches CampUrgencyBar.tsx.
+const EARLY_BIRD_DEADLINE_MS = new Date("2026-05-15T23:59:59-04:00").getTime();
+// A session is closed to new signups once its start day has begun (midnight Eastern).
+const sessionStartMs = (s: Session) => new Date(`${s.startISO}T00:00:00-04:00`).getTime();
 
 const Check = () => (
   <svg viewBox="0 0 24 24" fill="none">
@@ -33,12 +40,49 @@ const Check = () => (
   </svg>
 );
 
+function AnimatedNumber({ value }: { value: number }) {
+  const [display, setDisplay] = useState(value);
+  const prevRef = useRef(value);
+  useEffect(() => {
+    const start = prevRef.current;
+    const end = value;
+    if (start === end) return;
+    const duration = 380;
+    const t0 = performance.now();
+    let raf = 0;
+    const tick = (t: number) => {
+      const p = Math.min(1, (t - t0) / duration);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setDisplay(Math.round(start + (end - start) * eased));
+      if (p < 1) raf = requestAnimationFrame(tick);
+      else prevRef.current = end;
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [value]);
+  return <>{display}</>;
+}
+
+const fillTier = (pct: number) => (pct < 60 ? "low" : pct < 85 ? "mid" : "high");
+
 export default function CampPageClient() {
-  const [pricingMode, setPricingMode] = useState<"early" | "standard">("early");
+  // Track "now" so the page reacts when the early-bird deadline passes or a session begins,
+  // even if the visitor leaves the tab open across the boundary.
+  const [now, setNow] = useState<number>(() => Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+  const isEarlyBird = now <= EARLY_BIRD_DEADLINE_MS;
+  const isPastSession = (s: Session) => now >= sessionStartMs(s);
+
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [emailDone, setEmailDone] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [pulseCode, setPulseCode] = useState<string | null>(null);
+  const [cartInView, setCartInView] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const cartRef = useRef<HTMLDivElement>(null);
 
   // Scroll reveal observer
   useEffect(() => {
@@ -58,7 +102,18 @@ export default function CampPageClient() {
     return () => io.disconnect();
   }, []);
 
-  const basePrice = pricingMode === "early" ? BASE_EARLY : BASE_STANDARD;
+  // Track whether the in-page cart is in view, so the sticky mini-cart can hide when redundant
+  useEffect(() => {
+    if (!cartRef.current) return;
+    const io = new IntersectionObserver(
+      ([entry]) => setCartInView(entry.isIntersecting),
+      { threshold: 0.15 }
+    );
+    io.observe(cartRef.current);
+    return () => io.disconnect();
+  }, []);
+
+  const basePrice = isEarlyBird ? BASE_EARLY : BASE_STANDARD;
 
   const listPriceFor = (_s: Session) => BASE_STANDARD;
 
@@ -71,7 +126,7 @@ export default function CampPageClient() {
 
   const cart = useMemo(() => {
     const list = picks.reduce((sum, p) => sum + listPriceFor(p), 0);
-    const earlyBirdDiscount = pricingMode === "early"
+    const earlyBirdDiscount = isEarlyBird
       ? picks.reduce((sum, p) => sum + (listPriceFor(p) - priceFor(p)), 0)
       : 0;
     const afterEarlyBird = list - earlyBirdDiscount;
@@ -82,20 +137,49 @@ export default function CampPageClient() {
     const deposit = Math.round(total / 2);
     return { list, earlyBirdDiscount, bundleDiscount, total, deposit };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [picks, pricingMode]);
+  }, [picks, isEarlyBird]);
+
+  // If "now" advances past a previously-selected session's start day, drop it from the cart.
+  useEffect(() => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      let changed = false;
+      SESSIONS.forEach((s) => {
+        if (next.has(s.code) && isPastSession(s)) {
+          next.delete(s.code);
+          changed = true;
+        }
+      });
+      return changed ? next : prev;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [now]);
 
   const toggleSession = (s: Session) => {
+    if (isPastSession(s)) {
+      alert("This session has already started. Reach out and we’ll help you find another week.");
+      return;
+    }
     if (s.full) {
       alert("This session is full. Join the waitlist by signing up for camp updates below.");
       return;
     }
     setSelected((prev) => {
       const next = new Set(prev);
-      if (next.has(s.code)) next.delete(s.code);
-      else next.add(s.code);
+      if (next.has(s.code)) {
+        next.delete(s.code);
+      } else {
+        next.add(s.code);
+        setPulseCode(s.code);
+        window.setTimeout(() => {
+          setPulseCode((c) => (c === s.code ? null : c));
+        }, 520);
+      }
       return next;
     });
   };
+
+  const showStickyCart = picks.length > 0 && !cartInView && !modalOpen;
 
   const closeModal = () => setModalOpen(false);
 
@@ -110,8 +194,20 @@ export default function CampPageClient() {
                 <span className="tick" />
                 <span className="eyebrow">Music Performance Camp · Summer 2026</span>
               </div>
-              <h1 className="display h1">
-                Your child<br />steps on<br /><em>the stage.</em>
+              <h1 className="display h1 hero-headline">
+                <span className="line">
+                  <span className="word" style={{ ["--d" as string]: "0.05s" }}>Your</span>{" "}
+                  <span className="word" style={{ ["--d" as string]: "0.18s" }}>child</span>
+                </span>
+                <span className="line">
+                  <span className="word" style={{ ["--d" as string]: "0.30s" }}>steps</span>{" "}
+                  <span className="word" style={{ ["--d" as string]: "0.42s" }}>on</span>
+                </span>
+                <span className="line">
+                  <em className="word italic-finale" style={{ ["--d" as string]: "0.58s" }}>
+                    the stage.
+                  </em>
+                </span>
               </h1>
               <p className="hero-sub">
                 A week-long, fully immersive camp where 8–14 year-olds learn like real musicians — band rehearsals, sectionals, workshops, and a live Friday showcase in the heart of Wynwood.
@@ -131,7 +227,13 @@ export default function CampPageClient() {
                 </div>
                 <div className="hero-fact">
                   <div className="label">Per Week</div>
-                  <div className="value"><s style={{ opacity: 0.5, fontSize: 18 }}>$425</s> $375*</div>
+                  <div className="value">
+                    {isEarlyBird ? (
+                      <><s style={{ opacity: 0.5, fontSize: 18 }}>${BASE_STANDARD}</s> ${BASE_EARLY}*</>
+                    ) : (
+                      <>${BASE_STANDARD}</>
+                    )}
+                  </div>
                 </div>
                 <div className="hero-fact">
                   <div className="label">Location</div>
@@ -328,13 +430,18 @@ export default function CampPageClient() {
               <div className="section-number">— 04</div>
               <h2 className="display h2">Pick your <em>weeks</em></h2>
             </div>
-            <div className="pricing-toggle" role="tablist" aria-label="Pricing type">
-              <button className={pricingMode === "early" ? "active" : ""} onClick={() => setPricingMode("early")}>
-                Early Bird · Through May 15
-              </button>
-              <button className={pricingMode === "standard" ? "active" : ""} onClick={() => setPricingMode("standard")}>
-                Standard
-              </button>
+            <div className="pricing-status" aria-label="Current pricing">
+              {isEarlyBird ? (
+                <>
+                  <span className="pricing-status-badge active">Early Bird Active</span>
+                  <span className="pricing-status-meta">Save $50/wk through May 15</span>
+                </>
+              ) : (
+                <>
+                  <span className="pricing-status-badge">Standard Pricing</span>
+                  <span className="pricing-status-meta">Early Bird ended May 15</span>
+                </>
+              )}
             </div>
           </div>
 
@@ -348,11 +455,21 @@ export default function CampPageClient() {
               const fillPct = Math.round((s.sold / s.capacity) * 100);
               const spotsLeft = s.capacity - s.sold;
               const displayPrice = priceFor(s);
-              const origPrice = pricingMode === "early" ? BASE_STANDARD : null;
-              const hot = fillPct >= 80 && !s.full;
+              const origPrice = isEarlyBird ? BASE_STANDARD : null;
+              const tier = fillTier(fillPct);
+              const past = isPastSession(s);
+              const hot = fillPct >= 85 && !s.full && !past;
               const isSelected = selected.has(s.code);
-              const cls = ["session", s.full && "full", s.bridge && "bridge", isSelected && "selected"]
-                .filter(Boolean).join(" ");
+              const cls = [
+                "session",
+                s.full && "full",
+                past && "past",
+                s.bridge && "bridge",
+                isSelected && "selected",
+                pulseCode === s.code && "pulse",
+              ]
+                .filter(Boolean)
+                .join(" ");
               return (
                 <div
                   key={s.code}
@@ -369,21 +486,24 @@ export default function CampPageClient() {
                     </div>
                   </div>
                   <div className="capacity">
-                    <div className="capacity-bar" style={{ ["--fill" as string]: `${fillPct}%` } as React.CSSProperties} />
+                    <div
+                      className={`capacity-bar tier-${tier}`}
+                      style={{ ["--fill" as string]: `${fillPct}%` } as React.CSSProperties}
+                    />
                     <div className="capacity-label">
-                      <span>{s.full ? "Sold out" : `${spotsLeft} spots left`}</span>
-                      <span className={hot ? "hot" : ""}>
-                        {s.full ? "—" : hot ? "🔥 Filling fast" : `${fillPct}% full`}
+                      <span>{past ? "Session ended" : s.full ? "Sold out" : `${spotsLeft} spots left`}</span>
+                      <span className={hot ? "hot" : tier === "mid" ? "warm" : ""}>
+                        {past ? "—" : s.full ? "—" : hot ? "🔥 Filling fast" : `${fillPct}% full`}
                       </span>
                     </div>
                   </div>
                   <div className="session-cta">
                     <div className="session-price">
-                      {origPrice && !s.bridge && <s>${origPrice}</s>}
+                      {origPrice && !s.bridge && !past && <s>${origPrice}</s>}
                       ${displayPrice}
                     </div>
                     <div className="session-select">
-                      {isSelected ? "Added ✓" : s.full ? "Join Waitlist" : "Add Session"}
+                      {past ? "Closed" : isSelected ? "Added ✓" : s.full ? "Join Waitlist" : "Add Session"}
                     </div>
                   </div>
                 </div>
@@ -395,10 +515,12 @@ export default function CampPageClient() {
             <div className="discount-chip"><b>Save $25/wk</b> — Book 2+ sessions</div>
             <div className="discount-chip"><b>Save $50/wk</b> — Book 3+ sessions</div>
             <div className="discount-chip"><b>10% off</b> — Each additional sibling</div>
-            <div className="discount-chip"><b>Save $50/wk</b> — Early Bird through May 15</div>
+            {isEarlyBird && (
+              <div className="discount-chip"><b>Save $50/wk</b> — Early Bird through May 15</div>
+            )}
           </div>
 
-          <div className="bundle-cart">
+          <div className="bundle-cart" ref={cartRef}>
             <div>
               <h4>Your Cart</h4>
               <div className="selected-list">
@@ -434,7 +556,7 @@ export default function CampPageClient() {
                       <span>−${cart.bundleDiscount}</span>
                     </div>
                   )}
-                  <div className="line total"><span>Total</span><span>${cart.total}</span></div>
+                  <div className="line total"><span>Total</span><span className="num">$<AnimatedNumber value={cart.total} /></span></div>
                   <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 6 }}>
                     50% deposit today · balance on first day
                   </div>
@@ -569,6 +691,39 @@ export default function CampPageClient() {
           <a href="#sessions" className="btn btn-yellow">Reserve a Session <span className="arrow">→</span></a>
         </div>
       </section>
+
+      {/* ===== Sticky mini-cart ===== */}
+      <div
+        className={`sticky-cart${showStickyCart ? " show" : ""}`}
+        aria-hidden={!showStickyCart}
+      >
+        <div className="container sticky-cart-inner">
+          <div className="sticky-cart-summary">
+            <div className="sticky-cart-codes">
+              {picks.map((p) => (
+                <span key={p.code} className="code-pill">
+                  {p.code}
+                </span>
+              ))}
+            </div>
+            <div className="sticky-cart-total">
+              <span className="label">
+                {picks.length} session{picks.length > 1 ? "s" : ""}
+              </span>
+              <strong className="num">
+                $<AnimatedNumber value={cart.total} />
+              </strong>
+            </div>
+          </div>
+          <button
+            className="btn btn-primary btn-sm"
+            onClick={() => setModalOpen(true)}
+            tabIndex={showStickyCart ? 0 : -1}
+          >
+            Reserve <span className="arrow">→</span>
+          </button>
+        </div>
+      </div>
 
       {/* ===== Reservation Modal (UI only) ===== */}
       <div

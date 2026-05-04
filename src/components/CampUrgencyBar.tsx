@@ -10,10 +10,17 @@ const pad = (n: number) => String(n).padStart(2, "0");
 export default function CampUrgencyBar() {
   const pathname = usePathname();
   const [countdown, setCountdown] = useState({ d: "00", h: "00", m: "00", s: "00" });
+  const [expired, setExpired] = useState(false);
 
   useEffect(() => {
     const tick = () => {
-      let diff = Math.max(0, DEADLINE - Date.now());
+      const remaining = DEADLINE - Date.now();
+      if (remaining <= 0) {
+        setExpired(true);
+        setCountdown({ d: "00", h: "00", m: "00", s: "00" });
+        return;
+      }
+      let diff = remaining;
       const d = Math.floor(diff / 864e5); diff -= d * 864e5;
       const h = Math.floor(diff / 36e5); diff -= h * 36e5;
       const m = Math.floor(diff / 6e4); diff -= m * 6e4;
@@ -26,6 +33,7 @@ export default function CampUrgencyBar() {
   }, []);
 
   if (pathname !== "/musicperformancecamp") return null;
+  if (expired) return null;
 
   return (
     <div className="wsm-urgency">
