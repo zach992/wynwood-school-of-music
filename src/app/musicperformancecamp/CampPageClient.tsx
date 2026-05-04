@@ -1,38 +1,15 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-
-type Session = {
-  code: string;
-  dates: string;
-  month: string;
-  capacity: number;
-  sold: number;
-  startISO: string; // YYYY-MM-DD, used to auto-disable past sessions
-  flag?: string;
-  bridge?: boolean;
-  full?: boolean;
-};
-
-const SESSIONS: Session[] = [
-  { code: "A", dates: "June 15 – June 19", month: "Jun", capacity: 24, sold: 13, startISO: "2026-06-15" },
-  { code: "B", dates: "June 22 – June 26", month: "Jun", capacity: 24, sold: 16, startISO: "2026-06-22" },
-  { code: "B.5", dates: "June 29 – July 3", month: "Jun/Jul", capacity: 24, sold: 5, startISO: "2026-06-29", flag: "New! Bridge Week", bridge: true },
-  { code: "C", dates: "July 6 – July 10", month: "Jul", capacity: 24, sold: 11, startISO: "2026-07-06" },
-  { code: "D", dates: "July 13 – July 17", month: "Jul", capacity: 24, sold: 8, startISO: "2026-07-13" },
-  { code: "E", dates: "July 20 – July 24", month: "Jul", capacity: 24, sold: 14, startISO: "2026-07-20" },
-  { code: "F", dates: "July 27 – July 31", month: "Jul", capacity: 24, sold: 9, startISO: "2026-07-27" },
-  { code: "G", dates: "August 3 – August 7", month: "Aug", capacity: 24, sold: 6, startISO: "2026-08-03" },
-];
-
-const BASE_EARLY = 375;
-const BASE_STANDARD = 425;
-
-// Early Bird ends end-of-day May 15 in WSM's local timezone (US Eastern, EDT in May).
-// After this moment the discount turns off automatically. Matches CampUrgencyBar.tsx.
-const EARLY_BIRD_DEADLINE_MS = new Date("2026-05-15T23:59:59-04:00").getTime();
-// A session is closed to new signups once its start day has begun (midnight Eastern).
-const sessionStartMs = (s: Session) => new Date(`${s.startISO}T00:00:00-04:00`).getTime();
+import {
+  SESSIONS,
+  BASE_EARLY,
+  BASE_STANDARD,
+  EARLY_BIRD_DEADLINE_MS,
+  computeCart,
+  isPastSessionAt,
+  type Session,
+} from "@/lib/camp-pricing";
 
 const Check = () => (
   <svg viewBox="0 0 24 24" fill="none">
@@ -74,7 +51,7 @@ export default function CampPageClient() {
     return () => clearInterval(id);
   }, []);
   const isEarlyBird = now <= EARLY_BIRD_DEADLINE_MS;
-  const isPastSession = (s: Session) => now >= sessionStartMs(s);
+  const isPastSession = (s: Session) => isPastSessionAt(s, now);
 
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [emailDone, setEmailDone] = useState(false);
@@ -114,30 +91,14 @@ export default function CampPageClient() {
   }, []);
 
   const basePrice = isEarlyBird ? BASE_EARLY : BASE_STANDARD;
-
   const listPriceFor = (_s: Session) => BASE_STANDARD;
-
   const priceFor = (_s: Session) => basePrice;
 
-  const picks = useMemo(
-    () => SESSIONS.filter((s) => selected.has(s.code)),
-    [selected]
+  const cart = useMemo(
+    () => computeCart(Array.from(selected), now),
+    [selected, now]
   );
-
-  const cart = useMemo(() => {
-    const list = picks.reduce((sum, p) => sum + listPriceFor(p), 0);
-    const earlyBirdDiscount = isEarlyBird
-      ? picks.reduce((sum, p) => sum + (listPriceFor(p) - priceFor(p)), 0)
-      : 0;
-    const afterEarlyBird = list - earlyBirdDiscount;
-    let bundleDiscount = 0;
-    if (picks.length === 2) bundleDiscount = 25 * picks.length;
-    else if (picks.length >= 3) bundleDiscount = 50 * picks.length;
-    const total = afterEarlyBird - bundleDiscount;
-    const deposit = Math.round(total / 2);
-    return { list, earlyBirdDiscount, bundleDiscount, total, deposit };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [picks, isEarlyBird]);
+  const picks = cart.picks;
 
   // If "now" advances past a previously-selected session's start day, drop it from the cart.
   useEffect(() => {
@@ -182,6 +143,52 @@ export default function CampPageClient() {
   const showStickyCart = picks.length > 0 && !cartInView && !modalOpen;
 
   const closeModal = () => setModalOpen(false);
+
+  // Reservation form state
+  const [camperName, setCamperName] = useState("");
+  const [camperAge, setCamperAge] = useState("");
+  const [instrument, setInstrument] = useState("Voice");
+  const [parentEmail, setParentEmail] = useState("");
+  const [parentPhone, setParentPhone] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+
+  const formValid =
+    picks.length > 0 &&
+    camperName.trim().length > 1 &&
+    camperAge.trim().length > 0 &&
+    /.+@.+\..+/.test(parentEmail) &&
+    parentPhone.trim().length >= 7;
+
+  const handleCheckout = async () => {
+    if (!formValid || submitting) return;
+    setSubmitting(true);
+    setFormError(null);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionCodes: Array.from(selected),
+          camperName: camperName.trim(),
+          camperAge: camperAge.trim(),
+          instrument,
+          parentEmail: parentEmail.trim(),
+          parentPhone: parentPhone.trim(),
+        }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { url?: string; error?: string };
+      if (!res.ok || !data.url) {
+        setFormError(data.error || "Couldn't start checkout. Please try again.");
+        setSubmitting(false);
+        return;
+      }
+      window.location.href = data.url;
+    } catch {
+      setFormError("Network error. Please try again.");
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div className="camp-page" ref={containerRef}>
@@ -542,7 +549,7 @@ export default function CampPageClient() {
                   )}
                   <div className="line total"><span>Total</span><span className="num">$<AnimatedNumber value={cart.total} /></span></div>
                   <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 6 }}>
-                    50% deposit today · balance on first day
+                    50% deposit today · we&rsquo;ll invoice the balance before camp
                   </div>
                 </>
               )}
@@ -637,7 +644,7 @@ export default function CampPageClient() {
                 { q: "Does my child need prior experience playing an instrument?", a: "Absolutely not. The camp is for every skill level. Beginners and advanced students are placed into small groups with musicians at a similar level — no one gets lost and no one gets held back.", open: true },
                 { q: "Which instruments can my child enroll in?", a: "Voice, guitar, keyboard, bass, and drums. If your child plays something else and wants to join, reach out — we'll do our best to accommodate, but only if it's going to be an amazing experience for your student and for the rest of the kids in the camp." },
                 { q: "Does my child need to bring their own instrument?", a: "We encourage it (practicing on the same instrument you rehearse on matters), but we have loaner instruments on a first-come basis for families who don't have one yet." },
-                { q: "How does registration and payment work?", a: "You pick your sessions above and check out online with a 50% deposit. The remaining balance is charged to the card on file on the first day of each session. No phone tag, no contact forms." },
+                { q: "How does registration and payment work?", a: "You pick your sessions above and check out online with a 50% deposit. We email an invoice for the remaining balance before camp begins, payable by card or bank transfer. No phone tag, no contact forms." },
                 { q: "What's your cancellation policy?", a: "Cancel 14+ days before your session starts and you get a full refund of the deposit. 7–13 days: 50% refund. 0–6 days: the deposit is non-refundable." },
                 { q: "Will there be lunch and breaks?", a: "Yes. Lunch + Community Hour runs 12:15–1:15 daily. Kids bring their own lunch or order delivery as a group. This is also when friendships form — which is half the reason kids come back." },
                 { q: "Do you offer aftercare?", a: "Yes — 3:30–5:00 PM, $25/day, no commitment. Add it day-of or for the whole week. Private lessons after camp are also available (separate program/cost)." },
@@ -717,7 +724,7 @@ export default function CampPageClient() {
         <div className="modal">
           <button className="modal-close" onClick={closeModal} aria-label="Close">×</button>
           <h3>Reserve Your Spot</h3>
-          <p>A 50% deposit secures your sessions. Balance is charged to this card on the first day of each session.</p>
+          <p>A 50% deposit secures your sessions today. We&rsquo;ll email an invoice for the remaining balance before camp begins.</p>
 
           <div className="summary-box">
             {picks.length === 0 ? (
@@ -751,17 +758,35 @@ export default function CampPageClient() {
           <div className="modal-row">
             <div className="modal-field">
               <label>Camper&rsquo;s Name</label>
-              <input type="text" placeholder="First & last" />
+              <input
+                type="text"
+                placeholder="First & last"
+                value={camperName}
+                onChange={(e) => setCamperName(e.target.value)}
+                disabled={submitting}
+              />
             </div>
             <div className="modal-field">
               <label>Age</label>
-              <input type="number" min={8} max={14} placeholder="8–14" />
+              <input
+                type="number"
+                min={8}
+                max={14}
+                placeholder="8–14"
+                value={camperAge}
+                onChange={(e) => setCamperAge(e.target.value)}
+                disabled={submitting}
+              />
             </div>
           </div>
 
           <div className="modal-field">
             <label>Primary Instrument</label>
-            <select>
+            <select
+              value={instrument}
+              onChange={(e) => setInstrument(e.target.value)}
+              disabled={submitting}
+            >
               <option>Voice</option>
               <option>Guitar</option>
               <option>Keyboard</option>
@@ -774,23 +799,45 @@ export default function CampPageClient() {
           <div className="modal-row">
             <div className="modal-field">
               <label>Parent Email</label>
-              <input type="email" placeholder="you@example.com" />
+              <input
+                type="email"
+                placeholder="you@example.com"
+                value={parentEmail}
+                onChange={(e) => setParentEmail(e.target.value)}
+                disabled={submitting}
+              />
             </div>
             <div className="modal-field">
               <label>Parent Phone</label>
-              <input type="tel" placeholder="(305) ..." />
+              <input
+                type="tel"
+                placeholder="(305) ..."
+                value={parentPhone}
+                onChange={(e) => setParentPhone(e.target.value)}
+                disabled={submitting}
+              />
             </div>
           </div>
 
+          {formError && (
+            <p style={{ color: "var(--red, #d33)", fontSize: 14, marginTop: 8 }}>{formError}</p>
+          )}
+
           <button
             className="btn btn-primary"
-            style={{ width: "100%", justifyContent: "center", marginTop: 6 }}
-            onClick={() => {
-              alert("UI demo only — checkout will be wired up later.");
-              closeModal();
+            style={{
+              width: "100%",
+              justifyContent: "center",
+              marginTop: 6,
+              opacity: formValid && !submitting ? 1 : 0.6,
+              cursor: formValid && !submitting ? "pointer" : "not-allowed",
             }}
+            onClick={handleCheckout}
+            disabled={!formValid || submitting}
           >
-            Proceed to Secure Checkout <span className="arrow">→</span>
+            {submitting ? "Redirecting to Stripe…" : (
+              <>Proceed to Secure Checkout <span className="arrow">→</span></>
+            )}
           </button>
         </div>
       </div>
