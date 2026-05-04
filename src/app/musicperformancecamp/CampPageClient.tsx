@@ -15,20 +15,18 @@ type Session = {
 };
 
 const SESSIONS: Session[] = [
-  { code: "A", dates: "June 15 – June 19", month: "Jun", capacity: 32, sold: 22 },
-  { code: "B", dates: "June 22 – June 26", month: "Jun", capacity: 32, sold: 28, flag: "Almost full" },
-  { code: "B.5", dates: "June 29 – July 3", month: "Jun/Jul", capacity: 24, sold: 6, flag: "New! Bridge Week", bridge: true, priceOverride: 375 },
-  { code: "C", dates: "July 6 – July 10", month: "Jul", capacity: 32, sold: 18 },
-  { code: "D", dates: "July 13 – July 17", month: "Jul", capacity: 32, sold: 14 },
-  { code: "E", dates: "July 20 – July 24", month: "Jul", capacity: 32, sold: 11 },
-  { code: "F", dates: "July 27 – July 31", month: "Jul", capacity: 32, sold: 8 },
-  { code: "G", dates: "August 3 – August 7", month: "Aug", capacity: 32, sold: 32, flag: "Waitlist", full: true },
+  { code: "A", dates: "June 15 – June 19", month: "Jun", capacity: 24, sold: 13 },
+  { code: "B", dates: "June 22 – June 26", month: "Jun", capacity: 24, sold: 16 },
+  { code: "B.5", dates: "June 29 – July 3", month: "Jun/Jul", capacity: 24, sold: 5, flag: "New! Bridge Week", bridge: true, priceOverride: 375 },
+  { code: "C", dates: "July 6 – July 10", month: "Jul", capacity: 24, sold: 11 },
+  { code: "D", dates: "July 13 – July 17", month: "Jul", capacity: 24, sold: 8 },
+  { code: "E", dates: "July 20 – July 24", month: "Jul", capacity: 24, sold: 14 },
+  { code: "F", dates: "July 27 – July 31", month: "Jul", capacity: 24, sold: 9 },
+  { code: "G", dates: "August 3 – August 7", month: "Aug", capacity: 24, sold: 6 },
 ];
 
 const BASE_EARLY = 375;
 const BASE_STANDARD = 425;
-const DEADLINE = new Date("2026-05-15T23:59:59-04:00").getTime();
-const pad = (n: number) => String(n).padStart(2, "0");
 
 const Check = () => (
   <svg viewBox="0 0 24 24" fill="none">
@@ -39,26 +37,9 @@ const Check = () => (
 export default function CampPageClient() {
   const [pricingMode, setPricingMode] = useState<"early" | "standard">("early");
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [galleryTab, setGalleryTab] = useState(0);
   const [emailDone, setEmailDone] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [countdown, setCountdown] = useState({ d: "00", h: "00", m: "00", s: "00" });
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // Countdown timer
-  useEffect(() => {
-    const tick = () => {
-      let diff = Math.max(0, DEADLINE - Date.now());
-      const d = Math.floor(diff / 864e5); diff -= d * 864e5;
-      const h = Math.floor(diff / 36e5); diff -= h * 36e5;
-      const m = Math.floor(diff / 6e4); diff -= m * 6e4;
-      const s = Math.floor(diff / 1e3);
-      setCountdown({ d: pad(d), h: pad(h), m: pad(m), s: pad(s) });
-    };
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, []);
 
   // Scroll reveal observer
   useEffect(() => {
@@ -119,20 +100,6 @@ export default function CampPageClient() {
 
   return (
     <div className="camp-page" ref={containerRef}>
-      {/* ===== Urgency Bar ===== */}
-      <div className="urgency">
-        <div className="urgency-inner">
-          <span className="urgency-label">Early Bird Ends May 15 — Save $50 per week</span>
-          <span className="urgency-count">
-            <span><b>{countdown.d}</b><small>Days</small></span>
-            <span><b>{countdown.h}</b><small>Hrs</small></span>
-            <span><b>{countdown.m}</b><small>Min</small></span>
-            <span><b>{countdown.s}</b><small>Sec</small></span>
-          </span>
-          <a href="#sessions" className="urgency-cta">Reserve now →</a>
-        </div>
-      </div>
-
       {/* ===== Hero ===== */}
       <header className="hero">
         <div className="container">
@@ -270,15 +237,19 @@ export default function CampPageClient() {
           </div>
           <div className="instructors-grid">
             {[
-              { name: "Marcus Rivera", role: "Founder · Guitar", badge: "Camp Director", bio: "Berklee-trained, 18 years teaching Miami's young musicians. Has toured with three Latin-Grammy-nominated acts.", img: "https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=600&q=80" },
-              { name: "Nina Cardozo", role: "Vocal Coach", badge: "Voice", bio: "Frost School of Music MFA. Has coached on-camera talent for Univision and leads WSM's annual vocal intensive.", img: "https://images.unsplash.com/photo-1549213783-8284d0336c4f?auto=format&fit=crop&w=600&q=80" },
-              { name: "Desmond Pope", role: "Drums · Percussion", badge: "Drums", bio: "Touring drummer for two national jazz ensembles. Specializes in getting first-time drummers playing full songs in hours, not weeks.", img: "https://images.unsplash.com/photo-1589156229687-496a31ad1d1f?auto=format&fit=crop&w=600&q=80" },
-              { name: "Isabel Ferrer", role: "Keys · Bass · Theory", badge: "Keys · Bass", bio: "Session keyboardist across Miami's studio circuit. Teaches theory the way musicians actually use it on a bandstand.", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80" },
+              { name: "Sammy Gonzalez Zeira", role: "Co-Founder · Guitar · Bass", badge: "Co-Founder", bio: "Touring guitarist and bassist, Director of the Miami Beach Senior High Rock Ensemble, and CEO of Young Musicians Unite — Miami-Dade's free music-education non-profit serving 12,000+ students.", img: "/images/team/sammy-gonzalez.jpg" },
+              { name: "Zach Larmer", role: "Co-Founder · Guitar · Composition", badge: "Co-Founder", bio: "Three-time GRAMMY-winning jazz guitarist who has toured the world and shared stages with renowned artists. 13 years educating Miami's young musicians.", img: "/images/team/zach-larmer.png" },
+              { name: "Vale Peñaranda", role: "Voice · Keys · Production", badge: "Voice & Keys", bio: "Berklee and Frost School of Music alum. Recipient of the Eduardo Abaroa Award and a Latin GRAMMY Cultural Foundation Leading Lady, with stages from the Berklee Performance Center to the Suena Caracas Festival.", img: "/images/team/vale-penaranda.jpg" },
+              { name: "AJ Hill", role: "Saxophone · Vocals · Drums", badge: "Saxophone", bio: "Twice Grammy-nominated and Oscar-nominated. Has shared the bill with Sly & the Family Stone and Earth Wind & Fire alums, and serves as Artistic Director of the Miami Beach Rock Ensemble.", img: "/images/team/aj-hill-camp.png" },
             ].map((i) => (
               <div key={i.name} className="instructor reveal">
                 <div className="instructor-photo">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={i.img} alt={i.name} />
+                  <img
+                    src={i.img}
+                    alt={i.name}
+                    style={i.imgScale ? { transform: `scale(${i.imgScale})`, transformOrigin: "center" } : undefined}
+                  />
                   <span className="badge">{i.badge}</span>
                 </div>
                 <h4>{i.name}</h4>
@@ -498,24 +469,17 @@ export default function CampPageClient() {
               <div className="section-number">— 05</div>
               <h2 className="display h2">Inside the <em>camp</em></h2>
             </div>
-            <div className="gallery-tabs">
-              {["All Sessions", "Session A", "Session B", "Sessions C–G", "Friday Showcases"].map((t, i) => (
-                <button key={t} className={galleryTab === i ? "active" : ""} onClick={() => setGalleryTab(i)}>
-                  {t}
-                </button>
-              ))}
-            </div>
           </div>
           <div className="gallery-grid">
             {[
-              { cls: "g-1", src: "https://images.unsplash.com/photo-1460723237483-7a6dc9d0b212?auto=format&fit=crop&w=1400&q=80", alt: "Full band on stage" },
-              { cls: "g-2", src: "https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&w=800&q=80", alt: "Drummer close-up" },
-              { cls: "g-3", src: "https://images.unsplash.com/photo-1519508234439-4f23643125c1?auto=format&fit=crop&w=800&q=80", alt: "Guitar lesson" },
-              { cls: "g-4", src: "https://images.unsplash.com/photo-1565708097881-bbc2849a5b0f?auto=format&fit=crop&w=800&q=80", alt: "Keyboard practice" },
-              { cls: "g-5", src: "https://images.unsplash.com/photo-1516873240891-4bf014598ab4?auto=format&fit=crop&w=800&q=80", alt: "Microphone setup" },
-              { cls: "g-6", src: "https://images.unsplash.com/photo-1501612780327-45045538702b?auto=format&fit=crop&w=1000&q=80", alt: "Showcase crowd" },
-              { cls: "g-7", src: "https://images.unsplash.com/photo-1507838153414-b4b713384a76?auto=format&fit=crop&w=1000&q=80", alt: "Young singer" },
-              { cls: "g-8", src: "https://images.unsplash.com/photo-1470019693664-1d202d2c0907?auto=format&fit=crop&w=1000&q=80", alt: "Workshop group" },
+              { cls: "g-1", src: "/images/camp/gallery/gallery-01-hero.jpg", alt: "Sun Salutation full band on the WSM stage" },
+              { cls: "g-2", src: "/images/camp/gallery/gallery-05.jpg", alt: "Young singer mid-song with a guitarist beside her" },
+              { cls: "g-3", src: "/images/camp/gallery/gallery-06.jpg", alt: "Teen camper beaming with a red electric guitar on stage" },
+              { cls: "g-4", src: "/images/camp/gallery/gallery-07.jpg", alt: "Teen camper with acoustic guitar on stage, drums behind" },
+              { cls: "g-5", src: "/images/camp/gallery/gallery-08.jpg", alt: "Black-and-white drummer mid-fill in front of the WSM backdrop" },
+              { cls: "g-6", src: "/images/camp/gallery/gallery-02-wide.jpg", alt: "Full teen band performing under purple stage lights" },
+              { cls: "g-7", src: "/images/camp/gallery/gallery-03-wide.jpg", alt: "Instructor with acoustic guitar coaching a young keyboardist mid-lesson" },
+              { cls: "g-8", src: "/images/camp/gallery/gallery-04-wide.jpg", alt: "Singer in coral dress on stage accompanied by a pianist" },
             ].map((g) => (
               <div key={g.cls} className={`g ${g.cls}`}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -578,7 +542,7 @@ export default function CampPageClient() {
                 { q: "Which instruments can my child enroll in?", a: "Voice, guitar, keyboard, bass, and drums. If your child plays something else and wants to join, email us — we can often accommodate." },
                 { q: "Does my child need to bring their own instrument?", a: "We encourage it (practicing on the same instrument you rehearse on matters), but we have loaner instruments on a first-come basis for families who don't have one yet." },
                 { q: "How does registration and payment work?", a: "You pick your sessions above and check out online with a 50% deposit. The remaining balance is charged to the card on file on the first day of each session. No phone tag, no contact forms." },
-                { q: "What's your cancellation policy?", a: "Cancel 14+ days before your session starts and you get a full refund of the deposit. 7–13 days: 50% refund. 0–6 days: the deposit is non-refundable. Family illness is handled case-by-case — just call us." },
+                { q: "What's your cancellation policy?", a: "Cancel 14+ days before your session starts and you get a full refund of the deposit. 7–13 days: 50% refund. 0–6 days: the deposit is non-refundable." },
                 { q: "Will there be lunch and breaks?", a: "Yes. Lunch + Community Hour runs 12:15–1:15 daily. Kids bring their own lunch or order delivery as a group. This is also when friendships form — which, no exaggeration, is half the reason kids come back." },
                 { q: "Do you offer aftercare?", a: "Yes — 3:30–5:00 PM, $25/day, no commitment. Add it day-of or for the whole week. Private lessons after camp are also available (separate program/cost)." },
                 { q: "Where can we park?", a: "A parking lot is available along the western wall of the school. Additional parking along 29th Street and 13th Ave." },

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import AnnouncementBar from "@/components/AnnouncementBar";
+import CampUrgencyBar from "@/components/CampUrgencyBar";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -57,6 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="bg-wsm-dark text-white font-body min-h-screen flex flex-col">
         <ScrollToTop />
+        <CampUrgencyBar />
         <AnnouncementBar />
         <Header />
         <main className="flex-1">{children}</main>

@@ -2,12 +2,15 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { siteData } from "@/lib/site-data";
 
 export default function AnnouncementBar() {
   const [visible, setVisible] = useState(true);
+  const pathname = usePathname();
 
   if (!visible) return null;
+  if (pathname === "/musicperformancecamp") return null;
 
   return (
     <div className="bg-wsm-accent text-white text-center text-sm py-2 px-4 relative">
