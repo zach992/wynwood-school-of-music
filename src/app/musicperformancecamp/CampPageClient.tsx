@@ -11,13 +11,12 @@ type Session = {
   flag?: string;
   bridge?: boolean;
   full?: boolean;
-  priceOverride?: number;
 };
 
 const SESSIONS: Session[] = [
   { code: "A", dates: "June 15 – June 19", month: "Jun", capacity: 24, sold: 13 },
   { code: "B", dates: "June 22 – June 26", month: "Jun", capacity: 24, sold: 16 },
-  { code: "B.5", dates: "June 29 – July 3", month: "Jun/Jul", capacity: 24, sold: 5, flag: "New! Bridge Week", bridge: true, priceOverride: 375 },
+  { code: "B.5", dates: "June 29 – July 3", month: "Jun/Jul", capacity: 24, sold: 5, flag: "New! Bridge Week", bridge: true },
   { code: "C", dates: "July 6 – July 10", month: "Jul", capacity: 24, sold: 11 },
   { code: "D", dates: "July 13 – July 17", month: "Jul", capacity: 24, sold: 8 },
   { code: "E", dates: "July 20 – July 24", month: "Jul", capacity: 24, sold: 14 },
@@ -61,11 +60,9 @@ export default function CampPageClient() {
 
   const basePrice = pricingMode === "early" ? BASE_EARLY : BASE_STANDARD;
 
-  const priceFor = (s: Session) => {
-    if (s.priceOverride && pricingMode === "early") return s.priceOverride;
-    if (s.bridge && pricingMode === "standard") return 400;
-    return basePrice;
-  };
+  const listPriceFor = (_s: Session) => BASE_STANDARD;
+
+  const priceFor = (_s: Session) => basePrice;
 
   const picks = useMemo(
     () => SESSIONS.filter((s) => selected.has(s.code)),
@@ -73,13 +70,17 @@ export default function CampPageClient() {
   );
 
   const cart = useMemo(() => {
-    const base = picks.reduce((sum, p) => sum + priceFor(p), 0);
+    const list = picks.reduce((sum, p) => sum + listPriceFor(p), 0);
+    const earlyBirdDiscount = pricingMode === "early"
+      ? picks.reduce((sum, p) => sum + (listPriceFor(p) - priceFor(p)), 0)
+      : 0;
+    const afterEarlyBird = list - earlyBirdDiscount;
     let bundleDiscount = 0;
     if (picks.length === 2) bundleDiscount = 25 * picks.length;
     else if (picks.length >= 3) bundleDiscount = 50 * picks.length;
-    const total = base - bundleDiscount;
+    const total = afterEarlyBird - bundleDiscount;
     const deposit = Math.round(total / 2);
-    return { base, bundleDiscount, total, deposit };
+    return { list, earlyBirdDiscount, bundleDiscount, total, deposit };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [picks, pricingMode]);
 
@@ -141,21 +142,13 @@ export default function CampPageClient() {
             <div className="hero-video">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=1200&q=80"
-                alt="Young musicians on stage"
+                src="/images/camp/showcase-hero.png"
+                alt="Campers rehearsing in the WSM band room"
                 style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
               />
-              <button
-                className="play"
-                aria-label="Play highlight reel"
-                onClick={() => alert("Demo only — would open the Friday Showcase highlight video. Drop in a real Vimeo/YouTube embed here.")}
-              >
-                <svg viewBox="0 0 24 24" fill="none"><path d="M8 5v14l11-7L8 5Z" fill="currentColor" /></svg>
-              </button>
               <div className="caption">
-                <span className="tag">Watch · 0:90</span>
-                <h4>Friday Showcase Highlight</h4>
-                <p>Last summer&rsquo;s session closing set — what your child&rsquo;s week builds toward.</p>
+                <h4>Real bands. Real instruments. Real rehearsals.</h4>
+                <p>Campers spend the week in our Wynwood studio — not a classroom — building the set they&rsquo;ll play on Friday.</p>
               </div>
             </div>
           </div>
@@ -167,20 +160,20 @@ export default function CampPageClient() {
         <div className="container">
           <div className="proof-inner">
             <div className="proof-item">
-              <div className="num">12</div>
+              <div className="num">7</div>
               <div className="copy">Years teaching musicians<br />in Miami</div>
             </div>
             <div className="proof-item">
-              <div className="num">500+</div>
+              <div className="num">900+</div>
               <div className="copy">Kids who have<br />played our stage</div>
             </div>
             <div className="proof-item">
-              <div className="num">7</div>
+              <div className="num">8</div>
               <div className="copy">Weekly sessions<br />all summer long</div>
             </div>
             <div className="proof-item">
-              <div className="num">4.9★</div>
-              <div className="copy">Parent rating<br />across 80+ reviews</div>
+              <div className="num">5.0★</div>
+              <div className="copy">Across 70+<br />Google reviews</div>
             </div>
           </div>
         </div>
@@ -232,7 +225,7 @@ export default function CampPageClient() {
               <h2 className="display h2">Meet the <em>people</em> teaching your kid</h2>
             </div>
             <p className="kicker" style={{ maxWidth: 320, color: "var(--muted)" }}>
-              Every instructor is a working, gigging musician who teaches because they love it — not because they&rsquo;re between jobs.
+              Every instructor is a working, gigging musician who teaches because they remember being the kid who needed it.
             </p>
           </div>
           <div className="instructors-grid">
@@ -245,11 +238,7 @@ export default function CampPageClient() {
               <div key={i.name} className="instructor reveal">
                 <div className="instructor-photo">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={i.img}
-                    alt={i.name}
-                    style={i.imgScale ? { transform: `scale(${i.imgScale})`, transformOrigin: "center" } : undefined}
-                  />
+                  <img src={i.img} alt={i.name} />
                   <span className="badge">{i.badge}</span>
                 </div>
                 <h4>{i.name}</h4>
@@ -430,9 +419,15 @@ export default function CampPageClient() {
               ) : (
                 <>
                   <div className="line">
-                    <span>{picks.length} session{picks.length > 1 ? "s" : ""} · {pricingMode === "early" ? "Early Bird" : "Standard"}</span>
-                    <span>${cart.base}</span>
+                    <span>{picks.length} session{picks.length > 1 ? "s" : ""} · ${BASE_STANDARD} each</span>
+                    <span>${cart.list}</span>
                   </div>
+                  {cart.earlyBirdDiscount > 0 && (
+                    <div className="line discount">
+                      <span>Early Bird discount</span>
+                      <span>−${cart.earlyBirdDiscount}</span>
+                    </div>
+                  )}
                   {cart.bundleDiscount > 0 && (
                     <div className="line discount">
                       <span>Bundle discount ({picks.length}-week)</span>
@@ -498,23 +493,18 @@ export default function CampPageClient() {
               <div className="section-number">— 06</div>
               <h2 className="display h2">What camp <em>families say</em></h2>
             </div>
-            <p className="kicker" style={{ maxWidth: 320, color: "var(--muted)" }}>
-              Every quote below is from a parent whose child came to WSM Camp in the last two summers.
-            </p>
           </div>
           <div className="testimonials-grid">
             {[
-              { quote: "My daughter hadn't touched an instrument before. On Friday she was singing lead in a 5-piece band. I was in tears.", who: "Elena R.", role: "Parent, Session B 2025", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80" },
-              { quote: "The instructors get the kids. My son asked if he could come back for a second week after day three. He's been to three camps — this is the one that stuck.", who: "David O.", role: "Parent, Sessions A + C 2025", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80" },
-              { quote: "Worth every dollar. The Friday showcase is unlike any \"kid recital\" you've ever been to — it feels like an actual show. And the aftercare is a lifesaver.", who: "Priya K.", role: "Parent, Session E 2024 & Session D 2025", img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=200&q=80" },
+              { quote: "My daughter hadn't touched an instrument before. On Friday she was singing lead in a 5-piece band. I was in tears.", who: "Elena R.", role: "Parent, Session B 2025" },
+              { quote: "The instructors get the kids. My son asked if he could come back for a second week after day three. He's been to a bunch of camps over the past few years, but this is the one that stuck.", who: "David O.", role: "Parent, Sessions A + C 2025" },
+              { quote: "Worth every dollar. The Friday showcase is unlike any \"kid recital\" you've been to. It feels like an actual show. And the aftercare is a lifesaver.", who: "Priya K.", role: "Parent, Session E 2024 & Session D 2025" },
             ].map((t) => (
               <div key={t.who} className="testimonial reveal">
                 <div className="stars">★★★★★</div>
                 <span className="quote-mark">&ldquo;</span>
                 <blockquote>{t.quote}</blockquote>
                 <div className="who">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={t.img} alt={t.who} />
                   <div>
                     <strong>{t.who}</strong>
                     <small>{t.role}</small>
@@ -539,11 +529,11 @@ export default function CampPageClient() {
             <ul className="faq-list">
               {[
                 { q: "Does my child need prior experience playing an instrument?", a: "Absolutely not. The camp is for every skill level. Beginners and advanced students are placed into small groups with musicians at a similar level — no one gets lost and no one gets held back.", open: true },
-                { q: "Which instruments can my child enroll in?", a: "Voice, guitar, keyboard, bass, and drums. If your child plays something else and wants to join, email us — we can often accommodate." },
+                { q: "Which instruments can my child enroll in?", a: "Voice, guitar, keyboard, bass, and drums. If your child plays something else and wants to join, reach out — we'll do our best to accommodate, but only if it's going to be an amazing experience for your student and for the rest of the kids in the camp." },
                 { q: "Does my child need to bring their own instrument?", a: "We encourage it (practicing on the same instrument you rehearse on matters), but we have loaner instruments on a first-come basis for families who don't have one yet." },
                 { q: "How does registration and payment work?", a: "You pick your sessions above and check out online with a 50% deposit. The remaining balance is charged to the card on file on the first day of each session. No phone tag, no contact forms." },
                 { q: "What's your cancellation policy?", a: "Cancel 14+ days before your session starts and you get a full refund of the deposit. 7–13 days: 50% refund. 0–6 days: the deposit is non-refundable." },
-                { q: "Will there be lunch and breaks?", a: "Yes. Lunch + Community Hour runs 12:15–1:15 daily. Kids bring their own lunch or order delivery as a group. This is also when friendships form — which, no exaggeration, is half the reason kids come back." },
+                { q: "Will there be lunch and breaks?", a: "Yes. Lunch + Community Hour runs 12:15–1:15 daily. Kids bring their own lunch or order delivery as a group. This is also when friendships form — which is half the reason kids come back." },
                 { q: "Do you offer aftercare?", a: "Yes — 3:30–5:00 PM, $25/day, no commitment. Add it day-of or for the whole week. Private lessons after camp are also available (separate program/cost)." },
                 { q: "Where can we park?", a: "A parking lot is available along the western wall of the school. Additional parking along 29th Street and 13th Ave." },
               ].map((f) => (
@@ -598,9 +588,15 @@ export default function CampPageClient() {
                 {picks.map((p) => (
                   <div key={p.code} className="line">
                     <span>Session {p.code} · {p.dates}</span>
-                    <span>${priceFor(p)}</span>
+                    <span>${listPriceFor(p)}</span>
                   </div>
                 ))}
+                {cart.earlyBirdDiscount > 0 && (
+                  <div className="line" style={{ color: "var(--yellow)" }}>
+                    <span>Early Bird discount</span>
+                    <span>−${cart.earlyBirdDiscount}</span>
+                  </div>
+                )}
                 {cart.bundleDiscount > 0 && (
                   <div className="line" style={{ color: "var(--yellow)" }}>
                     <span>Bundle discount</span>
