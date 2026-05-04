@@ -9,10 +9,12 @@ export const metadata = {
     "Meet the team behind Wynwood School of Music — founders Zach Larmer and Sammy Gonzalez Zeira, plus our world-class instructors.",
 };
 
-const instructors = [
+type Instructor = { name: string; role: string; imageSrc: string; slug: string; imagePosition?: string };
+
+const instructors: Instructor[] = [
   { name: "Leo Cattani", role: "Keyboard, Trumpet, Music Theory", imageSrc: "/images/team/leo-cattani.png", slug: "leo-cattani" },
   { name: "Alex Ibanez", role: "Drums, Percussion", imageSrc: "/images/team/alex-ibanez.png", slug: "alex-ibanez" },
-  { name: "Vale Pe\u00f1aranda", role: "Voice, Keyboard, Music Production, Songwriting", imageSrc: "/images/team/vale-penaranda.jpg", slug: "vale-penaranda" },
+  { name: "Vale Pe\u00f1aranda", role: "Voice, Keyboard, Music Production, Songwriting", imageSrc: "/images/team/vale-penaranda.jpg", slug: "vale-penaranda", imagePosition: "center 22%" },
   { name: "Augusto Di Catarina", role: "Voice, Guitar, Bass, Keyboard, Ukulele", imageSrc: "/images/team/augusto-di-catarina.png", slug: "augusto-di-catarina" },
   { name: "Renzo Vargas", role: "Drums, Percussion", imageSrc: "/images/team/renzo-vargas.png", slug: "renzo-vargas" },
   { name: "Angel Perez", role: "Keyboard, Music Theory", imageSrc: "/images/team/angel-perez.jpg", slug: "angel-perez" },
@@ -154,6 +156,7 @@ export default function TeamPage() {
                   name={instructor.name}
                   role={instructor.role}
                   imageSrc={instructor.imageSrc}
+                  imagePosition={instructor.imagePosition}
                   buttonLabel={hasBio ? `About ${instructor.name.split(" ")[0]}` : undefined}
                   buttonHref={hasBio ? `/team/${instructor.slug}` : undefined}
                 />

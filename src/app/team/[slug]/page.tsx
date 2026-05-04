@@ -94,6 +94,7 @@ export default async function BioPage({
                   fill
                   sizes="(min-width: 768px) 260px, 80vw"
                   className="object-cover"
+                  style={bio.portraitPosition ? { objectPosition: bio.portraitPosition } : undefined}
                   priority
                 />
               </div>

@@ -3,6 +3,7 @@ export interface TeamBio {
   name: string;
   role: string;
   portraitSrc: string;
+  portraitPosition?: string;
   bioParagraphs: string[];
   philosophy?: string;
   social?: string;
@@ -41,6 +42,7 @@ export const teamBios: TeamBio[] = [
     name: "Vale Peñaranda",
     role: "Voice, Keyboard, Music Production, Songwriting",
     portraitSrc: "/images/team/bios/vale-penaranda.jpg",
+    portraitPosition: "center 22%",
     bioParagraphs: [
       "Vale Peñaranda is a Bolivian artist based in Miami—a singer-songwriter, producer, arranger, sound engineer, and classically trained pianist who began her musical journey at age 10.",
       "Her work blends pop, Latin rock, and soul, and she has performed on international stages, including the Suena Caracas Festival and the Berklee Performance Center.",
