@@ -40,6 +40,8 @@ export default function ContactForm() {
     parentEmail: "",
     hearAboutUs: "",
   });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement>
   ) {
@@ -56,11 +58,31 @@ export default function ContactForm() {
     }));
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (guard.isLikelyBot()) return;
-    console.log("Contact form submitted:", { ...formData, ...guard.payload() });
-    router.push("/thank-you");
+    if (submitting) return;
+
+    setSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ...formData, ...guard.payload() }),
+      });
+      if (!res.ok) {
+        throw new Error(`Submission failed (${res.status})`);
+      }
+      router.push("/thank-you");
+    } catch (err) {
+      console.error("Contact form submit error:", err);
+      setSubmitError(
+        "Something went wrong sending your message. Please try again or email info@wynwoodschoolofmusic.com."
+      );
+      setSubmitting(false);
+    }
   }
 
   const inputClass =
@@ -285,11 +307,17 @@ export default function ContactForm() {
 
       {/* Submit */}
       <div className="pt-4 text-center">
+        {submitError && (
+          <p className="font-body text-red-300 text-sm mb-4" role="alert">
+            {submitError}
+          </p>
+        )}
         <button
           type="submit"
-          className="inline-block rounded-full bg-wsm-accent text-white px-10 py-3 text-sm font-semibold uppercase tracking-wider hover:bg-wsm-accent-hover transition-colors"
+          disabled={submitting}
+          className="inline-block rounded-full bg-wsm-accent text-white px-10 py-3 text-sm font-semibold uppercase tracking-wider hover:bg-wsm-accent-hover transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          Sign Up
+          {submitting ? "Sending…" : "Sign Up"}
         </button>
       </div>
     </form>

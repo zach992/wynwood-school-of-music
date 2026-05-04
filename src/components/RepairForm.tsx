@@ -36,6 +36,8 @@ export default function RepairForm() {
     services: [] as string[],
   });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
@@ -51,11 +53,27 @@ export default function RepairForm() {
     }));
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (guard.isLikelyBot()) return;
-    console.log("Repair form submitted:", { ...formData, ...guard.payload() });
-    setSubmitted(true);
+    if (submitting) return;
+    setSubmitting(true);
+    setSubmitError(null);
+    try {
+      const res = await fetch("/api/repair", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ...formData, ...guard.payload() }),
+      });
+      if (!res.ok) throw new Error(`Submission failed (${res.status})`);
+      setSubmitted(true);
+    } catch (err) {
+      console.error("Repair form submit error:", err);
+      setSubmitError(
+        "Something went wrong submitting your request. Please try again or email info@wynwoodschoolofmusic.com."
+      );
+      setSubmitting(false);
+    }
   }
 
   if (submitted) {
@@ -151,11 +169,17 @@ export default function RepairForm() {
 
       {/* Submit */}
       <div className="pt-4">
+        {submitError && (
+          <p className="font-body text-red-300 text-sm mb-4" role="alert">
+            {submitError}
+          </p>
+        )}
         <button
           type="submit"
-          className="inline-block rounded-full bg-wsm-accent text-white px-10 py-3 text-sm font-semibold uppercase tracking-wider hover:bg-wsm-accent-hover transition-colors"
+          disabled={submitting}
+          className="inline-block rounded-full bg-wsm-accent text-white px-10 py-3 text-sm font-semibold uppercase tracking-wider hover:bg-wsm-accent-hover transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          Submit
+          {submitting ? "Submitting…" : "Submit"}
         </button>
       </div>
     </form>
