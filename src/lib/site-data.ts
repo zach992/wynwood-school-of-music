@@ -66,16 +66,8 @@ export const navLinks = [
   {
     label: "Summer Camp",
     href: "/musicperformancecamp",
-    children: [
-      { label: "Music Performance Camp", href: "/musicperformancecamp" },
-    ],
+    highlight: true,
   },
-  {
-    label: "Recitals",
-    href: "/recitals",
-    children: [
-      { label: "Tickets - Spring 2026", href: "/recitals" },
-    ],
-  },
+  { label: "Recitals", href: "/recitals" },
   { label: "Contact Us", href: "/contact" },
 ];

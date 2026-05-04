@@ -51,7 +51,11 @@ export default function Header() {
                 <Link
                   href={link.href}
                   className={`px-3 py-2 text-sm font-heading uppercase tracking-wider transition-colors ${
-                    isActive ? "text-wsm-accent" : "text-white hover:text-wsm-accent"
+                    link.highlight
+                      ? "text-[#ffd84d] hover:text-[#fff0a0]"
+                      : isActive
+                      ? "text-wsm-accent"
+                      : "text-white hover:text-wsm-accent"
                   }`}
                 >
                   {link.label}

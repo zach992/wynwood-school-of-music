@@ -37,7 +37,11 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                   href={link.href}
                   onClick={onClose}
                   className={`py-3 text-sm font-heading uppercase tracking-wider transition-colors ${
-                    isActive ? "text-wsm-accent" : "text-white hover:text-wsm-accent"
+                    link.highlight
+                      ? "text-[#ffd84d] hover:text-[#fff0a0]"
+                      : isActive
+                      ? "text-wsm-accent"
+                      : "text-white hover:text-wsm-accent"
                   }`}
                 >
                   {link.label}
