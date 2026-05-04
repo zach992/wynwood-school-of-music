@@ -5,6 +5,8 @@ import type { Metadata } from "next";
 import { teamBios } from "@/lib/team-bios";
 import Button from "@/components/Button";
 
+const SITE_URL = "https://www.wynwoodschoolofmusic.com";
+
 export function generateStaticParams() {
   return teamBios
     .filter((b) => b.bioParagraphs.length > 0)
@@ -36,8 +38,39 @@ export default async function BioPage({
   const bio = teamBios.find((b) => b.slug === slug);
   if (!bio || bio.bioParagraphs.length === 0) notFound();
 
+  const personSchema = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": `${SITE_URL}/team/${bio.slug}#person`,
+    name: bio.name,
+    url: `${SITE_URL}/team/${bio.slug}`,
+    image: `${SITE_URL}${bio.portraitSrc}`,
+    jobTitle: bio.isFounder ? "Co-Founder & Music Instructor" : "Music Instructor",
+    description: bio.bioParagraphs[0],
+    knowsAbout: bio.role.split(",").map((s) => s.trim()).filter(Boolean),
+    worksFor: { "@id": `${SITE_URL}#organization` },
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Team", item: `${SITE_URL}/team` },
+      { "@type": "ListItem", position: 3, name: bio.name, item: `${SITE_URL}/team/${bio.slug}` },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       {/* Back link */}
       <section className="bg-wsm-dark px-4 pt-8">
         <div className="max-w-5xl mx-auto">

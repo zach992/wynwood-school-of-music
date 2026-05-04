@@ -1,9 +1,9 @@
 import Image from "next/image";
 
 export const metadata = {
-  title: "Testimonials",
+  title: "Student & Parent Testimonials",
   description:
-    "Hear from current students, alumni, and parents about their experiences at the Wynwood School of Music.",
+    "Hear from current students, alumni, and parents about their experiences taking music lessons at the Wynwood School of Music in Miami.",
   alternates: { canonical: "/testimonials" },
 };
 

@@ -3,9 +3,9 @@ import Button from "@/components/Button";
 import SectionMark from "@/components/SectionMark";
 
 export const metadata = {
-  title: "Our Bands",
+  title: "Band Programs for Kids & Teens in Miami",
   description:
-    "Explore our band programs at Wynwood School of Music. Four levels from intro to advanced, designed so musicians at any stage can be part of a real band.",
+    "Band programs for kids and teens in Miami at Wynwood School of Music. Four levels from intro to advanced, designed so musicians at any stage can be part of a real band.",
   alternates: { canonical: "/our-bands" },
 };
 

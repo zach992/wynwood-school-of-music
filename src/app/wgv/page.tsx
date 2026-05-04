@@ -5,6 +5,7 @@ export const metadata = {
   title: "Walt Grace Vintage Lesson Signup",
   description:
     "Congratulations on your Walt Grace Vintage purchase! Redeem your free 30-minute lesson at the Wynwood School of Music.",
+  robots: { index: false, follow: true },
 };
 
 export default function WgvPage() {

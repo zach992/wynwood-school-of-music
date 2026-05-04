@@ -2,9 +2,9 @@ import Image from "next/image";
 import Button from "@/components/Button";
 
 export const metadata = {
-  title: "Private Lessons",
+  title: "Private Music Lessons in Miami — Guitar, Piano, Drums, Voice & More",
   description:
-    "Private music lessons for all ages at the Wynwood School of Music. One-on-one instruction with professional musicians in Miami's Wynwood Art District.",
+    "Private music lessons for all ages in Miami — guitar, piano, drums, voice, bass, saxophone, violin and more. One-on-one instruction with professional musicians in Wynwood.",
   alternates: { canonical: "/private-lessons" },
 };
 
@@ -28,11 +28,51 @@ export default function PrivateLessonsPage() {
             Learn. Grow. Perform.
           </h2>
           <p className="font-body text-wsm-gray text-base leading-relaxed">
-            Students of all ages work one on one with professional musicians to
-            build skills and confidence that lead to real performances and
-            playing with others. As students grow, lessons naturally open the
-            door to bands, recitals, and live shows. Each lesson helps turn
-            practice into real musical experiences on stage and beyond.
+            Students of all ages take private music lessons one on one with
+            professional musicians in Miami&rsquo;s Wynwood Art District. We
+            teach guitar, piano, drums, voice, bass, saxophone, violin, and
+            more &mdash; building the skills and confidence that lead to real
+            performances and playing with others. As students grow, lessons
+            naturally open the door to bands, recitals, and live shows. Each
+            lesson helps turn practice into real musical experiences on stage
+            and beyond.
+          </p>
+        </div>
+      </section>
+
+      {/* Instruments We Teach */}
+      <section className="bg-wsm-dark px-4 py-12 md:py-16">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="font-heading text-2xl md:text-3xl uppercase font-black text-white mb-8">
+            Instruments We Teach
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
+            {[
+              { name: "Guitar Lessons", desc: "Acoustic, electric, classical." },
+              { name: "Piano & Keyboard", desc: "Classical, pop, jazz, theory." },
+              { name: "Drum Lessons", desc: "Rock, jazz, Latin, fundamentals." },
+              { name: "Voice Lessons", desc: "Pop, musical theater, classical." },
+              { name: "Bass Lessons", desc: "Electric & upright, all genres." },
+              { name: "Saxophone", desc: "Jazz, classical, contemporary." },
+              { name: "Strings", desc: "Violin, viola, and cello." },
+              { name: "Music Production", desc: "Songwriting & recording." },
+            ].map((i) => (
+              <div
+                key={i.name}
+                className="border border-wsm-gray-dark rounded p-4 md:p-5"
+              >
+                <h3 className="font-heading text-sm md:text-base uppercase font-black text-white mb-1 tracking-wide">
+                  {i.name}
+                </h3>
+                <p className="font-body text-wsm-gray text-xs md:text-sm leading-snug">
+                  {i.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+          <p className="font-body text-wsm-gray text-sm leading-relaxed mt-6 italic">
+            Don&rsquo;t see your instrument? Reach out &mdash; our team of
+            instructors covers a wide range of styles and instruments.
           </p>
         </div>
       </section>

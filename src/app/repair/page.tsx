@@ -2,9 +2,9 @@ import Image from "next/image";
 import RepairForm from "@/components/RepairForm";
 
 export const metadata = {
-  title: "Repair",
+  title: "Guitar, Bass & Amp Repair in Miami",
   description:
-    "Guitar, bass, and amplifier repair services at the Wynwood School of Music in Miami. Quick turnaround, reasonable prices, and expert service.",
+    "Guitar, bass, and amplifier repair services in Miami at the Wynwood School of Music. Quick turnaround, reasonable prices, and expert service.",
   alternates: { canonical: "/repair" },
 };
 

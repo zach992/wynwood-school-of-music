@@ -4,6 +4,7 @@ export const metadata = {
   title: "Thank You",
   description:
     "Your inquiry has been received. Here's what to expect next from the Wynwood School of Music team.",
+  robots: { index: false, follow: true },
 };
 
 const nextSteps = [

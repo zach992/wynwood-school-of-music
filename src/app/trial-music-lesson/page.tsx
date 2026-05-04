@@ -2,9 +2,10 @@ import Image from "next/image";
 import TrialLessonForm from "@/components/TrialLessonForm";
 
 export const metadata = {
-  title: "Play Your First Song in 30 Days — Guaranteed",
+  title: "Free Trial Music Lesson in Miami — Play Your First Song in 30 Days",
   description:
-    "Try a free private music lesson at Wynwood School of Music. Expert instructors, flexible times, and an easy plan to get you playing music you love.",
+    "Try a free private music lesson in Miami at Wynwood School of Music. Expert instructors, flexible times, and an easy plan to get you playing music you love.",
+  alternates: { canonical: "/trial-music-lesson" },
 };
 
 const benefits = [
@@ -75,8 +76,22 @@ const nextSteps = [
 ];
 
 export default function TrialMusicLessonPage() {
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       {/* Hero */}
       <section className="bg-wsm-dark px-4 pt-10 md:pt-14 pb-12">
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">

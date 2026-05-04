@@ -4,6 +4,7 @@ export const metadata = {
   title: "Thanks for Signing Up — Summer Camp",
   description:
     "Your summer camp signup has been received. Our team will reach out within 2 business days.",
+  robots: { index: false, follow: true },
 };
 
 export default function SummerCampThankYouPage() {

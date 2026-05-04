@@ -4,10 +4,17 @@ import Button from "./Button";
 
 const quickLinks = [
   { label: "Home", href: "/" },
-  { label: "Contact Us", href: "/contact" },
   { label: "About Us", href: "/our-story" },
   { label: "Team", href: "/team" },
-  { label: "Programs", href: "/programs-and-pricing" },
+  { label: "Programs & Pricing", href: "/programs-and-pricing" },
+  { label: "Private Lessons", href: "/private-lessons" },
+  { label: "Band Programs", href: "/our-bands" },
+  { label: "Summer Camp", href: "/musicperformancecamp" },
+  { label: "Recitals", href: "/recitals" },
+  { label: "Repair", href: "/repair" },
+  { label: "Friends of WSM", href: "/friendsofwsm" },
+  { label: "Testimonials", href: "/testimonials" },
+  { label: "Contact Us", href: "/contact" },
   { label: "Privacy Policy", href: "/privacy-policy" },
 ];
 

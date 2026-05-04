@@ -15,9 +15,9 @@ const facilityImages = [
 ];
 
 export const metadata = {
-  title: "Our Story",
+  title: "About Us — Miami's Wynwood Art District",
   description:
-    "Learn about the Wynwood School of Music, founded by Sammy Gonzalez Zeira and Zach Larmer in the heart of Miami's art district.",
+    "Learn about the Wynwood School of Music, founded by Sammy Gonzalez Zeira and Zach Larmer in the heart of Miami's Wynwood Art District.",
   alternates: { canonical: "/our-story" },
 };
 

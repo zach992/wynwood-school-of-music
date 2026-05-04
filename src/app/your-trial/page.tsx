@@ -2,6 +2,7 @@ export const metadata = {
   title: "Thank You — Trial Lesson Confirmed",
   description:
     "Your free trial lesson request has been received. Here's exactly what to expect from the Wynwood School of Music team.",
+  robots: { index: false, follow: true },
 };
 
 const nextSteps = [

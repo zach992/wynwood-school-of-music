@@ -11,9 +11,9 @@ const recipientImages = [
 ];
 
 export const metadata = {
-  title: "Friends of WSM",
+  title: "Friends of WSM — Music Scholarship Program",
   description:
-    "Friends of the Wynwood School of Music breaks down financial barriers so young musicians can pursue their passion as a pathway to college and career.",
+    "Friends of the Wynwood School of Music is a scholarship program that breaks down financial barriers so young musicians in Miami can pursue music as a pathway to college and career.",
   alternates: { canonical: "/friendsofwsm" },
 };
 

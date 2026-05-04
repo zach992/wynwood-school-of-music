@@ -4,6 +4,7 @@ export const metadata = {
   title: "Deposit Received — Summer Camp",
   description:
     "Your camp deposit has been received. We'll be in touch with next steps and the balance invoice.",
+  robots: { index: false, follow: true },
 };
 
 export default function CampDepositThankYouPage() {

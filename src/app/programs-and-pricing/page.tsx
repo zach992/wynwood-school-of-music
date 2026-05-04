@@ -2,9 +2,9 @@ import Image from "next/image";
 import Button from "@/components/Button";
 
 export const metadata = {
-  title: "Programs & Pricing",
+  title: "Music Lesson Programs & Pricing in Miami",
   description:
-    "Explore private lessons and band programs at the Wynwood School of Music. Led by professional musicians in Miami's Wynwood Art District.",
+    "Private lesson and band program pricing at the Wynwood School of Music in Miami. Led by professional musicians in the Wynwood Art District.",
   alternates: { canonical: "/programs-and-pricing" },
 };
 

@@ -4,9 +4,9 @@ import TeamMemberCard from "@/components/TeamMemberCard";
 import { teamBios } from "@/lib/team-bios";
 
 export const metadata = {
-  title: "Team",
+  title: "Music Instructors in Miami",
   description:
-    "Meet the team behind Wynwood School of Music — founders Zach Larmer and Sammy Gonzalez Zeira, plus our world-class instructors.",
+    "Meet the music instructors at Wynwood School of Music in Miami — founders Zach Larmer and Sammy Gonzalez Zeira, plus our team of professional teachers.",
   alternates: { canonical: "/team" },
 };
 
