@@ -194,20 +194,8 @@ export default function CampPageClient() {
                 <span className="tick" />
                 <span className="eyebrow">Music Performance Camp · Summer 2026</span>
               </div>
-              <h1 className="display h1 hero-headline">
-                <span className="line">
-                  <span className="word" style={{ ["--d" as string]: "0.05s" }}>Your</span>{" "}
-                  <span className="word" style={{ ["--d" as string]: "0.18s" }}>child</span>
-                </span>
-                <span className="line">
-                  <span className="word" style={{ ["--d" as string]: "0.30s" }}>steps</span>{" "}
-                  <span className="word" style={{ ["--d" as string]: "0.42s" }}>on</span>
-                </span>
-                <span className="line">
-                  <em className="word italic-finale" style={{ ["--d" as string]: "0.58s" }}>
-                    the stage.
-                  </em>
-                </span>
+              <h1 className="display h1">
+                Your child<br />steps on<br /><em>the stage.</em>
               </h1>
               <p className="hero-sub">
                 A week-long, fully immersive camp where 8–14 year-olds learn like real musicians — band rehearsals, sectionals, workshops, and a live Friday showcase in the heart of Wynwood.
@@ -248,10 +236,6 @@ export default function CampPageClient() {
                 alt="Campers rehearsing in the WSM band room"
                 style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
               />
-              <div className="caption">
-                <h4>Real bands. Real instruments. Real rehearsals.</h4>
-                <p>Campers spend the week in our Wynwood studio — not a classroom — building the set they&rsquo;ll play on Friday.</p>
-              </div>
             </div>
           </div>
         </div>
