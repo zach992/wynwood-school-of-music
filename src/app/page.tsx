@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Button from "@/components/Button";
 import HeroCarousel, { type HeroCarouselImage } from "@/components/HeroCarousel";
 import ParallaxImage from "@/components/ParallaxImage";
+
+export const metadata: Metadata = {
+  title: "Wynwood School of Music | Music Lessons in Miami",
+  description:
+    "Music lessons and band programs in the heart of Miami's Wynwood Art District. Private lessons, band programs, and summer camp for ages 6 and up.",
+  alternates: { canonical: "/" },
+};
 
 const heroImages: HeroCarouselImage[] = [
   {

@@ -5,6 +5,7 @@ export const metadata = {
   title: "Programs & Pricing",
   description:
     "Explore private lessons and band programs at the Wynwood School of Music. Led by professional musicians in Miami's Wynwood Art District.",
+  alternates: { canonical: "/programs-and-pricing" },
 };
 
 export default function ProgramsAndPricingPage() {

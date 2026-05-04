@@ -659,15 +659,25 @@ export default function CampPageClient() {
 
             <div className="email-card">
               <h4>Not quite ready?</h4>
-              <p>Get camp updates, early-bird windows, and behind-the-scenes from our Friday showcases. One email a month — no spam.</p>
+              <p>Enter your info and someone from our team will be in touch within 24 hours to answer your questions.</p>
               <form
                 className={`email-form${emailDone ? " done" : ""}`}
-                onSubmit={(e) => { e.preventDefault(); setEmailDone(true); }}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const fd = new FormData(e.currentTarget);
+                  console.log("camp lead form", {
+                    parentName: fd.get("parentName"),
+                    parentEmail: fd.get("parentEmail"),
+                    parentPhone: fd.get("parentPhone"),
+                  });
+                  setEmailDone(true);
+                }}
               >
-                <input type="text" placeholder="Parent's first name" required />
-                <input type="email" placeholder="Email address" required />
-                <button type="submit">Keep me posted</button>
-                <div className="success">✓ You&rsquo;re on the list. See you Friday.</div>
+                <input type="text" name="parentName" placeholder="Parent's full name" autoComplete="name" required />
+                <input type="email" name="parentEmail" placeholder="Email" autoComplete="email" required />
+                <input type="tel" name="parentPhone" placeholder="Phone" autoComplete="tel" required />
+                <button type="submit">Request info</button>
+                <div className="success">✓ Thanks — we&rsquo;ll be in touch within 24 hours.</div>
               </form>
             </div>
           </div>
