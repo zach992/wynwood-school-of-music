@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { airtableCreate } from "@/lib/airtable";
 import { sendFormNotification } from "@/lib/email";
 import { buildContactEmail } from "@/lib/email-templates";
+import { mailchimpUpsertSubscriber } from "@/lib/mailchimp";
 
 function esc(value: unknown): string {
   if (value === null || value === undefined) return "";
@@ -137,6 +138,16 @@ export async function POST(req: NextRequest) {
     ? sendFormNotification(buildContactEmail(payload, studentAge))
     : Promise.reject(new Error("RESEND_API_KEY not set"));
 
+  const mailchimpPromise: Promise<unknown> =
+    process.env.MAILCHIMP_API_KEY && typeof payload.parentEmail === "string" && payload.parentEmail
+      ? mailchimpUpsertSubscriber({
+          email: payload.parentEmail,
+          firstName: typeof payload.parentFirstName === "string" ? payload.parentFirstName : undefined,
+          lastName: typeof payload.parentLastName === "string" ? payload.parentLastName : undefined,
+          tags: ["Lead — Contact Form", ...subjectsArr.map((s) => `Instrument — ${s}`)],
+        })
+      : Promise.reject(new Error("MAILCHIMP_API_KEY not set or no parent email"));
+
   const webhookUrl = process.env.ZAPIER_CONTACT_WEBHOOK_URL;
   const zapierPromise: Promise<unknown> = webhookUrl
     ? fetch(webhookUrl, {
@@ -149,9 +160,10 @@ export async function POST(req: NextRequest) {
       })
     : Promise.reject(new Error("ZAPIER_CONTACT_WEBHOOK_URL not set"));
 
-  const [airtableRes, emailRes, zapierRes] = await Promise.allSettled([
+  const [airtableRes, emailRes, mailchimpRes, zapierRes] = await Promise.allSettled([
     airtablePromise,
     emailPromise,
+    mailchimpPromise,
     zapierPromise,
   ]);
 
@@ -161,12 +173,15 @@ export async function POST(req: NextRequest) {
   if (emailRes.status === "rejected") {
     console.error("[api/contact] Resend email failed:", emailRes.reason);
   }
+  if (mailchimpRes.status === "rejected") {
+    console.error("[api/contact] Mailchimp subscribe failed:", mailchimpRes.reason);
+  }
   if (zapierRes.status === "rejected") {
     console.error("[api/contact] Zapier forward failed:", zapierRes.reason);
   }
 
-  if (airtableRes.status === "rejected" && emailRes.status === "rejected" && zapierRes.status === "rejected") {
-    return new Response(JSON.stringify({ error: "All destinations failed" }), {
+  if (airtableRes.status === "rejected" && emailRes.status === "rejected") {
+    return new Response(JSON.stringify({ error: "Critical destinations failed" }), {
       status: 502,
       headers: { "content-type": "application/json" },
     });

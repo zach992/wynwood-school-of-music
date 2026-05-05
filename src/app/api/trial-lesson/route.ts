@@ -3,6 +3,7 @@ import { airtableCreate } from "@/lib/airtable";
 import { sendFormNotification } from "@/lib/email";
 import { buildTrialEmail } from "@/lib/email-templates";
 import { calcAge, checkSpamGuard, joinNonEmpty } from "@/lib/form-utils";
+import { mailchimpUpsertSubscriber } from "@/lib/mailchimp";
 
 export async function POST(req: NextRequest) {
   let body: Record<string, unknown>;
@@ -47,6 +48,17 @@ export async function POST(req: NextRequest) {
     sendFormNotification(buildTrialEmail(p, calcAge(p.dob))).catch((err) =>
       console.error("[api/trial-lesson] Resend email failed:", err)
     );
+  }
+
+  if (process.env.MAILCHIMP_API_KEY && typeof p.parentEmail === "string" && p.parentEmail) {
+    const tags = ["Lead — Trial Lesson"];
+    if (typeof p.instrument === "string" && p.instrument) tags.push(`Instrument — ${p.instrument}`);
+    mailchimpUpsertSubscriber({
+      email: p.parentEmail,
+      firstName: typeof p.parentFirstName === "string" ? p.parentFirstName : undefined,
+      lastName: typeof p.parentLastName === "string" ? p.parentLastName : undefined,
+      tags,
+    }).catch((err) => console.error("[api/trial-lesson] Mailchimp subscribe failed:", err));
   }
 
   const webhookUrl = process.env.ZAPIER_TRIAL_WEBHOOK_URL;

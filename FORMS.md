@@ -69,11 +69,11 @@ Always return `200 OK` on rejection — never tell the bot why. Logging the reje
 | **Squarespace formId** | `5d14ffd99951790001e3549b` (legacy) |
 | **Status** | ✅ Wired |
 
-**Active destinations:**
-- 📊 **Airtable** — `ALL WSM Leads` base → `Main Contact Form Leads` table. Direct API write from `/api/contact`. Source of truth for long-term tracking.
-- 🔁 **Zapier** — webhook fan-out (`ZAPIER_CONTACT_WEBHOOK_URL`). Zap fans out to:
-  - 📧 Email notification to `info@wynwoodschoolofmusic.com` (formatted via server-built `_emailBody` HTML)
-  - 📬 Mailchimp audience "Wynwood School of Music" (parent contact added as subscriber)
+**Active destinations** (all fired in parallel by `/api/contact`):
+- 📊 **Airtable** — `ALL WSM Leads` base → `Main Contact Form Leads` table.
+- 📧 **Resend email** — formatted HTML notification to `RESEND_NOTIFY_TO` (default `info@wynwoodschoolofmusic.com`).
+- 📬 **Mailchimp** — adds parent as subscriber to audience "Wynwood School of Music" with tags `Lead — Contact Form` + per-instrument tags.
+- 🔁 **Zapier** — webhook (`ZAPIER_CONTACT_WEBHOOK_URL`) → Basecamp to-do for the team.
 
 **Fields:**
 1. Student Name (first + last) — required
@@ -99,9 +99,11 @@ Always return `200 OK` on rejection — never tell the bot why. Logging the reje
 | **Squarespace formId** | `5fa466058043f470711a8bc9` (legacy) |
 | **Status** | ✅ Wired |
 
-**Active destinations:**
-- 📊 Airtable → `Repair Requests` table (direct API write).
-- 🔁 Zapier → optional fan-out via `ZAPIER_REPAIR_WEBHOOK_URL` (not yet configured).
+**Active destinations** (all fired in parallel by `/api/repair`):
+- 📊 Airtable → `Repair Requests` table.
+- 📧 Resend email → `RESEND_NOTIFY_TO`.
+- 📬 Mailchimp → tag `Lead — Repair Request`.
+- 🔁 Zapier (`ZAPIER_REPAIR_WEBHOOK_URL`) → Basecamp to-do.
 
 **Fields:**
 1. Name (first + last) — required
@@ -122,9 +124,11 @@ Always return `200 OK` on rejection — never tell the bot why. Logging the reje
 | **Squarespace formId** | `5ef50bf482b8e941cd6cec71` (legacy) |
 | **Status** | ✅ Wired |
 
-**Active destinations:**
-- 📊 Airtable → `Summer Camp Signups` table (direct API write).
-- 🔁 Zapier → optional fan-out via `ZAPIER_CAMP_WEBHOOK_URL` (not yet configured).
+**Active destinations** (all fired in parallel by `/api/camp-signup`):
+- 📊 Airtable → `Summer Camp Signups` table.
+- 📧 Resend email → `RESEND_NOTIFY_TO`.
+- 📬 Mailchimp → tags `Lead — Summer Camp` + `Instrument — <primary>`.
+- 🔁 Zapier (`ZAPIER_CAMP_WEBHOOK_URL`) → Basecamp to-do.
 
 **Fields:**
 1. Student Name (first + last) — required
@@ -151,9 +155,11 @@ Always return `200 OK` on rejection — never tell the bot why. Logging the reje
 | **Squarespace formId** | `604a6b309195fb6fdfc1ea04` (legacy) |
 | **Status** | ✅ Wired |
 
-**Active destinations:**
-- 📊 Airtable → `Walt Grace Lesson Signups` table (direct API write).
-- 🔁 Zapier → optional fan-out via `ZAPIER_WGV_WEBHOOK_URL` (not yet configured).
+**Active destinations** (all fired in parallel by `/api/wgv`):
+- 📊 Airtable → `Walt Grace Lesson Signups` table.
+- 📧 Resend email → `RESEND_NOTIFY_TO`.
+- 📬 Mailchimp → tags `Lead — Walt Grace` + per-instrument tags.
+- 🔁 Zapier (`ZAPIER_WGV_WEBHOOK_URL`) → Basecamp to-do.
 
 **Notes:** Co-branded landing page for Walt Grace Vintage customers redeeming a free lesson. May warrant a separate recipient (someone at WGV?) or a tag on the same recipient inbox to distinguish leads.
 
@@ -179,9 +185,11 @@ Always return `200 OK` on rejection — never tell the bot why. Logging the reje
 | **Squarespace formId** | `684c72c06f323241b9c962df` (legacy) |
 | **Status** | ✅ Wired |
 
-**Active destinations:**
-- 📊 Airtable → `Pvt Lesson Landing Page Leads` table (direct API write).
-- 🔁 Zapier → optional fan-out via `ZAPIER_TRIAL_WEBHOOK_URL` (not yet configured).
+**Active destinations** (all fired in parallel by `/api/trial-lesson`):
+- 📊 Airtable → `Pvt Lesson Landing Page Leads` table.
+- 📧 Resend email → `RESEND_NOTIFY_TO`.
+- 📬 Mailchimp → tags `Lead — Trial Lesson` + `Instrument — <selected>`.
+- 🔁 Zapier (`ZAPIER_TRIAL_WEBHOOK_URL`) → Basecamp to-do.
 
 **Notes:** This is the ad/landing-page funnel ("Play Your First Song in 30 Days"). Likely tied to paid traffic and may have its own analytics/conversion tracking requirements.
 

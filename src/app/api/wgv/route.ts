@@ -3,6 +3,7 @@ import { airtableCreate } from "@/lib/airtable";
 import { sendFormNotification } from "@/lib/email";
 import { buildWgvEmail } from "@/lib/email-templates";
 import { asArray, calcAge, checkSpamGuard, joinNonEmpty } from "@/lib/form-utils";
+import { mailchimpUpsertSubscriber } from "@/lib/mailchimp";
 
 export async function POST(req: NextRequest) {
   let body: Record<string, unknown>;
@@ -45,6 +46,17 @@ export async function POST(req: NextRequest) {
     sendFormNotification(buildWgvEmail(p, calcAge(p.dob))).catch((err) =>
       console.error("[api/wgv] Resend email failed:", err)
     );
+  }
+
+  if (process.env.MAILCHIMP_API_KEY && typeof p.email === "string" && p.email) {
+    const tags = ["Lead — Walt Grace"];
+    instruments.forEach((i) => tags.push(`Instrument — ${i}`));
+    mailchimpUpsertSubscriber({
+      email: p.email,
+      firstName: typeof p.firstName === "string" ? p.firstName : undefined,
+      lastName: typeof p.lastName === "string" ? p.lastName : undefined,
+      tags,
+    }).catch((err) => console.error("[api/wgv] Mailchimp subscribe failed:", err));
   }
 
   const webhookUrl = process.env.ZAPIER_WGV_WEBHOOK_URL;

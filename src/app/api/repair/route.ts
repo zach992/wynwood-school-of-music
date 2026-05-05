@@ -3,6 +3,7 @@ import { airtableCreate } from "@/lib/airtable";
 import { sendFormNotification } from "@/lib/email";
 import { buildRepairEmail } from "@/lib/email-templates";
 import { asArray, checkSpamGuard } from "@/lib/form-utils";
+import { mailchimpUpsertSubscriber } from "@/lib/mailchimp";
 
 export async function POST(req: NextRequest) {
   let body: Record<string, unknown>;
@@ -40,6 +41,17 @@ export async function POST(req: NextRequest) {
     sendFormNotification(buildRepairEmail(p)).catch((err) =>
       console.error("[api/repair] Resend email failed:", err)
     );
+  }
+
+  if (process.env.MAILCHIMP_API_KEY && typeof p.email === "string" && p.email) {
+    const fullName = typeof p.name === "string" ? p.name.trim() : "";
+    const [firstName, ...lastParts] = fullName.split(/\s+/);
+    mailchimpUpsertSubscriber({
+      email: p.email,
+      firstName,
+      lastName: lastParts.join(" "),
+      tags: ["Lead — Repair Request"],
+    }).catch((err) => console.error("[api/repair] Mailchimp subscribe failed:", err));
   }
 
   const webhookUrl = process.env.ZAPIER_REPAIR_WEBHOOK_URL;
