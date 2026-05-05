@@ -5,6 +5,8 @@ type AddSubscriberOpts = {
   firstName?: string;
   lastName?: string;
   tags?: string[];
+  /** Additional Mailchimp merge field tags (e.g. PHONE, MMERGE6, BIRTHDAY). Empty values are dropped. */
+  mergeFields?: Record<string, string | number | undefined>;
 };
 
 export async function mailchimpUpsertSubscriber(opts: AddSubscriberOpts): Promise<void> {
@@ -27,9 +29,15 @@ export async function mailchimpUpsertSubscriber(opts: AddSubscriberOpts): Promis
   const subscriberHash = crypto.createHash("md5").update(email).digest("hex");
   const url = `https://${dc}.api.mailchimp.com/3.0/lists/${audienceId}/members/${subscriberHash}`;
 
-  const merge_fields: Record<string, string> = {};
+  const merge_fields: Record<string, string | number> = {};
   if (opts.firstName?.trim()) merge_fields.FNAME = opts.firstName.trim();
   if (opts.lastName?.trim()) merge_fields.LNAME = opts.lastName.trim();
+  if (opts.mergeFields) {
+    for (const [k, v] of Object.entries(opts.mergeFields)) {
+      if (v === undefined || v === null || v === "") continue;
+      merge_fields[k] = v;
+    }
+  }
 
   const body = {
     email_address: email,

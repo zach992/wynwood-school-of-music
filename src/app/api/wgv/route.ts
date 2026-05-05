@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { airtableCreate } from "@/lib/airtable";
 import { sendFormNotification } from "@/lib/email";
 import { buildWgvEmail } from "@/lib/email-templates";
-import { asArray, calcAge, checkSpamGuard, joinNonEmpty } from "@/lib/form-utils";
+import { asArray, calcAge, checkSpamGuard, fmtBirthdayMMDD, joinNonEmpty } from "@/lib/form-utils";
 import { mailchimpUpsertSubscriber } from "@/lib/mailchimp";
 
 export async function POST(req: NextRequest) {
@@ -49,12 +49,20 @@ export async function POST(req: NextRequest) {
   }
 
   if (process.env.MAILCHIMP_API_KEY && typeof p.email === "string" && p.email) {
-    const tags = ["Lead — Walt Grace"];
+    const year = new Date().getFullYear();
+    const tags = ["Lead — Walt Grace", `Website Lead ${year}`];
     instruments.forEach((i) => tags.push(`Instrument — ${i}`));
     mailchimpUpsertSubscriber({
       email: p.email,
       firstName: typeof p.firstName === "string" ? p.firstName : undefined,
       lastName: typeof p.lastName === "string" ? p.lastName : undefined,
+      mergeFields: {
+        PHONE: typeof p.phone === "string" ? p.phone : "",
+        MMERGE6: "Walt Grace Vintage",
+        MMERGE7: instruments.join(", "),
+        MMERGE8: studentName,
+        BIRTHDAY: fmtBirthdayMMDD(p.dob),
+      },
       tags,
     }).catch((err) => console.error("[api/wgv] Mailchimp subscribe failed:", err));
   }

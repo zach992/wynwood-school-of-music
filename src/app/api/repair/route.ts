@@ -46,11 +46,16 @@ export async function POST(req: NextRequest) {
   if (process.env.MAILCHIMP_API_KEY && typeof p.email === "string" && p.email) {
     const fullName = typeof p.name === "string" ? p.name.trim() : "";
     const [firstName, ...lastParts] = fullName.split(/\s+/);
+    const year = new Date().getFullYear();
     mailchimpUpsertSubscriber({
       email: p.email,
       firstName,
       lastName: lastParts.join(" "),
-      tags: ["Lead — Repair Request"],
+      mergeFields: {
+        PHONE: typeof p.phone === "string" ? p.phone : "",
+        MMERGE6: "Repair",
+      },
+      tags: ["Lead — Repair Request", `Website Lead ${year}`],
     }).catch((err) => console.error("[api/repair] Mailchimp subscribe failed:", err));
   }
 

@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { airtableCreate } from "@/lib/airtable";
 import { sendFormNotification } from "@/lib/email";
 import { buildTrialEmail } from "@/lib/email-templates";
-import { calcAge, checkSpamGuard, joinNonEmpty } from "@/lib/form-utils";
+import { calcAge, checkSpamGuard, fmtBirthdayMMDD, joinNonEmpty } from "@/lib/form-utils";
 import { mailchimpUpsertSubscriber } from "@/lib/mailchimp";
 
 export async function POST(req: NextRequest) {
@@ -51,12 +51,21 @@ export async function POST(req: NextRequest) {
   }
 
   if (process.env.MAILCHIMP_API_KEY && typeof p.parentEmail === "string" && p.parentEmail) {
-    const tags = ["Lead — Trial Lesson"];
+    const year = new Date().getFullYear();
+    const tags = ["Lead — Trial Lesson", `Website Lead ${year}`];
     if (typeof p.instrument === "string" && p.instrument) tags.push(`Instrument — ${p.instrument}`);
     mailchimpUpsertSubscriber({
       email: p.parentEmail,
       firstName: typeof p.parentFirstName === "string" ? p.parentFirstName : undefined,
       lastName: typeof p.parentLastName === "string" ? p.parentLastName : undefined,
+      mergeFields: {
+        PHONE: typeof p.parentPhone === "string" ? p.parentPhone : "",
+        MMERGE6: "Trial Lesson",
+        MMERGE7: typeof p.instrument === "string" ? p.instrument : "",
+        MMERGE8: studentName,
+        MMERGE9: parentName,
+        BIRTHDAY: fmtBirthdayMMDD(p.dob),
+      },
       tags,
     }).catch((err) => console.error("[api/trial-lesson] Mailchimp subscribe failed:", err));
   }

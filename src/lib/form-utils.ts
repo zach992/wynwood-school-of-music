@@ -25,3 +25,13 @@ export function joinNonEmpty(...parts: unknown[]): string {
 export function asArray(value: unknown): string[] {
   return Array.isArray(value) ? value.map(String) : [];
 }
+
+/** Mailchimp BIRTHDAY merge field expects MM/DD (no year). */
+export function fmtBirthdayMMDD(value: unknown): string | undefined {
+  if (typeof value !== "string" || !value) return undefined;
+  const d = new Date(value);
+  if (isNaN(d.getTime())) return undefined;
+  const mm = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const dd = String(d.getUTCDate()).padStart(2, "0");
+  return `${mm}/${dd}`;
+}

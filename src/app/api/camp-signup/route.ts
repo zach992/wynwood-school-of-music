@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { airtableCreate } from "@/lib/airtable";
 import { sendFormNotification } from "@/lib/email";
 import { buildCampEmail } from "@/lib/email-templates";
-import { asArray, calcAge, checkSpamGuard, joinNonEmpty } from "@/lib/form-utils";
+import { asArray, calcAge, checkSpamGuard, fmtBirthdayMMDD, joinNonEmpty } from "@/lib/form-utils";
 import { mailchimpUpsertSubscriber } from "@/lib/mailchimp";
 
 export async function POST(req: NextRequest) {
@@ -54,12 +54,21 @@ export async function POST(req: NextRequest) {
   }
 
   if (process.env.MAILCHIMP_API_KEY && typeof p.parentEmail === "string" && p.parentEmail) {
-    const tags = ["Lead — Summer Camp"];
+    const year = new Date().getFullYear();
+    const tags = ["Lead — Summer Camp", `Website Lead ${year}`];
     if (typeof p.instrument === "string" && p.instrument) tags.push(`Instrument — ${p.instrument}`);
     mailchimpUpsertSubscriber({
       email: p.parentEmail,
       firstName: typeof p.parentFirstName === "string" ? p.parentFirstName : undefined,
       lastName: typeof p.parentLastName === "string" ? p.parentLastName : undefined,
+      mergeFields: {
+        PHONE: typeof p.parentPhone === "string" ? p.parentPhone : "",
+        MMERGE6: "Summer Camp",
+        MMERGE7: typeof p.instrument === "string" ? p.instrument : "",
+        MMERGE8: studentName,
+        MMERGE9: parentName,
+        BIRTHDAY: fmtBirthdayMMDD(p.dob),
+      },
       tags,
     }).catch((err) => console.error("[api/camp-signup] Mailchimp subscribe failed:", err));
   }

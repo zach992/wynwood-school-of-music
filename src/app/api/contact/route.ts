@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { airtableCreate } from "@/lib/airtable";
 import { sendFormNotification } from "@/lib/email";
 import { buildContactEmail } from "@/lib/email-templates";
+import { fmtBirthdayMMDD } from "@/lib/form-utils";
 import { mailchimpUpsertSubscriber } from "@/lib/mailchimp";
 
 function esc(value: unknown): string {
@@ -138,13 +139,26 @@ export async function POST(req: NextRequest) {
     ? sendFormNotification(buildContactEmail(payload, studentAge))
     : Promise.reject(new Error("RESEND_API_KEY not set"));
 
+  const year = new Date().getFullYear();
   const mailchimpPromise: Promise<unknown> =
     process.env.MAILCHIMP_API_KEY && typeof payload.parentEmail === "string" && payload.parentEmail
       ? mailchimpUpsertSubscriber({
           email: payload.parentEmail,
           firstName: typeof payload.parentFirstName === "string" ? payload.parentFirstName : undefined,
           lastName: typeof payload.parentLastName === "string" ? payload.parentLastName : undefined,
-          tags: ["Lead — Contact Form", ...subjectsArr.map((s) => `Instrument — ${s}`)],
+          mergeFields: {
+            PHONE: typeof payload.parentPhone === "string" ? payload.parentPhone : "",
+            MMERGE6: "Private Lessons",
+            MMERGE7: subjectsArr.join(", "),
+            MMERGE8: studentFullName,
+            MMERGE9: parentFullName,
+            BIRTHDAY: fmtBirthdayMMDD(payload.dob),
+          },
+          tags: [
+            "Lead — Contact Form",
+            `Website Lead ${year}`,
+            ...subjectsArr.map((s) => `Instrument — ${s}`),
+          ],
         })
       : Promise.reject(new Error("MAILCHIMP_API_KEY not set or no parent email"));
 
