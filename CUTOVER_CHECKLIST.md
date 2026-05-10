@@ -43,11 +43,12 @@ Status legend: ⬜ open · 🔧 in progress · ✅ done · ⏭️ skipped
 
 ## 🟡 Nice-to-fix soon
 
-### 5. PostHog analytics — wired
-- **Status of code:** `src/components/PostHogProvider.tsx` exists, mounted in `src/app/layout.tsx`. Auto-tracks pageviews. `posthog-js` + `posthog-node` in package.json.
-- **API key set on Railway + .env.local.** Authorized domains in PostHog: `wynwoodschoolofmusic.com`, `wsm-website-production.up.railway.app`, `localhost:3000`. Session recordings, autocapture, heatmaps, web vitals all enabled.
+### 5. PostHog analytics — fully wired and verified
+- **Code:** `src/components/PostHogProvider.tsx` mounted in `src/app/layout.tsx`. Auto-tracks pageviews + autocapture (clicks, form submits) + heatmaps + web vitals + session recordings.
+- **API key set on Railway + .env.local.** Authorized domains in PostHog: `wynwoodschoolofmusic.com`, `wsm-website-production.up.railway.app`, `localhost:3000`.
+- **Verified:** End-to-end test on 2026-05-10 captured 36 events from one navigation session (pageviews, autocapture, web_vitals, pageleave) across `/`, `/our-story`, `/testimonials`, `/musicperformancecamp`.
 - **Owner:** Claude
-- **Status:** ✅ done — verify by submitting one form on prod and checking PostHog → Activity → Live events for a `$pageview` event within ~10s.
+- **Status:** ✅ done
 
 ### 6. Old contact-form Zap is still live
 - **Currently:** The original Zap (Catch Hook → Email + Mailchimp) was set up early in this project and is now duplicated by Resend + direct Mailchimp. Every contact submission emails twice and runs Mailchimp twice.
