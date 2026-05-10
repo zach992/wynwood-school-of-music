@@ -43,15 +43,12 @@ Status legend: ⬜ open · 🔧 in progress · ✅ done · ⏭️ skipped
 
 ## 🟡 Nice-to-fix soon
 
-### 5. PostHog analytics — env vars added but not yet wired in code
-- **Status of env:** `.env.local.example` documents `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_POSTHOG_HOST`, `POSTHOG_PERSONAL_API_KEY`. `.env.local` has empty placeholders.
-- **Currently:** No PostHog snippet in `src/app/layout.tsx` or anywhere else. Adding env vars alone doesn't track anything.
-- **Fix:**
-  1. Zach creates PostHog project → grabs project API key (starts `phc_`).
-  2. Claude adds `posthog-js` package + initializes via a small `<PostHogProvider>` client component wired into `layout.tsx`.
-  3. Optional: track key conversions (form submits, Stripe checkout success).
-- **Owner:** Zach (project key), Claude (wire snippet)
-- **Status:** ⬜
+### 5. PostHog analytics — code wired, awaiting key
+- **Status of code:** `src/components/PostHogProvider.tsx` exists, mounted in `src/app/layout.tsx`. Auto-tracks pageviews. `posthog-js` and `posthog-node` already in package.json.
+- **What's missing:** `NEXT_PUBLIC_POSTHOG_KEY` is empty in `.env.local`.
+- **Action you take:** Sign up at posthog.com → create project → Project Settings → "Project API Key" → paste here. I'll set it on Railway and `.env.local`.
+- **Owner:** Zach (project key)
+- **Status:** ⬜ blocked on key
 
 ### 6. Old contact-form Zap is still live
 - **Currently:** The original Zap (Catch Hook → Email + Mailchimp) was set up early in this project and is now duplicated by Resend + direct Mailchimp. Every contact submission emails twice and runs Mailchimp twice.
