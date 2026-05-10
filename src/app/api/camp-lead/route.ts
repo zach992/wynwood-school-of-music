@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { airtableCreate } from "@/lib/airtable";
 import { sendFormNotification } from "@/lib/email";
+import { checkSpamGuard } from "@/lib/form-utils";
 import { mailchimpUpsertSubscriber } from "@/lib/mailchimp";
 
 /**
@@ -16,6 +17,8 @@ export async function POST(req: NextRequest) {
     return new Response(null, { status: 400 });
   }
 
+  if (checkSpamGuard(body)) return new Response(null, { status: 200 });
+
   const parentName = typeof body.parentName === "string" ? body.parentName.trim() : "";
   const parentEmail = typeof body.parentEmail === "string" ? body.parentEmail.trim() : "";
   const parentPhone = typeof body.parentPhone === "string" ? body.parentPhone.trim() : "";
@@ -26,15 +29,23 @@ export async function POST(req: NextRequest) {
   const year = new Date().getFullYear();
 
   const tableName = process.env.AIRTABLE_CAMP_TABLE || "Summer Camp Signups";
-  airtableCreate(tableName, {
-    Name: parentName || parentEmail,
-    Submitted: new Date().toISOString(),
-    "Parent Name": parentName,
-    "Parent Email": parentEmail,
-    "Parent Phone": parentPhone,
-    "Lead Status": "New",
-    "Lead Source": "Interest Form",
-  }).catch((err) => console.error("[api/camp-lead] Airtable failed:", err));
+  try {
+    await airtableCreate(tableName, {
+      Name: parentName || parentEmail,
+      Submitted: new Date().toISOString(),
+      "Parent Name": parentName,
+      "Parent Email": parentEmail,
+      "Parent Phone": parentPhone,
+      "Lead Status": "New",
+      "Lead Source": "Interest Form",
+    });
+  } catch (err) {
+    console.error("[api/camp-lead] Airtable failed:", err);
+    return new Response(JSON.stringify({ error: "Save failed" }), {
+      status: 502,
+      headers: { "content-type": "application/json" },
+    });
+  }
 
   if (process.env.MAILCHIMP_API_KEY) {
     mailchimpUpsertSubscriber({

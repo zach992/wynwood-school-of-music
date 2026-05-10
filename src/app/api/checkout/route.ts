@@ -17,15 +17,11 @@ type CheckoutBody = {
 function isValidBody(b: unknown): b is CheckoutBody {
   if (!b || typeof b !== "object") return false;
   const o = b as Record<string, unknown>;
-  return (
-    Array.isArray(o.sessionCodes) &&
-    o.sessionCodes.every((c) => typeof c === "string") &&
-    typeof o.camperName === "string" &&
-    typeof o.camperAge === "string" &&
-    typeof o.instrument === "string" &&
-    typeof o.parentEmail === "string" &&
-    typeof o.parentPhone === "string"
-  );
+  if (!Array.isArray(o.sessionCodes) || !o.sessionCodes.every((c) => typeof c === "string")) return false;
+  const reqStr = (v: unknown) => typeof v === "string" && v.trim().length > 0;
+  if (!reqStr(o.camperName) || !reqStr(o.camperAge) || !reqStr(o.instrument)) return false;
+  if (!reqStr(o.parentEmail) || !reqStr(o.parentPhone)) return false;
+  return true;
 }
 
 export async function POST(req: NextRequest) {
@@ -101,49 +97,58 @@ export async function POST(req: NextRequest) {
     },
   ];
 
-  const checkoutSession = await stripe.checkout.sessions.create({
-    mode: "payment",
-    payment_method_types: ["card"],
-    customer_email: body.parentEmail,
-    submit_type: "pay",
-    billing_address_collection: "auto",
-    line_items: lineItems,
-    payment_intent_data: {
-      // Stripe sends a receipt to this address automatically in live mode.
-      // In test mode receipts don't send — preview them via the Stripe dashboard
-      // by clicking into a payment and selecting "Send receipt".
-      receipt_email: body.parentEmail,
-      description: `WSM Summer Camp deposit — ${body.camperName} (${cart.picks.map((p) => p.code).join(", ")})`,
-    },
-    custom_text: {
-      submit: {
-        message:
-          `You're paying a 50% deposit today to reserve your ${
-            cart.picks.length === 1 ? "spot" : "spots"
-          }. ` +
-          `We'll email a separate invoice for the remaining $${balanceOwed} balance before camp begins. ` +
-          `Questions? info@wynwoodschoolofmusic.com`,
+  let checkoutSession;
+  try {
+    checkoutSession = await stripe.checkout.sessions.create({
+      mode: "payment",
+      payment_method_types: ["card"],
+      customer_email: body.parentEmail,
+      submit_type: "pay",
+      billing_address_collection: "auto",
+      line_items: lineItems,
+      payment_intent_data: {
+        // Stripe sends a receipt to this address automatically in live mode.
+        // In test mode receipts don't send — preview them via the Stripe dashboard
+        // by clicking into a payment and selecting "Send receipt".
+        receipt_email: body.parentEmail,
+        description: `WSM Summer Camp deposit — ${body.camperName} (${cart.picks.map((p) => p.code).join(", ")})`,
       },
-    },
-    metadata: {
-      kind: "camp_deposit",
-      session_codes: sessionCodes.join(","),
-      camper_name: body.camperName,
-      camper_age: body.camperAge,
-      instrument: body.instrument,
-      parent_name: body.parentName ?? "",
-      parent_email: body.parentEmail,
-      parent_phone: body.parentPhone,
-      cart_list: String(cart.list),
-      cart_early_bird_discount: String(cart.earlyBirdDiscount),
-      cart_bundle_discount: String(cart.bundleDiscount),
-      cart_total: String(cart.total),
-      cart_deposit: String(cart.deposit),
-      balance_owed: String(balanceOwed),
-    },
-    success_url: `${baseUrl}/camp/thank-you?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${baseUrl}/musicperformancecamp?checkout=cancelled`,
-  });
+      custom_text: {
+        submit: {
+          message:
+            `You're paying a 50% deposit today to reserve your ${
+              cart.picks.length === 1 ? "spot" : "spots"
+            }. ` +
+            `We'll email a separate invoice for the remaining $${balanceOwed} balance before camp begins. ` +
+            `Questions? info@wynwoodschoolofmusic.com`,
+        },
+      },
+      metadata: {
+        kind: "camp_deposit",
+        session_codes: sessionCodes.join(","),
+        camper_name: body.camperName,
+        camper_age: body.camperAge,
+        instrument: body.instrument,
+        parent_name: body.parentName ?? "",
+        parent_email: body.parentEmail,
+        parent_phone: body.parentPhone,
+        cart_list: String(cart.list),
+        cart_early_bird_discount: String(cart.earlyBirdDiscount),
+        cart_bundle_discount: String(cart.bundleDiscount),
+        cart_total: String(cart.total),
+        cart_deposit: String(cart.deposit),
+        balance_owed: String(balanceOwed),
+      },
+      success_url: `${baseUrl}/camp/thank-you?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/musicperformancecamp?checkout=cancelled`,
+    });
+  } catch (err) {
+    console.error("[api/checkout] Stripe API error:", err);
+    return NextResponse.json(
+      { error: "We couldn't start checkout. Please try again or email info@wynwoodschoolofmusic.com." },
+      { status: 502 }
+    );
+  }
 
   if (!checkoutSession.url) {
     return NextResponse.json({ error: "Stripe did not return a URL" }, { status: 502 });

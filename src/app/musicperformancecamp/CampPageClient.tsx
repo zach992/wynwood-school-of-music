@@ -10,6 +10,7 @@ import {
   isPastSessionAt,
   type Session,
 } from "@/lib/camp-pricing";
+import { HoneypotField, useFormGuard } from "@/components/FormGuard";
 import { campFaqs } from "./faqs";
 
 const Check = () => (
@@ -57,6 +58,7 @@ export default function CampPageClient() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [emailDone, setEmailDone] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const interestGuard = useFormGuard();
   const [pulseCode, setPulseCode] = useState<string | null>(null);
   const [cartInView, setCartInView] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -656,11 +658,13 @@ export default function CampPageClient() {
                 className={`email-form${emailDone ? " done" : ""}`}
                 onSubmit={async (e) => {
                   e.preventDefault();
+                  if (interestGuard.isLikelyBot()) return;
                   const fd = new FormData(e.currentTarget);
                   const payload = {
                     parentName: String(fd.get("parentName") ?? ""),
                     parentEmail: String(fd.get("parentEmail") ?? ""),
                     parentPhone: String(fd.get("parentPhone") ?? ""),
+                    ...interestGuard.payload(),
                   };
                   setEmailDone(true);
                   try {
@@ -677,6 +681,7 @@ export default function CampPageClient() {
                 <input type="text" name="parentName" placeholder="Parent's full name" autoComplete="name" required />
                 <input type="email" name="parentEmail" placeholder="Email" autoComplete="email" required />
                 <input type="tel" name="parentPhone" placeholder="Phone" autoComplete="tel" required />
+                <HoneypotField value={interestGuard.honeypot} onChange={interestGuard.setHoneypot} />
                 <button type="submit">Request info</button>
                 <div className="success">✓ Thanks — we&rsquo;ll be in touch within 24 hours.</div>
               </form>

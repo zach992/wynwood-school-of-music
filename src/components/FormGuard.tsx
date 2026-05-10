@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * Invisible spam protection. Two layers, zero UX friction:
@@ -17,11 +17,19 @@ import { useRef, useState } from "react";
 const MIN_HUMAN_FILL_MS = 3_000;
 
 export function useFormGuard() {
-  const renderedAtRef = useRef<number>(Date.now());
+  // Stamp the render time after mount so it's pure during render.
+  // Use a sentinel of 0 until the effect fires; isLikelyBot treats 0 as "not yet ready".
+  const renderedAtRef = useRef<number>(0);
+  useEffect(() => {
+    if (renderedAtRef.current === 0) {
+      renderedAtRef.current = Date.now();
+    }
+  }, []);
   const [honeypot, setHoneypot] = useState("");
 
   function isLikelyBot() {
     if (honeypot !== "") return true;
+    if (renderedAtRef.current === 0) return true; // effect hasn't run; treat as too fast
     if (Date.now() - renderedAtRef.current < MIN_HUMAN_FILL_MS) return true;
     return false;
   }
