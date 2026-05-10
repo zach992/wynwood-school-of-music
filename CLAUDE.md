@@ -28,15 +28,17 @@ Only one dev server at a time — check `lsof -i :3000` before starting.
 
 ## Forms
 
-All public forms (contact, trial lesson, camp signup, WGV, repair) are currently **stubbed** — submit handler `console.log`s and routes to a thank-you page. Spam guards (honeypot + time-to-submit) are already wired client-side via `src/components/FormGuard.tsx`.
+All 5 public forms (contact, trial lesson, camp signup, WGV, repair) plus the camp interest form and Stripe deposit checkout are wired end-to-end. Each submission fans out to Airtable + Resend + Mailchimp + (where applicable) Zapier→Basecamp.
 
-When wiring real submission handling, read `FORMS.md` first — it lists every form, its destination, and the server-side guard contract.
+`FORMS.md` is the source of truth for the full destination matrix per form.
+`CUTOVER_CHECKLIST.md` tracks remaining pre-DNS-cutover work.
 
 ## Deploy
 
 - GitHub: `zach992/wynwood-school-of-music` (main branch)
-- Railway auto-rebuilds on push to `main`
-- Live: https://wsm-website-production.up.railway.app
+- **Always deploy via git** — push to `main` and Railway auto-rebuilds. Never use `railway up` or any direct-deploy command. Code changes only flow through git so every prod build is reproducible from the repo.
+- Env vars CAN be updated via `railway variables --set` (they aren't tracked in git), but everything else is git-only.
+- Live (staging): https://wsm-website-production.up.railway.app
 - After visual changes, screenshot via Playwright MCP against `localhost:3000` (do not push live to test)
 
 ## Conventions

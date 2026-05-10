@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
+import { airtableCreate } from "@/lib/airtable";
 import { sendFormNotification } from "@/lib/email";
 import {
   buildCampDepositParentEmail,
@@ -57,6 +58,28 @@ export async function POST(req: NextRequest) {
         depositPaid: Number(meta.cart_deposit ?? 0),
         balanceOwed: Number(meta.balance_owed ?? 0),
       };
+
+      // Write a row to the Summer Camp Signups Airtable so paid registrants
+      // appear in the same view as long-form / interest leads.
+      const tableName = process.env.AIRTABLE_CAMP_TABLE || "Summer Camp Signups";
+      airtableCreate(tableName, {
+        Name: registration.camperName || "(no name)",
+        Submitted: new Date().toISOString(),
+        "Primary Instrument": registration.instrument,
+        Sessions: registration.sessionCodes.length
+          ? registration.sessionCodes.map((s) => `• ${s}`).join("\n")
+          : "",
+        "Parent Name": registration.parentName,
+        "Parent Email": registration.parentEmail,
+        "Parent Phone": registration.parentPhone,
+        "Lead Status": "Enrolled",
+        "Lead Source": "Stripe Deposit",
+        "Deposit Paid": registration.depositPaid,
+        "Cart Total": registration.cartTotal,
+        "Balance Owed": registration.balanceOwed,
+      }).catch((err) =>
+        console.error("[stripe-webhook] Airtable write failed:", err)
+      );
 
       // Notify staff (CAMP_NOTIFY_EMAIL takes precedence over the default RESEND_NOTIFY_TO)
       if (process.env.RESEND_API_KEY) {

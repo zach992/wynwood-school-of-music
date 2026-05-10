@@ -38,6 +38,7 @@ export async function POST(req: NextRequest) {
       "Parent Phone": p.parentPhone,
       "How Heard": p.hearAboutUs,
       "Lead Status": "New",
+      "Lead Source": "Long Form",
     });
   } catch (err) {
     console.error("[api/camp-signup] Airtable write failed:", err);

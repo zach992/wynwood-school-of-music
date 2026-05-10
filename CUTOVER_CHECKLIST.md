@@ -78,15 +78,16 @@ Status legend: ⬜ open · 🔧 in progress · ✅ done · ⏭️ skipped
 - **Owner:** Claude (autonomous)
 - **Status:** ✅ done — the only remaining `console.log` was actually an unwired form (see #10). Other `console.error` calls intentionally kept for debugging.
 
-### 10. NEW FINDING — "Not quite ready?" lead form on camp page was stubbed
-- **File:** `src/app/musicperformancecamp/CampPageClient.tsx:660` and new route at `src/app/api/camp-lead/route.ts`
-- **Currently (before fix):** Form just `console.log`-ed and faked a success state. Leads went nowhere.
-- **Fix applied:** New `/api/camp-lead` endpoint. On submit:
-  1. Adds parent to Mailchimp with tag `Lead — Camp Interest` + `Website Lead {year}`
-  2. Emails staff via Resend ("New Camp Interest: …")
-  3. (No Airtable row — this is a soft "interested" lead, not a registration; we keep `Summer Camp Signups` table for actual signups only.)
+### 10. Camp form unification (interest, long-form, paid deposit all → one Airtable view)
+- **Files:** `src/app/api/camp-signup/route.ts`, `src/app/api/camp-lead/route.ts`, `src/app/api/stripe-webhook/route.ts`, `src/app/musicperformancecamp/CampPageClient.tsx`
+- **Schema added** to `Summer Camp Signups` table: `Lead Source` (single-select: `Long Form` / `Interest Form` / `Stripe Deposit`), `Deposit Paid` ($), `Cart Total` ($), `Balance Owed` ($).
+- **All 3 paths now write to Airtable:**
+  1. `/api/camp-signup` (long form) → `Lead Source: Long Form`
+  2. `/api/camp-lead` (interest) → `Lead Source: Interest Form` (only name/email/phone populated)
+  3. `/api/stripe-webhook` (paid deposit) → `Lead Source: Stripe Deposit`, `Lead Status: Enrolled`, payment fields filled
+- **Existing rows backfilled** to `Lead Source: Long Form` since that's where they originated.
 - **Owner:** Claude
-- **Status:** ✅ done
+- **Status:** ✅ done — verified end-to-end with a test row
 
 ---
 

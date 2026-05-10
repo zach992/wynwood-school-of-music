@@ -1,11 +1,12 @@
 import { NextRequest } from "next/server";
+import { airtableCreate } from "@/lib/airtable";
 import { sendFormNotification } from "@/lib/email";
 import { mailchimpUpsertSubscriber } from "@/lib/mailchimp";
 
 /**
  * Lightweight "interest" form on the camp page — just 3 fields (name, email, phone).
  * Distinct from /api/camp-signup which is the full registration form.
- * Routes to: Mailchimp (tagged Camp Interest) + Resend notification.
+ * Routes to: Airtable (Lead Source = Interest Form) + Mailchimp + Resend.
  */
 export async function POST(req: NextRequest) {
   let body: Record<string, unknown>;
@@ -23,6 +24,17 @@ export async function POST(req: NextRequest) {
   const [firstName, ...lastParts] = parentName.split(/\s+/);
   const lastName = lastParts.join(" ");
   const year = new Date().getFullYear();
+
+  const tableName = process.env.AIRTABLE_CAMP_TABLE || "Summer Camp Signups";
+  airtableCreate(tableName, {
+    Name: parentName || parentEmail,
+    Submitted: new Date().toISOString(),
+    "Parent Name": parentName,
+    "Parent Email": parentEmail,
+    "Parent Phone": parentPhone,
+    "Lead Status": "New",
+    "Lead Source": "Interest Form",
+  }).catch((err) => console.error("[api/camp-lead] Airtable failed:", err));
 
   if (process.env.MAILCHIMP_API_KEY) {
     mailchimpUpsertSubscriber({
