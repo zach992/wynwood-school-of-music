@@ -654,15 +654,24 @@ export default function CampPageClient() {
               <p>Enter your info and someone from our team will be in touch within 24 hours to answer your questions.</p>
               <form
                 className={`email-form${emailDone ? " done" : ""}`}
-                onSubmit={(e) => {
+                onSubmit={async (e) => {
                   e.preventDefault();
                   const fd = new FormData(e.currentTarget);
-                  console.log("camp lead form", {
-                    parentName: fd.get("parentName"),
-                    parentEmail: fd.get("parentEmail"),
-                    parentPhone: fd.get("parentPhone"),
-                  });
+                  const payload = {
+                    parentName: String(fd.get("parentName") ?? ""),
+                    parentEmail: String(fd.get("parentEmail") ?? ""),
+                    parentPhone: String(fd.get("parentPhone") ?? ""),
+                  };
                   setEmailDone(true);
+                  try {
+                    await fetch("/api/camp-lead", {
+                      method: "POST",
+                      headers: { "content-type": "application/json" },
+                      body: JSON.stringify(payload),
+                    });
+                  } catch (err) {
+                    console.error("Camp lead form submit error:", err);
+                  }
                 }}
               >
                 <input type="text" name="parentName" placeholder="Parent's full name" autoComplete="name" required />

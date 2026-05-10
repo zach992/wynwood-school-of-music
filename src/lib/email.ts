@@ -2,6 +2,10 @@ type SendOpts = {
   subject: string;
   html: string;
   replyTo?: string;
+  /** Optional recipient override. If omitted, sends to RESEND_NOTIFY_TO (staff inbox). */
+  to?: string | string[];
+  /** Optional sender override. If omitted, uses RESEND_FROM. */
+  from?: string;
 };
 
 export async function sendFormNotification(opts: SendOpts): Promise<void> {
@@ -9,9 +13,13 @@ export async function sendFormNotification(opts: SendOpts): Promise<void> {
   if (!apiKey) {
     throw new Error("RESEND_API_KEY is not set");
   }
-  const from = process.env.RESEND_FROM || "WSM Forms <onboarding@resend.dev>";
-  const toEnv = process.env.RESEND_NOTIFY_TO || "info@wynwoodschoolofmusic.com";
-  const to = toEnv.split(",").map((s) => s.trim()).filter(Boolean);
+  const from = opts.from || process.env.RESEND_FROM || "WSM Forms <onboarding@resend.dev>";
+  const to = opts.to
+    ? (Array.isArray(opts.to) ? opts.to : [opts.to]).filter(Boolean)
+    : (process.env.RESEND_NOTIFY_TO || "info@wynwoodschoolofmusic.com")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
 
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",

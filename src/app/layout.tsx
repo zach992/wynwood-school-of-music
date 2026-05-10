@@ -4,6 +4,7 @@ import AnnouncementBar from "@/components/AnnouncementBar";
 import CampUrgencyBar from "@/components/CampUrgencyBar";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { PostHogProvider } from "@/components/PostHogProvider";
 import ScrollToTop from "@/components/ScrollToTop";
 import StructuredData from "@/components/StructuredData";
 
@@ -58,13 +59,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* <link rel="stylesheet" href="https://use.typekit.net/KIT_ID.css" /> */}
       </head>
       <body className="bg-wsm-dark text-white font-body min-h-screen flex flex-col">
-        <StructuredData />
-        <ScrollToTop />
-        <CampUrgencyBar />
-        <AnnouncementBar />
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <PostHogProvider>
+          <StructuredData />
+          <ScrollToTop />
+          <CampUrgencyBar />
+          <AnnouncementBar />
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </PostHogProvider>
       </body>
     </html>
   );

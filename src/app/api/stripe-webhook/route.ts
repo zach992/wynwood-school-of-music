@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
+import { sendFormNotification } from "@/lib/email";
+import {
+  buildCampDepositParentEmail,
+  buildCampDepositStaffEmail,
+} from "@/lib/email-templates";
 
 export const runtime = "nodejs";
 
@@ -45,7 +50,7 @@ export async function POST(req: NextRequest) {
         camperAge: meta.camper_age,
         instrument: meta.instrument,
         parentName: meta.parent_name,
-        parentEmail: meta.parent_email || session.customer_details?.email,
+        parentEmail: meta.parent_email || session.customer_details?.email || "",
         parentPhone: meta.parent_phone,
         sessionCodes: (meta.session_codes ?? "").split(",").filter(Boolean),
         cartTotal: Number(meta.cart_total ?? 0),
@@ -53,9 +58,23 @@ export async function POST(req: NextRequest) {
         balanceOwed: Number(meta.balance_owed ?? 0),
       };
 
-      // TODO: send notification email to CAMP_NOTIFY_EMAIL once an email service is wired
-      // (Resend / SendGrid / Postmark). Until then, log so it's visible in Railway logs.
-      console.log("[camp deposit paid]", JSON.stringify(registration));
+      // Notify staff (CAMP_NOTIFY_EMAIL takes precedence over the default RESEND_NOTIFY_TO)
+      if (process.env.RESEND_API_KEY) {
+        const staffTo = process.env.CAMP_NOTIFY_EMAIL || process.env.RESEND_NOTIFY_TO;
+        sendFormNotification({
+          ...buildCampDepositStaffEmail(registration),
+          to: staffTo,
+        }).catch((err) => console.error("[stripe-webhook] staff notification failed:", err));
+
+        if (registration.parentEmail) {
+          sendFormNotification({
+            ...buildCampDepositParentEmail(registration),
+            to: registration.parentEmail,
+          }).catch((err) => console.error("[stripe-webhook] parent receipt failed:", err));
+        }
+      } else {
+        console.log("[camp deposit paid]", JSON.stringify(registration));
+      }
     }
   }
 

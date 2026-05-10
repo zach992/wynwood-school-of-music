@@ -181,6 +181,107 @@ export function buildWgvEmail(p: AnyPayload, studentAge: number | null) {
   };
 }
 
+// ─── Camp Deposit (Stripe checkout completed) ───────────────────────────────
+
+type CampDepositPayload = {
+  camperName?: string;
+  camperAge?: string;
+  instrument?: string;
+  parentName?: string;
+  parentEmail?: string;
+  parentPhone?: string;
+  sessionCodes: string[];
+  cartTotal: number;
+  depositPaid: number;
+  balanceOwed: number;
+  amountPaidCents: number;
+  currency?: string | null;
+  stripeSessionId: string;
+};
+
+function fmtMoney(cents: number, currency = "usd"): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: currency.toUpperCase(),
+  }).format(cents / 100);
+}
+
+function fmtMoneyDollars(amount: number): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(amount);
+}
+
+/** Internal staff notification when a camp deposit is paid. */
+export function buildCampDepositStaffEmail(p: CampDepositPayload) {
+  const camperName = p.camperName || "(no name)";
+  const subject = `Camp deposit paid: ${camperName} · ${fmtMoney(p.amountPaidCents, p.currency ?? "usd")}`;
+
+  const sessionsHtml = p.sessionCodes.length
+    ? `<ul style="margin:6px 0 0;padding-left:20px;color:#111;">${p.sessionCodes.map((s) => `<li style="margin-bottom:4px;">${esc(s)}</li>`).join("")}</ul>`
+    : "<span style='color:#bbb;'>—</span>";
+
+  const body = quickReply(p.parentName ?? "", p.parentPhone ?? "", p.parentEmail ?? "") +
+    section("Camper", [
+      row("Name", esc(camperName)),
+      row("Age", esc(p.camperAge)),
+      row("Instrument", esc(p.instrument)),
+    ]) +
+    `<h3 style="margin:24px 0 4px;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#888;font-weight:600;">Sessions</h3>${sessionsHtml}` +
+    section("Payment", [
+      row("Deposit Paid", esc(fmtMoneyDollars(p.depositPaid))),
+      row("Cart Total", esc(fmtMoneyDollars(p.cartTotal))),
+      row("Balance Owed", esc(fmtMoneyDollars(p.balanceOwed))),
+      row("Stripe Session", `<code style='font-size:12px;color:#666;'>${esc(p.stripeSessionId)}</code>`),
+    ]);
+
+  return {
+    subject,
+    html: shell({ tag: "Camp deposit paid · /musicperformancecamp", headline: camperName, body }),
+    replyTo: p.parentEmail || undefined,
+  };
+}
+
+/** Receipt sent to the parent after a successful camp deposit. */
+export function buildCampDepositParentEmail(p: CampDepositPayload) {
+  const camperName = p.camperName || "your camper";
+  const sessionsList = p.sessionCodes.length
+    ? `<ul style="margin:8px 0 0;padding-left:20px;">${p.sessionCodes.map((s) => `<li style="margin-bottom:4px;">${esc(s)}</li>`).join("")}</ul>`
+    : "";
+
+  const subject = `Your WSM Music Performance Camp deposit confirmation`;
+
+  const body = `
+    <p style="margin:0 0 16px;">Hi ${esc(p.parentName?.split(" ")[0] || "there")},</p>
+    <p style="margin:0 0 16px;">Thanks so much for signing ${esc(camperName)} up for the Wynwood School of Music Music Performance Camp. We received your deposit and we're excited to have you with us!</p>
+
+    <h3 style="margin:24px 0 4px;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#888;font-weight:600;">Your Registration</h3>
+    <table style="border-collapse:collapse;width:100%;font-size:14px;">
+      ${row("Camper", esc(camperName))}
+      ${p.instrument ? row("Primary Instrument", esc(p.instrument)) : ""}
+      ${row("Sessions", sessionsList || "—")}
+    </table>
+
+    <h3 style="margin:24px 0 4px;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#888;font-weight:600;">Payment Summary</h3>
+    <table style="border-collapse:collapse;width:100%;font-size:14px;">
+      ${row("Deposit Paid", esc(fmtMoneyDollars(p.depositPaid)))}
+      ${row("Total Tuition", esc(fmtMoneyDollars(p.cartTotal)))}
+      ${row("Balance Owed", `<strong>${esc(fmtMoneyDollars(p.balanceOwed))}</strong>`)}
+    </table>
+
+    <p style="margin:24px 0 8px;color:#666;font-size:13px;">The remaining balance is due before the start of your camp session. We'll be in touch with payment instructions and a packing list as your session approaches.</p>
+    <p style="margin:0 0 8px;color:#666;font-size:13px;">Questions? Just reply to this email or call us at <a href="tel:305-359-5515" style="color:#994878;">305-359-5515</a>.</p>
+    <p style="margin:24px 0 0;">— The WSM Team</p>
+  `;
+
+  return {
+    subject,
+    html: shell({ tag: "Camp Deposit Confirmation", headline: "You're all set!", body }),
+    replyTo: process.env.RESEND_NOTIFY_TO || "info@wynwoodschoolofmusic.com",
+  };
+}
+
 // ─── Trial Lesson ───────────────────────────────────────────────────────────
 
 export function buildTrialEmail(p: AnyPayload, studentAge: number | null) {
