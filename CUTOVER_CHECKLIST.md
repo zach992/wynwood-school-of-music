@@ -50,11 +50,10 @@ Status legend: ⬜ open · 🔧 in progress · ✅ done · ⏭️ skipped
 - **Owner:** Claude
 - **Status:** ✅ done
 
-### 6. Old contact-form Zap is still live
-- **Currently:** The original Zap (Catch Hook → Email + Mailchimp) was set up early in this project and is now duplicated by Resend + direct Mailchimp. Every contact submission emails twice and runs Mailchimp twice.
-- **Fix:** In Zapier, find the original `/contact` Zap (the one with Email + Mailchimp actions, *not* the Basecamp one). Turn it off or delete it. Keep all 5 Basecamp Zaps.
+### 6. Old contact-form Zap deleted
+- **State on 2026-05-10:** Zapier account has only 5 Zaps remaining — all Webhooks → Basecamp (one per form). The original duplicating Zap (Email + Mailchimp) was already removed.
 - **Owner:** Zach
-- **Status:** ⬜
+- **Status:** ✅ done
 
 ### 7. `.env.local.example` missing 4 Airtable table-name overrides
 - **Missing:** `AIRTABLE_REPAIR_TABLE`, `AIRTABLE_CAMP_TABLE`, `AIRTABLE_TRIAL_TABLE`, `AIRTABLE_WGV_TABLE`
