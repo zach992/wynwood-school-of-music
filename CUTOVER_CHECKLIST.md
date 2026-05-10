@@ -43,12 +43,11 @@ Status legend: ⬜ open · 🔧 in progress · ✅ done · ⏭️ skipped
 
 ## 🟡 Nice-to-fix soon
 
-### 5. PostHog analytics — code wired, awaiting key
-- **Status of code:** `src/components/PostHogProvider.tsx` exists, mounted in `src/app/layout.tsx`. Auto-tracks pageviews. `posthog-js` and `posthog-node` already in package.json.
-- **What's missing:** `NEXT_PUBLIC_POSTHOG_KEY` is empty in `.env.local`.
-- **Action you take:** Sign up at posthog.com → create project → Project Settings → "Project API Key" → paste here. I'll set it on Railway and `.env.local`.
-- **Owner:** Zach (project key)
-- **Status:** ⬜ blocked on key
+### 5. PostHog analytics — wired
+- **Status of code:** `src/components/PostHogProvider.tsx` exists, mounted in `src/app/layout.tsx`. Auto-tracks pageviews. `posthog-js` + `posthog-node` in package.json.
+- **API key set on Railway + .env.local.** Authorized domains in PostHog: `wynwoodschoolofmusic.com`, `wsm-website-production.up.railway.app`, `localhost:3000`. Session recordings, autocapture, heatmaps, web vitals all enabled.
+- **Owner:** Claude
+- **Status:** ✅ done — verify by submitting one form on prod and checking PostHog → Activity → Live events for a `$pageview` event within ~10s.
 
 ### 6. Old contact-form Zap is still live
 - **Currently:** The original Zap (Catch Hook → Email + Mailchimp) was set up early in this project and is now duplicated by Resend + direct Mailchimp. Every contact submission emails twice and runs Mailchimp twice.
