@@ -17,12 +17,12 @@ Status legend: ⬜ open · 🔧 in progress · ✅ done · ⏭️ skipped
 - **Owner:** Claude (autonomous)
 - **Status:** ✅ done — wired to Resend with two emails: staff notification (to `CAMP_NOTIFY_EMAIL`) + parent receipt with deposit + balance summary.
 
-### 2. Adobe Fonts kit ID — brand typeface not loading
-- **File:** `src/app/layout.tsx:52–58`
-- **Currently:** Commented-out `<link>` placeholder; site falls back to system font instead of Acumin Pro Condensed.
-- **Fix:** Zach goes to https://fonts.adobe.com → creates web project containing Acumin Pro Condensed (weights 400 + 900) → pastes kit ID. Claude uncomments and replaces `KIT_ID`.
-- **Owner:** Zach (provide kit ID), Claude (apply)
-- **Status:** ⬜
+### 2. Brand typeface — Barlow Condensed self-hosted (replaces Adobe Fonts plan)
+- **Files:** `src/app/layout.tsx`, `src/app/globals.css`
+- **Decision:** Skipped paying for Adobe Fonts (Acumin Pro Condensed). Switched to Barlow Condensed via `next/font/google`, the closest free match. Files are subsetted, preloaded, and served same-origin — no Adobe CC subscription, no third-party CDN, no privacy concern.
+- **Verified:** Production build succeeds; visual check confirms condensed sans on hero, nav, CTAs.
+- **Owner:** Claude
+- **Status:** ✅ done
 
 ### 3. `NEXT_PUBLIC_BASE_URL` on Railway points at staging
 - **Currently on Railway:** `https://wsm-website-production.up.railway.app`
