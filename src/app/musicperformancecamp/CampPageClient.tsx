@@ -709,17 +709,30 @@ export default function CampPageClient() {
             <div className="sticky-cart-codes">
               {picks.map((p) => (
                 <span key={p.code} className="code-pill">
-                  {p.code}
+                  <span className="code-pill-letter">{p.code}</span>
+                  <span className="code-pill-dates">{p.dates}</span>
                 </span>
               ))}
             </div>
             <div className="sticky-cart-total">
-              <span className="label">
-                {picks.length} session{picks.length > 1 ? "s" : ""}
-              </span>
-              <strong className="num">
-                $<AnimatedNumber value={cart.total} />
-              </strong>
+              <div className="sticky-cart-total-meta">
+                <span className="label">
+                  {picks.length} session{picks.length > 1 ? "s" : ""}
+                </span>
+                {(cart.earlyBirdDiscount + cart.bundleDiscount) > 0 && (
+                  <span className="strike">${cart.list}</span>
+                )}
+              </div>
+              <div className="sticky-cart-total-final">
+                <strong className="num">
+                  $<AnimatedNumber value={cart.total} />
+                </strong>
+                {(cart.earlyBirdDiscount + cart.bundleDiscount) > 0 && (
+                  <span className="saved">
+                    Save ${cart.earlyBirdDiscount + cart.bundleDiscount}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
           <button

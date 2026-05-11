@@ -6,6 +6,27 @@ Status legend: ⬜ open · 🔧 in progress · ✅ done · ⏭️ skipped
 
 ---
 
+## ⚡ Cutover status as of 2026-05-11 ~4:45 PM
+
+**DNS cutover is COMPLETE.** Site is live and serving production traffic at `https://www.wynwoodschoolofmusic.com` with a valid Let's Encrypt cert (auto-renewing). Old Squarespace site is set to Private. Apex domain redirects to www via Squarespace Domain Forwarding.
+
+**🔴 Today (before walking away):**
+1. ⬜ Submit one real form on prod (Contact recommended) and verify the full fan-out: Airtable row + Resend auto-reply email + Mailchimp subscriber + Basecamp todo via Zapier.
+2. ⬜ Run one real Stripe deposit charge → confirm webhook fires → Airtable `Lead Source: Stripe Deposit` row appears + parent receipt + staff notification email arrive. Refund yourself in Stripe dashboard after.
+
+**🟡 Soon:**
+3. ⬜ Backup old Squarespace content (Settings → Advanced → Import/Export → Export → WordPress XML — that's the only export format; the "WordPress" label is misleading, it's just XML).
+4. ⬜ Commit the cutover changes to git (`CUTOVER_CHECKLIST.md`, `next.config.ts`, `POST_CUTOVER_TODO.md`, memory files).
+
+**🟢 Deferred (tracked in `POST_CUTOVER_TODO.md`):**
+- Google Search Console setup + sitemap submission
+- External profile audit (Google Business, Instagram, FB bio, ads)
+- Uptime monitoring (UptimeRobot/Better Stack)
+- Resend deliverability spam-check
+- 30-day wait, then optionally cancel Squarespace site subscription (NEVER cancel the domain account — forwarding rule + DNS live there)
+
+---
+
 ## 🔴 Must-fix before cutover
 
 ### 1. Camp deposit confirmation email — wire Stripe webhook to Resend
@@ -25,19 +46,15 @@ Status legend: ⬜ open · 🔧 in progress · ✅ done · ⏭️ skipped
 - **Status:** ✅ done
 
 ### 3. `NEXT_PUBLIC_BASE_URL` on Railway points at staging
-- **Currently on Railway:** `https://wsm-website-production.up.railway.app`
-- **Should be (after DNS cuts over):** `https://wynwoodschoolofmusic.com`
+- **Currently on Railway:** `https://www.wynwoodschoolofmusic.com`
 - **Used by:** `src/app/api/checkout/route.ts` for Stripe success/cancel redirects.
-- **Fix:** Update at the moment DNS is flipped, not before (changing it earlier breaks Stripe checkout testing on the Railway URL).
 - **Owner:** Zach + Claude during cutover sequence
-- **Status:** ⬜ blocked on DNS cutover
+- **Status:** ✅ done — set via `railway variables --set` on 2026-05-11
 
 ### 4. Stripe still in test mode
-- **File:** `.env.local` line 7 / Railway has matching test key (`sk_test_…`).
-- **Currently:** Test secret + test webhook secret. Real cards don't charge.
-- **Fix:** Generate live keys in Stripe dashboard → swap `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` on Railway → also create the live webhook endpoint pointing at the production URL.
-- **Owner:** Zach (do at cutover, not before)
-- **Status:** ⬜ blocked on cutover
+- **Currently:** Live secret + live webhook signing secret on Railway. Live webhook endpoint "memorable-finesse" created in Stripe dashboard, listening to `checkout.session.completed` at `https://www.wynwoodschoolofmusic.com/api/stripe-webhook`.
+- **Owner:** Zach
+- **Status:** ✅ done — 2026-05-11
 
 ---
 
@@ -65,7 +82,7 @@ Status legend: ⬜ open · 🔧 in progress · ✅ done · ⏭️ skipped
 - **Currently:** Resend env vars set on Railway. Domain `forms.wynwoodschoolofmusic.com` was verified locally during setup.
 - **Fix:** Send a real email from the production deployment and confirm it arrives without spam-folder issues. Already verified locally; reconfirming in prod is the smart move.
 - **Owner:** Zach (test on prod after first real form submission post-cutover)
-- **Status:** ⬜
+- **Status:** ⬜ pending — included in the "submit one real form on prod" smoke-test (top of file)
 
 ---
 
@@ -92,13 +109,19 @@ Status legend: ⬜ open · 🔧 in progress · ✅ done · ⏭️ skipped
 
 ## 🌐 DNS cutover sequence (do all of this in order, on cutover day)
 
-1. ⬜ In Railway → Settings → Networking → **Add custom domain**: `wynwoodschoolofmusic.com` and `www.wynwoodschoolofmusic.com`. Railway returns DNS records.
-2. ⬜ In Squarespace DNS → add the records Railway provides (likely `A` or `CNAME` apex + www).
-3. ⬜ Wait for Railway to verify the domain (5–30 min, occasionally longer).
-4. ⬜ On Railway, update `NEXT_PUBLIC_BASE_URL` → `https://www.wynwoodschoolofmusic.com`. Service will redeploy.
-5. ⬜ Swap Stripe test → live keys on Railway (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`). Create the live webhook endpoint in Stripe dashboard pointing at `https://www.wynwoodschoolofmusic.com/api/stripe-webhook`.
-6. ⬜ Confirm site loads at the real domain. Submit one real form + one Stripe checkout to verify end-to-end.
-7. ⬜ Disable / take down the Squarespace site, OR set Squarespace to redirect to the new domain.
+1. ✅ Added `www.wynwoodschoolofmusic.com` custom domain on Railway. **Apex (`wynwoodschoolofmusic.com`) intentionally NOT on Railway** — it can't CNAME at zone apex per RFC 1912, so we use **Squarespace Domain Forwarding** (`wynwoodschoolofmusic.com → https://www.wynwoodschoolofmusic.com`, permanent 301, maintain paths) to bridge it. Squarespace forwarding installs its own apex A records pointing at `198.49.23.x` / `198.185.159.x` redirect servers.
+2. ✅ Squarespace DNS: `CNAME www → tcpp672m.up.railway.app` (current Railway target, may change if domain is ever re-added) + `TXT _railway-verify.www → railway-verify=15cb533dd66...` for Railway verification.
+3. ✅ Railway verified www domain on 2026-05-11; Let's Encrypt issued cert at 16:15:26 (CN=`www.wynwoodschoolofmusic.com`, expires Aug 9 2026, auto-renews).
+4. ✅ `NEXT_PUBLIC_BASE_URL=https://www.wynwoodschoolofmusic.com` set on Railway.
+5. ✅ Stripe live keys (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`) set on Railway; live webhook endpoint "memorable-finesse" created in Stripe dashboard for `checkout.session.completed` → `https://www.wynwoodschoolofmusic.com/api/stripe-webhook`.
+6. 🔧 Site loads with valid TLS at `https://www.wynwoodschoolofmusic.com` (Playwright-verified `/`, `/contact`, `/musicperformancecamp`, `/team` — all 200, zero console errors; sitemap audit on 2026-05-11 confirmed 47/49 archived Squarespace URLs redirect cleanly, plus added 2 missing redirects in `next.config.ts` for `/anastasia-chubb` and `/vivian-valls`). **Still pending:** real form submission + real Stripe checkout end-to-end smoke-test from prod.
+7. ✅ Old Squarespace site set to **Private** on 2026-05-11. Keep it in Private state (not deleted) for ~30 days as a rollback safety net; never cancel the Squarespace domain account itself — the forwarding rule + DNS live there.
+
+### DNS cutover footnotes
+- **Local DNS cache lag (2026-05-11):** Mac local resolver cached the old apex A record `66.33.22.94` (Railway) for up to 4h TTL; flush with `sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder`. Public resolvers (1.1.1.1, 8.8.8.8) updated instantly. If a user reports "Not Secure" on the bare apex, this is the likely culprit — incognito works because it bypasses the cache.
+- **CDN caching on Railway custom domains was off during cutover**, then re-enabled. Confirm both lightning-bolt icons in Railway → Networking are toggled on if you ever see slow TTFB.
+- **Apex domain (`wynwoodschoolofmusic.com`) is NOT on Railway's custom-domain list.** Squarespace Domain Forwarding (Permanent 301, Maintain paths) handles bare-apex traffic → `https://www.wynwoodschoolofmusic.com`. Removing the apex from Railway was intentional: Railway requires CNAME (forbidden at zone apex per RFC 1912), so the apex would never verify. See `memory/project_apex_forwarding_setup.md`.
+- **Railway CNAME target.** Currently `tcpp672m.up.railway.app`. This value changes every time you remove + re-add the www custom domain in Railway. If you ever re-add www, expect to update the Squarespace CNAME to whatever new target Railway prints in the "Configure DNS Records" dialog.
 
 ---
 

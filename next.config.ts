@@ -56,6 +56,8 @@ const nextConfig: NextConfig = {
       // Former testimonial / student bio pages → /team (similar to /thania-sanz)
       { source: "/ana-liu", destination: "/team", permanent: true },
       { source: "/bella-varela", destination: "/team", permanent: true },
+      { source: "/anastasia-chubb", destination: "/team", permanent: true },
+      { source: "/vivian-valls", destination: "/team", permanent: true },
       // Squarespace draft / test pages → real equivalents
       { source: "/our-bands-testing", destination: "/our-bands", permanent: true },
       { source: "/testimonials-test-copy", destination: "/testimonials", permanent: true },
