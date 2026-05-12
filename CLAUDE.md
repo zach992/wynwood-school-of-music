@@ -38,8 +38,13 @@ All 5 public forms (contact, trial lesson, camp signup, WGV, repair) plus the ca
 - GitHub: `zach992/wynwood-school-of-music` (main branch)
 - **Always deploy via git** — push to `main` and Railway auto-rebuilds. Never use `railway up` or any direct-deploy command. Code changes only flow through git so every prod build is reproducible from the repo.
 - Env vars CAN be updated via `railway variables --set` (they aren't tracked in git), but everything else is git-only.
-- Live (staging): https://wsm-website-production.up.railway.app
+- Live: https://wynwoodschoolofmusic.com (www on Railway; apex 301s via Squarespace forwarding)
+- Railway URL: https://wsm-website-production.up.railway.app
 - After visual changes, screenshot via Playwright MCP against `localhost:3000` (do not push live to test)
+
+## Branching discipline
+
+`main` is the live site — every push deploys to production. **Never commit directly to `main`.** Every change goes through a branch → PR → merge. Branch protection on GitHub enforces this. See `BRANCHING.md` for the full workflow, naming conventions, and rollback procedure.
 
 ## Conventions
 
