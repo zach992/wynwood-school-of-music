@@ -15,7 +15,7 @@ export const teamBios: TeamBio[] = [
     slug: "leo-cattani",
     name: "Leo Cattani",
     role: "Piano, Trumpet, Music Theory",
-    portraitSrc: "/images/team/bios/leo-cattani.png",
+    portraitSrc: "/images/team/bios/leo-cattani.webp",
     bioParagraphs: [
       "Leo Cattani is a Miami-born pianist and trumpeter. He plays regularly in South Florida and is currently pursuing his B.M. in Music Education at FIU.",
       "Leo plays music across a variety of genres, with a specialty in jazz performance as he is currently a member of the FIU Studio Jazz Big Band Ensemble.",
@@ -29,7 +29,7 @@ export const teamBios: TeamBio[] = [
     slug: "alex-ibanez",
     name: "Alex Ibanez",
     role: "Drums, Percussion",
-    portraitSrc: "/images/team/bios/alex-ibanez.png",
+    portraitSrc: "/images/team/bios/alex-ibanez.webp",
     bioParagraphs: [
       "Alex Ibanez is a drummer/percussionist with 20 years experience in the music business. He has played drums with countless groups that range in genres from rock, pop, funk, jazz and Cuban music.",
     ],
@@ -57,7 +57,7 @@ export const teamBios: TeamBio[] = [
     slug: "augusto-di-catarina",
     name: "Augusto Di Catarina",
     role: "Vocals, Guitar, Bass",
-    portraitSrc: "/images/team/bios/augusto-di-catarina.png",
+    portraitSrc: "/images/team/bios/augusto-di-catarina.webp",
     bioParagraphs: [
       "Vocalist and guitarist, Augusto Di Catarina graduated from Florida International University in the spring of 2019, earning a B.A. in Music Business with Jazz Voice as his primary instrument. He studied vocals under Dr. Lisanne Lyons and has performed with many student ensembles at his university.",
       "Augusto is a multi-instrumentalist who performs professionally with guitar, voice, bass, etc, throughout the South Florida area. In September of 2018, he toured across the United States opening each night with his band for The Spanish rock group, Hinds. Here he played in thirteen different cities, including Santa Barbara, Phoenix, Tucson, Austin, Dallas and Baton Rouge.",
@@ -70,7 +70,7 @@ export const teamBios: TeamBio[] = [
     slug: "renzo-vargas",
     name: "Renzo Vargas",
     role: "Drums, Percussion",
-    portraitSrc: "/images/team/bios/renzo-vargas.png",
+    portraitSrc: "/images/team/bios/renzo-vargas.webp",
     bioParagraphs: [
       "I started playing drums in 1995 when I was 13 years old went to Asm music studied with Over 15 different Drum teachers till I went to Miami-Dade college and studied with Jack Ciano, was fortunate to be able to play with Ed Calle popular music ensemble, Started teaching drums in 2008 after five years of private lessons schools around miami started to hear about my work and began working with different music schools, I am very fortunate to be able to work with kids ages 3 1/2 and up, and be part of wynwood school of music, YMU young musicians unite, South Pointe Elementary School, forte music academy, and private students",
       "I love working with Wynwood School Of Music by acting as both a mentor and role model.",
@@ -111,7 +111,7 @@ export const teamBios: TeamBio[] = [
     slug: "patricio-acevedo",
     name: "Patricio Acevedo",
     role: "Cello, Viola, Violin",
-    portraitSrc: "/images/team/bios/patricio-acevedo.png",
+    portraitSrc: "/images/team/bios/patricio-acevedo.webp",
     bioParagraphs: [
       "Hey there! I'm Patricio Acevedo, a Miami-based music educator. My musical journey started in elementary school when my music teacher gave me the opportunity to play violin in orchestra. Once I reached high school, though, I switched to cello - which has remained my primary instrument ever since – and took up percussion in marching band as well.",
       "My experiences in public school music motivated me to study at Miami Dade College, where I earned my Associate of Arts in Music in 2019. On top of my general music coursework, I played with the Chamber Music and Film Scoring Orchestra ensembles. During this time, I also cofounded the local rock band Slim Glasses as a cellist, electric bassist, and a vocalist.",
@@ -124,7 +124,7 @@ export const teamBios: TeamBio[] = [
     slug: "sergio-zavala",
     name: "Sergio Zavala",
     role: "Guitar",
-    portraitSrc: "/images/team/bios/sergio-zavala.png",
+    portraitSrc: "/images/team/bios/sergio-zavala.webp",
     bioParagraphs: [
       "Guitarist Sergio Zavala graduated from Florida International University in 2018 earning a B.A in Jazz guitar performance and again in 2021 with a M.A in the same field. He studied guitar under Tom Limpincott and performed with the schools top ensembles. Currently, he is performing all over Florida with multiple bands playing different styles ranging from Jazz to R'nB, Rock, Soul, and Funk.",
       "As a teacher, Sergio aims to provide you with the strong foundation that you need to become fluent in guitar and music. Whether your goals are to learn music to play in a band or to write your own, Sergio will guide you through the necessary steps to reach them. He believes in maintaining a positive and encouraging learning environment that allows room for growth and understanding.",
@@ -136,7 +136,7 @@ export const teamBios: TeamBio[] = [
     slug: "aj-hill",
     name: "AJ Hill",
     role: "Saxophone, Vocals, Drums",
-    portraitSrc: "/images/team/bios/aj-hill.png",
+    portraitSrc: "/images/team/bios/aj-hill.webp",
     bioParagraphs: [
       'Twice Grammy-nominated, one Oscar nomination; I\'ve shared the same billing as a child with Betty Wright, George and Gwen McRae & Clarence Reid, and as an adult with Page McConnell, Otielle Burbridge and Russell Batiste, worked with Sly & the Family Stone and recorded with Ralph Hunter, Andrew Woolfolk and Larry Dunn (Earth Wind and Fire), invited to jam with The Funky Meters. I\'ve helped to develop what\'s known as the "Miami Sound," through my work with The Spamallstars. Currently working as Artistic Director of the Miami Beach Rock Ensemble.',
     ],
@@ -147,7 +147,7 @@ export const teamBios: TeamBio[] = [
     slug: "jake-mongin",
     name: "Jake Mongin",
     role: "Guitar, Bass, Keyboard, Music Theory",
-    portraitSrc: "/images/team/bios/jake-mongin.png",
+    portraitSrc: "/images/team/bios/jake-mongin.webp",
     bioParagraphs: [
       "Born in Detroit, jazz guitarist Jake Mongin has been a part of the jazz scene in South Florida and abroad since 2019. After moving to Orlando in 2010, Jake has participated in numerous festival, concert and club performances with musicians from all generations. As a leader, Jake has performed in jazz clubs throughout the state of Florida from the Blue Bamboo in Orlando to the London Club in Naples. Despite having a background in jazz, Jake has appeared on various recordings and live bands in all genres from pop and hard rock.",
     ],
@@ -158,7 +158,7 @@ export const teamBios: TeamBio[] = [
     slug: "nestor-rigaud",
     name: "Nestor Rigaud",
     role: "Music Production, Guitar, Bass",
-    portraitSrc: "/images/team/bios/nestor-rigaud.png",
+    portraitSrc: "/images/team/bios/nestor-rigaud.webp",
     bioParagraphs: [
       "Nestor has played guitar and bass for 15 years and through that, he fell in love with recording music both as a producer and a recording engineer. He went on to study music production and recording at Berklee college of music where he developed his recording and playing skills further.",
       "Nestor has been recording himself and local acts for over 10 years and has lots of experience in different styles and how to achieve many different sounds. He loves creating in the moment and if he has any free time you can find him creating little songs and beats. Nestor has been teaching music for 8 years and is focused in figuring out what you want to do and how to arrive there.",

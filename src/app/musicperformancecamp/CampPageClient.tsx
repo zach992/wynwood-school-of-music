@@ -267,7 +267,7 @@ export default function CampPageClient() {
             <div className="hero-video">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/images/camp/showcase-hero.png"
+                src="/images/camp/showcase-hero.webp"
                 alt="Campers rehearsing in the WSM band room"
                 style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
               />
@@ -352,9 +352,9 @@ export default function CampPageClient() {
           <div className="instructors-grid">
             {[
               { name: "Sammy Gonzalez Zeira", role: "Co-Founder · Guitar · Bass", badge: "Co-Founder", bio: "Touring guitarist and bassist, Director of the Miami Beach Senior High Rock Ensemble, and CEO of Young Musicians Unite — Miami-Dade's free music-education non-profit serving 12,000+ students.", img: "/images/team/sammy-gonzalez.jpg" },
-              { name: "Zach Larmer", role: "Co-Founder · Guitar · Composition", badge: "Co-Founder", bio: "Three-time GRAMMY-winning jazz guitarist who has toured the world and shared stages with renowned artists. 13 years educating Miami's young musicians.", img: "/images/team/zach-larmer.png" },
+              { name: "Zach Larmer", role: "Co-Founder · Guitar · Composition", badge: "Co-Founder", bio: "Three-time GRAMMY-winning jazz guitarist who has toured the world and shared stages with renowned artists. 13 years educating Miami's young musicians.", img: "/images/team/zach-larmer.webp" },
               { name: "Vale Peñaranda", role: "Voice · Keys · Production", badge: "Voice & Keys", bio: "Berklee and Frost School of Music alum. Recipient of the Eduardo Abaroa Award and a Latin GRAMMY Cultural Foundation Leading Lady, with stages from the Berklee Performance Center to the Suena Caracas Festival.", img: "/images/team/vale-penaranda.jpg" },
-              { name: "AJ Hill", role: "Saxophone · Vocals · Drums", badge: "Saxophone", bio: "Twice Grammy-nominated and Oscar-nominated. Has shared the bill with Sly & the Family Stone and Earth Wind & Fire alums, and serves as Artistic Director of the Miami Beach Rock Ensemble.", img: "/images/team/aj-hill-camp.png" },
+              { name: "AJ Hill", role: "Saxophone · Vocals · Drums", badge: "Saxophone", bio: "Twice Grammy-nominated and Oscar-nominated. Has shared the bill with Sly & the Family Stone and Earth Wind & Fire alums, and serves as Artistic Director of the Miami Beach Rock Ensemble.", img: "/images/team/aj-hill-camp.webp" },
             ].map((i) => (
               <div key={i.name} className="instructor reveal">
                 <div className="instructor-photo">
