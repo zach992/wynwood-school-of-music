@@ -21,6 +21,12 @@ export async function sendFormNotification(opts: SendOpts): Promise<void> {
         .map((s) => s.trim())
         .filter(Boolean);
 
+  // Default Reply-To = info@wynwoodschoolofmusic.com so any recipient can reach
+  // a real staff inbox if a template forgets to set its own. Templates that
+  // intentionally route replies elsewhere (e.g., staff lead notifications →
+  // lead's email so staff can hit Reply directly) pass their own replyTo.
+  const replyTo = opts.replyTo || "info@wynwoodschoolofmusic.com";
+
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -32,7 +38,7 @@ export async function sendFormNotification(opts: SendOpts): Promise<void> {
       to,
       subject: opts.subject,
       html: opts.html,
-      reply_to: opts.replyTo,
+      reply_to: replyTo,
     }),
   });
 

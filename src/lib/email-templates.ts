@@ -95,6 +95,63 @@ export function buildContactEmail(p: AnyPayload, studentAge: number | null) {
   };
 }
 
+// Plain-text-styled auto-reply sent to the lead after a contact-form submit.
+// Deliberately avoids the branded `shell()` wrapper — looks like an email a
+// real person typed, which lifts open + reply rates vs. branded HTML blasts.
+// Adapts copy depending on whether an adult is signing themselves up or a
+// parent is signing up a child (detected by name match + age fallback).
+export function buildContactAutoReply(p: AnyPayload, studentAge: number | null) {
+  const studentFirst = String(p.studentFirstName || "").trim();
+  const studentLast = String(p.studentLastName || "").trim();
+  const parentFirst = String(p.parentFirstName || "").trim();
+  const parentLast = String(p.parentLastName || "").trim();
+
+  const nameMatches =
+    !!studentFirst &&
+    !!parentFirst &&
+    studentFirst.toLowerCase() === parentFirst.toLowerCase() &&
+    studentLast.toLowerCase() === parentLast.toLowerCase();
+  const noParentName = !parentFirst && !parentLast;
+  const isAdultLearner =
+    nameMatches || noParentName || (studentAge != null && studentAge >= 18);
+
+  const greetName = isAdultLearner
+    ? studentFirst || parentFirst || "there"
+    : parentFirst || "there";
+
+  const subjects = Array.isArray(p.subjects) ? (p.subjects as unknown[]).map(String) : [];
+  // 1 subject: "guitar lessons" · 2: "guitar and piano lessons" · 3+: keep generic
+  const instrumentPhrase =
+    subjects.length === 1
+      ? `${subjects[0].toLowerCase()} lessons`
+      : subjects.length === 2
+        ? `${subjects[0].toLowerCase()} and ${subjects[1].toLowerCase()} lessons`
+        : "lessons";
+
+  const opener = isAdultLearner
+    ? `Thanks for reaching out about ${esc(instrumentPhrase)}. We're excited you found us.`
+    : `Thanks for reaching out about ${esc(instrumentPhrase)} for ${esc(studentFirst)}. We're excited you found us.`;
+
+  const callback = isAdultLearner
+    ? `Someone from our team will give you a call within one business day from <strong>305-359-5515</strong> to find a time for your trial lesson and answer any questions. Save the number so it doesn't go to spam.`
+    : `Someone from our team will give you a call within one business day from <strong>305-359-5515</strong> to find a time for ${esc(studentFirst)}'s trial lesson and answer any questions. Save the number so it doesn't go to spam.`;
+
+  const html = `<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;color:#222;max-width:600px;">
+<p style="margin:0 0 14px;">Hi ${esc(greetName)},</p>
+<p style="margin:0 0 14px;">${opener}</p>
+<p style="margin:0 0 14px;">${callback}</p>
+<p style="margin:0 0 14px;">If you'd rather text or email, just reply to this message. We read every one.</p>
+<p style="margin:0;">Talk soon,<br>Julianne<br>Wynwood School of Music</p>
+</div>`;
+
+  return {
+    subject: "Got your message, we'll call you soon",
+    html,
+    from: "Julianne at Wynwood School of Music <forms@forms.wynwoodschoolofmusic.com>",
+    replyTo: "info@wynwoodschoolofmusic.com",
+  };
+}
+
 // ─── Repair ─────────────────────────────────────────────────────────────────
 
 export function buildRepairEmail(p: AnyPayload) {
@@ -183,6 +240,8 @@ export function buildWgvEmail(p: AnyPayload, studentAge: number | null) {
 
 // ─── Camp Deposit (Stripe checkout completed) ───────────────────────────────
 
+import { SESSIONS } from "./camp-pricing";
+
 type CampDepositPayload = {
   camperName?: string;
   camperAge?: string;
@@ -198,6 +257,11 @@ type CampDepositPayload = {
   currency?: string | null;
   stripeSessionId: string;
 };
+
+function sessionLabel(code: string): string {
+  const s = SESSIONS.find((x) => x.code === code);
+  return s ? `Session ${s.code}: ${s.dates}` : `Session ${code}`;
+}
 
 function fmtMoney(cents: number, currency = "usd"): string {
   return new Intl.NumberFormat("en-US", {
@@ -219,7 +283,7 @@ export function buildCampDepositStaffEmail(p: CampDepositPayload) {
   const subject = `Camp deposit paid: ${camperName} · ${fmtMoney(p.amountPaidCents, p.currency ?? "usd")}`;
 
   const sessionsHtml = p.sessionCodes.length
-    ? `<ul style="margin:6px 0 0;padding-left:20px;color:#111;">${p.sessionCodes.map((s) => `<li style="margin-bottom:4px;">${esc(s)}</li>`).join("")}</ul>`
+    ? `<ul style="margin:6px 0 0;padding-left:20px;color:#111;">${p.sessionCodes.map((c) => `<li style="margin-bottom:4px;">${esc(sessionLabel(c))}</li>`).join("")}</ul>`
     : "<span style='color:#bbb;'>—</span>";
 
   const body = quickReply(p.parentName ?? "", p.parentPhone ?? "", p.parentEmail ?? "") +
@@ -247,7 +311,7 @@ export function buildCampDepositStaffEmail(p: CampDepositPayload) {
 export function buildCampDepositParentEmail(p: CampDepositPayload) {
   const camperName = p.camperName || "your camper";
   const sessionsList = p.sessionCodes.length
-    ? `<ul style="margin:8px 0 0;padding-left:20px;">${p.sessionCodes.map((s) => `<li style="margin-bottom:4px;">${esc(s)}</li>`).join("")}</ul>`
+    ? p.sessionCodes.map((c) => esc(sessionLabel(c))).join("<br>")
     : "";
 
   const subject = `Your WSM Music Performance Camp deposit confirmation`;
@@ -270,9 +334,14 @@ export function buildCampDepositParentEmail(p: CampDepositPayload) {
       ${row("Balance Owed", `<strong>${esc(fmtMoneyDollars(p.balanceOwed))}</strong>`)}
     </table>
 
-    <p style="margin:24px 0 8px;color:#666;font-size:13px;">The remaining balance is due before the start of your camp session. We'll be in touch with payment instructions and a packing list as your session approaches.</p>
-    <p style="margin:0 0 8px;color:#666;font-size:13px;">Questions? Just reply to this email or call us at <a href="tel:305-359-5515" style="color:#994878;">305-359-5515</a>.</p>
-    <p style="margin:24px 0 0;">— The WSM Team</p>
+    <p style="margin:24px 0 16px;color:#444;font-size:14px;">The remaining balance is due before the start of your camp session. We'll be in touch with payment instructions and a packing list as your session approaches.</p>
+
+    <div style="background:#fbf7f9;border:1px solid #e6d5dd;border-radius:6px;padding:16px 18px;margin:24px 0;">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#994878;font-weight:700;margin-bottom:6px;">Questions?</div>
+      <div style="font-size:14px;line-height:1.6;color:#111;">Just reply to this email. We read every message, or call us at <a href="tel:305-359-5515" style="color:#994878;text-decoration:none;font-weight:600;">305-359-5515</a>.</div>
+    </div>
+
+    <p style="margin:24px 0 0;">Thanks,<br>The WSM Team</p>
   `;
 
   return {

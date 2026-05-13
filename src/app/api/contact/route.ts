@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { airtableCreate } from "@/lib/airtable";
 import { sendFormNotification } from "@/lib/email";
-import { buildContactEmail } from "@/lib/email-templates";
+import { buildContactEmail, buildContactAutoReply } from "@/lib/email-templates";
 import { fmtBirthdayMMDD } from "@/lib/form-utils";
 import { mailchimpUpsertSubscriber } from "@/lib/mailchimp";
 
@@ -139,6 +139,16 @@ export async function POST(req: NextRequest) {
     ? sendFormNotification(buildContactEmail(payload, studentAge))
     : Promise.reject(new Error("RESEND_API_KEY not set"));
 
+  // Parent-facing auto-reply (signed by Julianne). Non-critical: a failure
+  // here doesn't fail the submission — Airtable + staff notification are.
+  const autoReplyPromise: Promise<unknown> =
+    process.env.RESEND_API_KEY && typeof payload.parentEmail === "string" && payload.parentEmail
+      ? sendFormNotification({
+          ...buildContactAutoReply(payload, studentAge),
+          to: payload.parentEmail,
+        })
+      : Promise.reject(new Error("Auto-reply skipped (no RESEND_API_KEY or parentEmail)"));
+
   const year = new Date().getFullYear();
   const mailchimpPromise: Promise<unknown> =
     process.env.MAILCHIMP_API_KEY && typeof payload.parentEmail === "string" && payload.parentEmail
@@ -174,11 +184,12 @@ export async function POST(req: NextRequest) {
       })
     : Promise.reject(new Error("ZAPIER_CONTACT_WEBHOOK_URL not set"));
 
-  const [airtableRes, emailRes, mailchimpRes, zapierRes] = await Promise.allSettled([
+  const [airtableRes, emailRes, mailchimpRes, zapierRes, autoReplyRes] = await Promise.allSettled([
     airtablePromise,
     emailPromise,
     mailchimpPromise,
     zapierPromise,
+    autoReplyPromise,
   ]);
 
   if (airtableRes.status === "rejected") {
@@ -192,6 +203,9 @@ export async function POST(req: NextRequest) {
   }
   if (zapierRes.status === "rejected") {
     console.error("[api/contact] Zapier forward failed:", zapierRes.reason);
+  }
+  if (autoReplyRes.status === "rejected") {
+    console.error("[api/contact] Auto-reply to lead failed:", autoReplyRes.reason);
   }
 
   if (airtableRes.status === "rejected" && emailRes.status === "rejected") {
