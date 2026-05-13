@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Button from "@/components/Button";
+import BreadcrumbSchema from "@/components/BreadcrumbSchema";
 
 export const metadata = {
   title: "Private Music Lessons in Miami — Guitar, Piano, Drums, Voice & More",
@@ -11,6 +12,13 @@ export const metadata = {
 export default function PrivateLessonsPage() {
   return (
     <>
+      <BreadcrumbSchema
+        trail={[
+          { name: "Home", path: "/" },
+          { name: "Programs", path: "/programs-and-pricing" },
+          { name: "Private Lessons", path: "/private-lessons" },
+        ]}
+      />
       {/* Page Heading */}
       <section className="bg-wsm-dark px-4 pt-12 pb-4">
         <div className="max-w-5xl mx-auto">

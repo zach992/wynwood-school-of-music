@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Button from "@/components/Button";
+import BreadcrumbSchema from "@/components/BreadcrumbSchema";
 
 export const metadata = {
   title: "Music Lesson Programs & Pricing in Miami",
@@ -11,6 +12,12 @@ export const metadata = {
 export default function ProgramsAndPricingPage() {
   return (
     <>
+      <BreadcrumbSchema
+        trail={[
+          { name: "Home", path: "/" },
+          { name: "Programs & Pricing", path: "/programs-and-pricing" },
+        ]}
+      />
       {/* Page Heading */}
       <section className="bg-wsm-dark px-4 pt-12 pb-4">
         <div className="max-w-5xl mx-auto">
