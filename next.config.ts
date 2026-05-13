@@ -64,6 +64,8 @@ const nextConfig: NextConfig = {
       // Blog never carried over — point to homepage
       { source: "/blog", destination: "/", permanent: true },
       { source: "/blog/makeiteasy", destination: "/", permanent: true },
+      // Old teacher bookmark URL → new /teacher-resources page
+      { source: "/resources", destination: "/teacher-resources", permanent: true },
     ];
   },
 };
