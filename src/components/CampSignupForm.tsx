@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import posthog from "posthog-js";
 import { HoneypotField, useFormGuard } from "./FormGuard";
 
 const instruments = ["Voice", "Guitar", "Keyboard", "Bass", "Drums"];
@@ -71,6 +72,7 @@ export default function CampSignupForm() {
         body: JSON.stringify({ ...formData, ...guard.payload() }),
       });
       if (!res.ok) throw new Error(`Submission failed (${res.status})`);
+      posthog.capture("form_submitted", { form: "camp-interest" });
       router.push("/summer-camp-thank-you");
     } catch (err) {
       console.error("Camp signup submit error:", err);

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import posthog from "posthog-js";
 import { HoneypotField, useFormGuard } from "./FormGuard";
 
 const instruments = ["Guitar", "Bass", "Ukulele"];
@@ -56,6 +57,7 @@ export default function WgvForm() {
         body: JSON.stringify({ ...formData, ...guard.payload() }),
       });
       if (!res.ok) throw new Error(`Submission failed (${res.status})`);
+      posthog.capture("form_submitted", { form: "wgv" });
       setSubmitted(true);
     } catch (err) {
       console.error("WGV form submit error:", err);

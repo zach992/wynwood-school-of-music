@@ -1,4 +1,5 @@
 import Button from "@/components/Button";
+import CheckoutCompletedTracker from "@/components/CheckoutCompletedTracker";
 
 export const metadata = {
   title: "Deposit Received — Summer Camp",
@@ -10,6 +11,7 @@ export const metadata = {
 export default function CampDepositThankYouPage() {
   return (
     <>
+      <CheckoutCompletedTracker product="summer-camp-deposit" />
       <section className="bg-wsm-dark px-4 pt-16 md:pt-24 pb-10">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="font-heading text-4xl md:text-6xl uppercase font-black text-white leading-tight">

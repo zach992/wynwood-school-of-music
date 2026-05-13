@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import posthog from "posthog-js";
 import { HoneypotField, useFormGuard } from "./FormGuard";
 
 const instruments = [
@@ -62,6 +63,7 @@ export default function TrialLessonForm() {
         body: JSON.stringify({ ...formData, ...guard.payload() }),
       });
       if (!res.ok) throw new Error(`Submission failed (${res.status})`);
+      posthog.capture("form_submitted", { form: "trial-lesson" });
       router.push("/your-trial");
     } catch (err) {
       console.error("Trial lesson form submit error:", err);

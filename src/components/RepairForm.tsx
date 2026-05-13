@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import posthog from "posthog-js";
 import { HoneypotField, useFormGuard } from "./FormGuard";
 
 const services = [
@@ -66,6 +67,7 @@ export default function RepairForm() {
         body: JSON.stringify({ ...formData, ...guard.payload() }),
       });
       if (!res.ok) throw new Error(`Submission failed (${res.status})`);
+      posthog.capture("form_submitted", { form: "repair" });
       setSubmitted(true);
     } catch (err) {
       console.error("Repair form submit error:", err);
