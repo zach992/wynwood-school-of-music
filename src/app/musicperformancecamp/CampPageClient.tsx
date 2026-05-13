@@ -146,7 +146,11 @@ export default function CampPageClient() {
 
   const showStickyCart = picks.length > 0 && !cartInView && !modalOpen;
 
-  const closeModal = () => setModalOpen(false);
+  const closeModal = () => {
+    setModalOpen(false);
+    setCheckoutOpened(false);
+    setFormError(null);
+  };
 
   // Reservation form state
   const [camperName, setCamperName] = useState("");
@@ -156,6 +160,7 @@ export default function CampPageClient() {
   const [parentPhone, setParentPhone] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [checkoutOpened, setCheckoutOpened] = useState(false);
 
   const formValid =
     picks.length > 0 &&
@@ -168,6 +173,10 @@ export default function CampPageClient() {
     if (!formValid || submitting) return;
     setSubmitting(true);
     setFormError(null);
+    setCheckoutOpened(false);
+    // Open the tab synchronously with the click so popup blockers don't intercept it.
+    // If the browser still blocks (returns null), we'll fall back to same-tab redirect.
+    const checkoutTab = window.open("about:blank", "_blank");
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
@@ -183,6 +192,7 @@ export default function CampPageClient() {
       });
       const data = (await res.json().catch(() => ({}))) as { url?: string; error?: string };
       if (!res.ok || !data.url) {
+        if (checkoutTab && !checkoutTab.closed) checkoutTab.close();
         setFormError(data.error || "Couldn't start checkout. Please try again.");
         setSubmitting(false);
         return;
@@ -192,8 +202,17 @@ export default function CampPageClient() {
         sessions: Array.from(selected),
         session_count: selected.size,
       });
-      window.location.href = data.url;
+      if (checkoutTab && !checkoutTab.closed) {
+        checkoutTab.location.href = data.url;
+        // Surface a notice in case the new tab opened behind the current one.
+        setCheckoutOpened(true);
+        setSubmitting(false);
+      } else {
+        // Popup was blocked — fall back to same-tab redirect so checkout still works.
+        window.location.href = data.url;
+      }
     } catch {
+      if (checkoutTab && !checkoutTab.closed) checkoutTab.close();
       setFormError("Network error. Please try again.");
       setSubmitting(false);
     }
@@ -858,6 +877,28 @@ export default function CampPageClient() {
             <p style={{ color: "var(--red, #d33)", fontSize: 14, marginTop: 8 }}>{formError}</p>
           )}
 
+          {checkoutOpened && !formError && (
+            <p style={{ color: "var(--yellow)", fontSize: 14, marginTop: 8 }}>
+              Checkout opened in a new tab — complete your payment there. Don&rsquo;t see it? Check behind this window or{" "}
+              <button
+                type="button"
+                onClick={handleCheckout}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "var(--yellow)",
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                  padding: 0,
+                  font: "inherit",
+                }}
+              >
+                reopen it
+              </button>
+              .
+            </p>
+          )}
+
           <button
             className="btn btn-primary"
             style={{
@@ -870,9 +911,11 @@ export default function CampPageClient() {
             onClick={handleCheckout}
             disabled={!formValid || submitting}
           >
-            {submitting ? "Redirecting to Stripe…" : (
-              <>Proceed to Secure Checkout <span className="arrow">→</span></>
-            )}
+            {submitting
+              ? "Opening Stripe…"
+              : checkoutOpened
+              ? <>Reopen Checkout <span className="arrow">→</span></>
+              : <>Proceed to Secure Checkout <span className="arrow">→</span></>}
           </button>
         </div>
       </div>
