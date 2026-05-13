@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import posthog from "posthog-js";
 import { HoneypotField, useFormGuard } from "./FormGuard";
 
 const subjects = [
@@ -75,6 +76,7 @@ export default function ContactForm() {
       if (!res.ok) {
         throw new Error(`Submission failed (${res.status})`);
       }
+      posthog.capture("form_submitted", { form: "contact" });
       router.push("/thank-you");
     } catch (err) {
       console.error("Contact form submit error:", err);

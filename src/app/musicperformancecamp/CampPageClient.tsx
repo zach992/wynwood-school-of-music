@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import posthog from "posthog-js";
 import {
   SESSIONS,
   BASE_EARLY,
@@ -186,6 +187,11 @@ export default function CampPageClient() {
         setSubmitting(false);
         return;
       }
+      posthog.capture("checkout_started", {
+        product: "summer-camp-deposit",
+        sessions: Array.from(selected),
+        session_count: selected.size,
+      });
       window.location.href = data.url;
     } catch {
       setFormError("Network error. Please try again.");
