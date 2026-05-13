@@ -50,6 +50,8 @@ const nextConfig: NextConfig = {
       { source: "/spring-private-lesson-recitals-gallery-2023", destination: "/recitals", permanent: true },
       { source: "/recitalphotos", destination: "/recitals", permanent: true },
       { source: "/springrecitalphotos2023", destination: "/recitals", permanent: true },
+      // Case-sensitive path that real users have typed from off-site (printed/email)
+      { source: "/RECITALS", destination: "/recitals", permanent: true },
       // Generic galleries — closest match is /recitals (the only photo-heavy page)
       { source: "/gallery", destination: "/recitals", permanent: true },
       { source: "/gallery-2", destination: "/recitals", permanent: true },
