@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Button from "@/components/Button";
 import TeamMemberCard from "@/components/TeamMemberCard";
+import BreadcrumbSchema from "@/components/BreadcrumbSchema";
 import { teamBios } from "@/lib/team-bios";
 
 export const metadata = {
@@ -34,6 +35,12 @@ const bioSlugs = new Set(
 export default function TeamPage() {
   return (
     <>
+      <BreadcrumbSchema
+        trail={[
+          { name: "Home", path: "/" },
+          { name: "Team", path: "/team" },
+        ]}
+      />
       {/* Page Heading */}
       <section className="bg-wsm-dark px-4 pt-12 pb-4">
         <div className="max-w-5xl mx-auto">
