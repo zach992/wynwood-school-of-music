@@ -13,18 +13,18 @@ export const metadata = {
 type Instructor = { name: string; role: string; imageSrc: string; slug: string; imagePosition?: string };
 
 const instructors: Instructor[] = [
-  { name: "Leo Cattani", role: "Keyboard, Trumpet, Music Theory", imageSrc: "/images/team/leo-cattani.png", slug: "leo-cattani" },
-  { name: "Alex Ibanez", role: "Drums, Percussion", imageSrc: "/images/team/alex-ibanez.png", slug: "alex-ibanez" },
+  { name: "Leo Cattani", role: "Keyboard, Trumpet, Music Theory", imageSrc: "/images/team/leo-cattani.webp", slug: "leo-cattani" },
+  { name: "Alex Ibanez", role: "Drums, Percussion", imageSrc: "/images/team/alex-ibanez.webp", slug: "alex-ibanez" },
   { name: "Vale Pe\u00f1aranda", role: "Voice, Keyboard, Music Production, Songwriting", imageSrc: "/images/team/vale-penaranda.jpg", slug: "vale-penaranda", imagePosition: "center 22%" },
-  { name: "Augusto Di Catarina", role: "Voice, Guitar, Bass, Keyboard, Ukulele", imageSrc: "/images/team/augusto-di-catarina.png", slug: "augusto-di-catarina" },
-  { name: "Renzo Vargas", role: "Drums, Percussion", imageSrc: "/images/team/renzo-vargas.png", slug: "renzo-vargas" },
+  { name: "Augusto Di Catarina", role: "Voice, Guitar, Bass, Keyboard, Ukulele", imageSrc: "/images/team/augusto-di-catarina.webp", slug: "augusto-di-catarina" },
+  { name: "Renzo Vargas", role: "Drums, Percussion", imageSrc: "/images/team/renzo-vargas.webp", slug: "renzo-vargas" },
   { name: "Angel Perez", role: "Keyboard, Music Theory", imageSrc: "/images/team/angel-perez.jpg", slug: "angel-perez" },
   { name: "Yamil Granda", role: "Bass, Guitar", imageSrc: "/images/team/yamil-granda.jpg", slug: "yamil-granda" },
-  { name: "Patricio Acevedo", role: "Strings (Violin, Viola, Cello)", imageSrc: "/images/team/patricio-acevedo.png", slug: "patricio-acevedo" },
-  { name: "Sergio Zavala", role: "Guitar", imageSrc: "/images/team/sergio-zavala.png", slug: "sergio-zavala" },
-  { name: "AJ Hill", role: "Saxophone, Voice, Drums", imageSrc: "/images/team/aj-hill.png", slug: "aj-hill" },
-  { name: "Jake Mongin", role: "Guitar, Music Theory", imageSrc: "/images/team/jake-mongin.png", slug: "jake-mongin" },
-  { name: "Nestor Rigaud", role: "Guitar, Bass, Music Production", imageSrc: "/images/team/nestor-rigaud.png", slug: "nestor-rigaud" },
+  { name: "Patricio Acevedo", role: "Strings (Violin, Viola, Cello)", imageSrc: "/images/team/patricio-acevedo.webp", slug: "patricio-acevedo" },
+  { name: "Sergio Zavala", role: "Guitar", imageSrc: "/images/team/sergio-zavala.webp", slug: "sergio-zavala" },
+  { name: "AJ Hill", role: "Saxophone, Voice, Drums", imageSrc: "/images/team/aj-hill.webp", slug: "aj-hill" },
+  { name: "Jake Mongin", role: "Guitar, Music Theory", imageSrc: "/images/team/jake-mongin.webp", slug: "jake-mongin" },
+  { name: "Nestor Rigaud", role: "Guitar, Bass, Music Production", imageSrc: "/images/team/nestor-rigaud.webp", slug: "nestor-rigaud" },
 ];
 
 const bioSlugs = new Set(
@@ -61,7 +61,7 @@ export default function TeamPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
             <div className="relative w-full aspect-[4/5] bg-wsm-darker overflow-hidden">
               <Image
-                src="/images/team/zach-larmer.png"
+                src="/images/team/zach-larmer.webp"
                 alt="Zach Larmer, Founder"
                 fill
                 className="object-cover"

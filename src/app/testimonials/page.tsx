@@ -49,19 +49,19 @@ const currentStudents = [
 const alumni = [
   {
     name: "Kane Akar",
-    image: "/images/testimonials/kane-akar.png",
+    image: "/images/testimonials/kane-akar.webp",
     quote:
       "It wasn't until Sammy sat me down in front of my parents and made me perform my first piece that I realized what I had accomplished. I wasn't just dabbling anymore; I was a musician. I eventually graduated high school to join the rowing team for the University of Pennsylvania, from which I graduated with a B.A. in Mathematics. I now work in Los Angeles as a consultant for Heidrick & Struggles.",
   },
   {
     name: "James Gerrard",
-    image: "/images/testimonials/james-gerrard.png",
+    image: "/images/testimonials/james-gerrard.webp",
     quote:
       "Playing and studying music during high school really helped shape my future. Getting to play in Avalanche not only developed my musicianship but gave me a passion for music as a whole and taught me more than any class ever will. I now attend Belmont University, where I'm pursuing a career in audio engineering playing drums in every band I can.",
   },
   {
     name: "Sebastian Zel",
-    image: "/images/testimonials/sebastian-zel.png",
+    image: "/images/testimonials/sebastian-zel.webp",
     quote:
       'I studied guitar, songwriting, and music production with Sammy Gonzalez from ages 8-17. I\'ve since graduated with honors from NYU Steinhardt with a degree in Music Composition & Theory and have carved out a career as a professional composer, producer, and instrumentalist in New York City. Most recently, I composed a soundtrack for Andrew Garcia\'s "La Piel De Ayer" which premiered in May 2019 on HBO.',
   },

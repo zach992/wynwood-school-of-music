@@ -48,7 +48,7 @@ export default function ProgramsAndPricingPage() {
             {/* Background image */}
             <div className="relative w-full aspect-[16/9]">
               <Image
-                src="/images/programs/testimonial-bg.png"
+                src="/images/programs/testimonial-bg.webp"
                 alt="Musician performing on stage"
                 fill
                 className="object-cover"

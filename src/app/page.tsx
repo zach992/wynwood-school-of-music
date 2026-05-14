@@ -143,7 +143,7 @@ export default function HomePage() {
               </h3>
               <div className="relative w-full aspect-[4/3] mb-6 overflow-hidden rounded">
                 <Image
-                  src="/images/homepage/band-programs-avalanche.jpg"
+                  src="/images/homepage/band-programs-avalanche.webp"
                   alt="Avalanche band performing at Wynwood School of Music"
                   fill
                   className="object-cover"
