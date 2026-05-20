@@ -11,6 +11,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import StructuredData from "@/components/StructuredData";
 
 const GOOGLE_ADS_ID = "AW-700940936";
+const GOOGLE_ADS_ENABLED = process.env.NODE_ENV === "production";
 
 const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
@@ -61,18 +62,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={barlowCondensed.variable}>
       <body className="bg-wsm-dark text-white font-body min-h-screen flex flex-col">
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
-          strategy="afterInteractive"
-        />
-        <Script id="google-ads-gtag" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${GOOGLE_ADS_ID}');
-          `}
-        </Script>
+        {GOOGLE_ADS_ENABLED && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-ads-gtag" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${GOOGLE_ADS_ID}');
+              `}
+            </Script>
+          </>
+        )}
         <PostHogProvider>
           <StructuredData />
           <ScrollToTop />
