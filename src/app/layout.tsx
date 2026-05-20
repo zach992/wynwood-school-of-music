@@ -11,7 +11,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import StructuredData from "@/components/StructuredData";
 
 const GOOGLE_ADS_ID = "AW-700940936";
-const GOOGLE_ADS_ENABLED = process.env.NODE_ENV === "production";
+const GOOGLE_ADS_ENABLED = process.env.NEXT_PUBLIC_ENABLE_GOOGLE_ADS === "true";
 
 const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
