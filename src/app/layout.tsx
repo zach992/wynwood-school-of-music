@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Barlow_Condensed } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import AnnouncementBar from "@/components/AnnouncementBar";
 import CampUrgencyBar from "@/components/CampUrgencyBar";
@@ -8,6 +9,8 @@ import Footer from "@/components/Footer";
 import { PostHogProvider } from "@/components/PostHogProvider";
 import ScrollToTop from "@/components/ScrollToTop";
 import StructuredData from "@/components/StructuredData";
+
+const GOOGLE_ADS_ID = "AW-700940936";
 
 const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
@@ -58,6 +61,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={barlowCondensed.variable}>
       <body className="bg-wsm-dark text-white font-body min-h-screen flex flex-col">
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-ads-gtag" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GOOGLE_ADS_ID}');
+          `}
+        </Script>
         <PostHogProvider>
           <StructuredData />
           <ScrollToTop />
