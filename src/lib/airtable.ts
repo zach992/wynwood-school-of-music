@@ -46,9 +46,16 @@ function cleanFields(fields: AirtableFields): AirtableFields {
   return cleaned;
 }
 
+// Optional per-call options. `signal` lets callers bound the request with an
+// `AbortController` so a slow Airtable can't hang a customer-facing route
+// (Node `fetch` has no default timeout, so without this a degraded — not
+// failing — Airtable would block forever).
+export type AirtableRequestOptions = { signal?: AbortSignal };
+
 export async function airtableCreate(
   tableName: string,
-  fields: AirtableFields
+  fields: AirtableFields,
+  options: AirtableRequestOptions = {}
 ): Promise<AirtableRecord> {
   const { token, baseId } = getCreds();
 
@@ -64,6 +71,7 @@ export async function airtableCreate(
         records: [{ fields: cleanFields(fields) }],
         typecast: true,
       }),
+      signal: options.signal,
     }
   );
 
@@ -82,7 +90,8 @@ export async function airtableCreate(
 export async function airtableUpdate(
   tableName: string,
   recordId: string,
-  fields: AirtableFields
+  fields: AirtableFields,
+  options: AirtableRequestOptions = {}
 ): Promise<AirtableRecord> {
   const { token, baseId } = getCreds();
 
@@ -98,6 +107,7 @@ export async function airtableUpdate(
         fields: cleanFields(fields),
         typecast: true,
       }),
+      signal: options.signal,
     }
   );
 
