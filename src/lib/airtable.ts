@@ -8,6 +8,26 @@ type AirtableFields = Record<string, unknown>;
 // (e.g. stashing the record ID in Stripe session metadata for later update).
 export type AirtableRecord = { id: string; fields: AirtableFields; createdTime?: string };
 
+// Thrown by `airtableCreate` / `airtableUpdate` on any non-2xx response. Exposes
+// the HTTP status so callers can branch on it — most importantly, the webhook
+// uses `status === 403 || status === 404` to detect a stale record ID (the
+// Cart-Started row was deleted between session creation and payment) and fall
+// back to creating a fresh row instead of letting the paid signup get stuck in
+// Stripe retry hell. Airtable returns 403 for a valid-format-but-missing ID
+// (deliberately conflated with permission errors so row existence isn't
+// leakable) and 404 for a malformed ID; both indicate "row not reachable for
+// PATCH" and warrant the create fallback.
+export class AirtableError extends Error {
+  status: number;
+  body: string;
+  constructor(status: number, body: string) {
+    super(`Airtable ${status}: ${body}`);
+    this.name = "AirtableError";
+    this.status = status;
+    this.body = body;
+  }
+}
+
 function getCreds() {
   const token = process.env.AIRTABLE_TOKEN;
   const baseId = process.env.AIRTABLE_BASE_ID;
@@ -49,7 +69,7 @@ export async function airtableCreate(
 
   if (!res.ok) {
     const text = await res.text().catch(() => "");
-    throw new Error(`Airtable ${res.status}: ${text}`);
+    throw new AirtableError(res.status, text);
   }
   const data = (await res.json()) as { records: AirtableRecord[] };
   return data.records[0];
@@ -83,7 +103,7 @@ export async function airtableUpdate(
 
   if (!res.ok) {
     const text = await res.text().catch(() => "");
-    throw new Error(`Airtable ${res.status}: ${text}`);
+    throw new AirtableError(res.status, text);
   }
   return (await res.json()) as AirtableRecord;
 }
