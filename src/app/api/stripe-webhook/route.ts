@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { AirtableError, airtableCreate, airtableUpdate } from "@/lib/airtable";
+import {
+  AirtableError,
+  airtableCreate,
+  airtableEscapeFormulaString,
+  airtableFind,
+  airtableUpdate,
+} from "@/lib/airtable";
 import { sendFormNotification } from "@/lib/email";
 import {
   buildCampDepositParentEmail,
@@ -106,29 +112,67 @@ export async function POST(req: NextRequest) {
         "Lead Source": "Stripe Deposit",
       };
 
+      // Reconciliation helper: when we don't have a usable record ID
+      // (because the metadata is empty OR the row it points at is stale),
+      // try to find an existing "Cart Started" row by natural key before
+      // creating a new one. This handles the abort-race case where the
+      // pre-create in `/api/checkout` timed out at 2.5s but Airtable still
+      // persisted the row — without a lookup we'd insert a duplicate
+      // "Enrolled" row and leave the original orphan forever, which would
+      // produce duplicate paid signups + false abandoned-cart leads any
+      // time Airtable response time crept above the abort threshold.
+      //
+      // Natural key = Parent Email + Name + Lead Status. Both fields are
+      // already in the Stripe session metadata that the pre-create wrote,
+      // so a hit means the same checkout intent. Lookup failures fail
+      // open (proceed to create) so a transient list-API error doesn't
+      // 502-loop Stripe; the worst case is a single duplicate row, not a
+      // lost enrollment.
+      const reconcileOrCreate = async () => {
+        const name = registration.camperName || "(no name)";
+        const formula = `AND({Parent Email}='${airtableEscapeFormulaString(
+          registration.parentEmail
+        )}',{Name}='${airtableEscapeFormulaString(name)}',{Lead Status}='Cart Started')`;
+
+        let orphan = null;
+        try {
+          orphan = await airtableFind(tableName, formula);
+        } catch (err) {
+          console.warn("[stripe-webhook] orphan lookup failed; creating fresh row:", err);
+        }
+        if (orphan) {
+          console.info(
+            `[stripe-webhook] reconciled orphan Cart Started row ${orphan.id} for ${registration.parentEmail}`
+          );
+          await airtableUpdate(tableName, orphan.id, updatePayload);
+        } else {
+          await airtableCreate(tableName, createPayload);
+        }
+      };
+
       try {
         if (recordId) {
           try {
             await airtableUpdate(tableName, recordId, updatePayload);
           } catch (err) {
-            // Stale record ID — Cart Started row was deleted before payment
-            // landed. Fall back to a fresh create so the paid signup is
-            // recorded somewhere. Any other failure (5xx, rate limit,
-            // network) is allowed to bubble so Stripe retries the event.
+            // Record ID unreachable (deleted before payment, or malformed).
+            // Reconcile via lookup before creating, in case the orphan is
+            // still findable by natural key. Other failures (5xx, rate
+            // limit, network) bubble so Stripe retries the event.
             if (
               err instanceof AirtableError &&
               (err.status === 403 || err.status === 404)
             ) {
               console.warn(
-                `[stripe-webhook] airtable record ${recordId} unreachable (HTTP ${err.status}); creating fresh row instead`
+                `[stripe-webhook] airtable record ${recordId} unreachable (HTTP ${err.status}); attempting reconcile`
               );
-              await airtableCreate(tableName, createPayload);
+              await reconcileOrCreate();
             } else {
               throw err;
             }
           }
         } else {
-          await airtableCreate(tableName, createPayload);
+          await reconcileOrCreate();
         }
       } catch (err) {
         console.error("[stripe-webhook] Airtable write failed (Stripe will retry):", err);

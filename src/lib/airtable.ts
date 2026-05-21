@@ -87,6 +87,50 @@ export async function airtableCreate(
 // alone. Used to flip a "Cart Started" row to "Enrolled" once Stripe confirms
 // payment, without losing the original cart metadata captured at session
 // creation time.
+// Returns the first record matching `filterByFormula`, sorted newest-first
+// by `Submitted`, or `null` if no match. Used by the Stripe webhook to find
+// an existing "Cart Started" row when the pre-created record ID is missing
+// or stale, so we don't duplicate-write on slow-Airtable races.
+//
+// Escape user-provided values with `airtableEscapeFormulaString` before
+// interpolating them into the formula.
+export async function airtableFind(
+  tableName: string,
+  filterByFormula: string,
+  options: AirtableRequestOptions = {}
+): Promise<AirtableRecord | null> {
+  const { token, baseId } = getCreds();
+
+  const params = new URLSearchParams({
+    filterByFormula,
+    maxRecords: "1",
+    "sort[0][field]": "Submitted",
+    "sort[0][direction]": "desc",
+  });
+
+  const res = await fetch(
+    `${AIRTABLE_API}/${baseId}/${encodeURIComponent(tableName)}?${params}`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      signal: options.signal,
+    }
+  );
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new AirtableError(res.status, text);
+  }
+  const data = (await res.json()) as { records: AirtableRecord[] };
+  return data.records[0] ?? null;
+}
+
+// Airtable formula string literals are wrapped in single quotes; embedded
+// single quotes are escaped with backslash. Use this on any user-provided
+// value going into `airtableFind`'s `filterByFormula`.
+export function airtableEscapeFormulaString(s: string): string {
+  return s.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+}
+
 export async function airtableUpdate(
   tableName: string,
   recordId: string,
