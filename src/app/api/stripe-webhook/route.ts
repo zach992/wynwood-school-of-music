@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { airtableCreate } from "@/lib/airtable";
+import { airtableCreate, airtableUpdate } from "@/lib/airtable";
 import { sendFormNotification } from "@/lib/email";
 import {
   buildCampDepositParentEmail,
@@ -59,29 +59,54 @@ export async function POST(req: NextRequest) {
         balanceOwed: Number(meta.balance_owed ?? 0),
       };
 
-      // Write a row to Summer Camp Signups Airtable so paid registrants appear
-      // in the same view as long-form / interest leads. Awaited so a failure
-      // returns 502 to Stripe and triggers a retry — never silently lose a
-      // paid registration. Email failures (below) are fire-and-forget since
-      // they shouldn't gate Stripe retries.
+      // Update (or create) the Summer Camp Signups row.
+      //
+      // When checkout was started through `/api/checkout`, that route already
+      // pre-created a "Cart Started" row and passed its Airtable record ID in
+      // session metadata. We flip that exact row to "Enrolled" so we don't
+      // double-row the same camper. Fallback to create if the metadata is
+      // missing (e.g. session created out-of-band via Stripe Dashboard, or
+      // the pre-create write failed at checkout time).
+      //
+      // Awaited so a failure returns 502 to Stripe and triggers a retry —
+      // never silently lose a paid registration. Email failures (below) are
+      // fire-and-forget since they shouldn't gate Stripe retries.
       const tableName = process.env.AIRTABLE_CAMP_TABLE || "Summer Camp Signups";
+      const recordId = meta.airtable_record_id;
       try {
-        await airtableCreate(tableName, {
-          Name: registration.camperName || "(no name)",
-          Submitted: new Date().toISOString(),
-          "Primary Instrument": registration.instrument,
-          Sessions: registration.sessionCodes.length
-            ? registration.sessionCodes.map((s) => `• ${s}`).join("\n")
-            : "",
-          "Parent Name": registration.parentName,
-          "Parent Email": registration.parentEmail,
-          "Parent Phone": registration.parentPhone,
-          "Lead Status": "Enrolled",
-          "Lead Source": "Stripe Deposit",
-          "Deposit Paid": registration.depositPaid,
-          "Cart Total": registration.cartTotal,
-          "Balance Owed": registration.balanceOwed,
-        });
+        if (recordId) {
+          await airtableUpdate(tableName, recordId, {
+            "Lead Status": "Enrolled",
+            "Deposit Paid": registration.depositPaid,
+            "Balance Owed": registration.balanceOwed,
+            "Cart Total": registration.cartTotal,
+            // Backfill the human fields too, in case the pre-create row was
+            // edited manually between cart-start and payment.
+            "Primary Instrument": registration.instrument,
+            Sessions: registration.sessionCodes.length
+              ? registration.sessionCodes.map((s) => `• ${s}`).join("\n")
+              : "",
+            "Parent Email": registration.parentEmail,
+            "Parent Phone": registration.parentPhone,
+          });
+        } else {
+          await airtableCreate(tableName, {
+            Name: registration.camperName || "(no name)",
+            Submitted: new Date().toISOString(),
+            "Primary Instrument": registration.instrument,
+            Sessions: registration.sessionCodes.length
+              ? registration.sessionCodes.map((s) => `• ${s}`).join("\n")
+              : "",
+            "Parent Name": registration.parentName,
+            "Parent Email": registration.parentEmail,
+            "Parent Phone": registration.parentPhone,
+            "Lead Status": "Enrolled",
+            "Lead Source": "Stripe Deposit",
+            "Deposit Paid": registration.depositPaid,
+            "Cart Total": registration.cartTotal,
+            "Balance Owed": registration.balanceOwed,
+          });
+        }
       } catch (err) {
         console.error("[stripe-webhook] Airtable write failed (Stripe will retry):", err);
         return NextResponse.json({ error: "Airtable write failed" }, { status: 502 });
