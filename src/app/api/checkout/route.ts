@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
+import { airtableCreate } from "@/lib/airtable";
 import { computeCart, SESSIONS } from "@/lib/camp-pricing";
 
 export const runtime = "nodejs";
@@ -97,6 +98,52 @@ export async function POST(req: NextRequest) {
     },
   ];
 
+  // Pre-create a "Cart Started" Airtable row BEFORE redirecting to Stripe so
+  // every checkout intent is visible to staff — even ones that never pay. The
+  // returned record ID is stashed in Stripe session metadata; the webhook
+  // flips this exact row to "Enrolled" on payment instead of creating a new
+  // one. If the Airtable write fails — OR hangs past the timeout below — we
+  // still proceed to Stripe (payment is more important than tracking). The
+  // webhook then falls back to creating a fresh row on success, matching
+  // pre-recovery behavior.
+  //
+  // The 2.5s timeout matters: Node `fetch` has no default timeout, so without
+  // an AbortController a degraded-but-not-failing Airtable would block the
+  // customer from ever reaching Stripe. Normal Airtable latency is well under
+  // 1s; 2.5s is a generous ceiling that still keeps the worst case bounded.
+  const airtableTable = process.env.AIRTABLE_CAMP_TABLE || "Summer Camp Signups";
+  let airtableRecordId = "";
+  const airtableCtrl = new AbortController();
+  const airtableTimer = setTimeout(() => airtableCtrl.abort(), 2500);
+  try {
+    const record = await airtableCreate(
+      airtableTable,
+      {
+        Name: body.camperName || "(no name)",
+        Submitted: new Date().toISOString(),
+        "Primary Instrument": body.instrument,
+        Sessions: sessionCodes.length ? sessionCodes.map((s) => `• ${s}`).join("\n") : "",
+        "Parent Name": body.parentName ?? "",
+        "Parent Email": body.parentEmail,
+        "Parent Phone": body.parentPhone,
+        "Lead Status": "Cart Started",
+        "Lead Source": "Stripe Deposit",
+        "Cart Total": cart.total,
+        "Deposit Paid": 0,
+        "Balance Owed": cart.total,
+      },
+      { signal: airtableCtrl.signal }
+    );
+    airtableRecordId = record.id;
+  } catch (err) {
+    // Covers both thrown HTTP errors (AirtableError) and abort timeouts
+    // (DOMException with name "AbortError"). Either way: log, proceed to
+    // Stripe, let the webhook's create-fallback handle the missing record ID.
+    console.error("[api/checkout] Airtable cart-started write failed (proceeding to Stripe):", err);
+  } finally {
+    clearTimeout(airtableTimer);
+  }
+
   let checkoutSession;
   try {
     checkoutSession = await stripe.checkout.sessions.create({
@@ -123,6 +170,17 @@ export async function POST(req: NextRequest) {
             `Questions? info@wynwoodschoolofmusic.com`,
         },
       },
+      // Abandoned-cart recovery. Stripe generates a fresh `recovered_url` on
+      // expiry and — because `customer_email` is set above — sends an
+      // automatic recovery email ~1h after the session is abandoned. The
+      // recovered URL is also surfaced in the Stripe Dashboard so staff can
+      // re-send a fresh checkout link manually.
+      after_expiration: {
+        recovery: {
+          enabled: true,
+          allow_promotion_codes: false,
+        },
+      },
       metadata: {
         kind: "camp_deposit",
         session_codes: sessionCodes.join(","),
@@ -138,6 +196,9 @@ export async function POST(req: NextRequest) {
         cart_total: String(cart.total),
         cart_deposit: String(cart.deposit),
         balance_owed: String(balanceOwed),
+        // Empty string when the pre-create above failed; the webhook handles
+        // both cases (update vs. create).
+        airtable_record_id: airtableRecordId,
       },
       success_url: `${baseUrl}/camp/thank-you?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/musicperformancecamp?checkout=cancelled`,
