@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import CampPageClient from "./CampPageClient";
 import { campFaqs } from "./faqs";
+import BreadcrumbSchema from "@/components/BreadcrumbSchema";
 import "./camp.css";
 
 export const metadata: Metadata = {
@@ -23,6 +24,12 @@ export default function MusicPerformanceCampPage() {
 
   return (
     <>
+      <BreadcrumbSchema
+        trail={[
+          { name: "Home", path: "/" },
+          { name: "Summer Camp", path: "/musicperformancecamp" },
+        ]}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}

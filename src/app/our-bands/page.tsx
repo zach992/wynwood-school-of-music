@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Button from "@/components/Button";
 import SectionMark from "@/components/SectionMark";
+import BreadcrumbSchema from "@/components/BreadcrumbSchema";
 
 export const metadata = {
   title: "Band Programs for Kids & Teens in Miami",
@@ -47,6 +48,13 @@ const bands = [
 export default function OurBandsPage() {
   return (
     <>
+      <BreadcrumbSchema
+        trail={[
+          { name: "Home", path: "/" },
+          { name: "Programs", path: "/programs-and-pricing" },
+          { name: "Band Programs", path: "/our-bands" },
+        ]}
+      />
       {/* Page Heading */}
       <section className="bg-wsm-dark px-4 pt-12 pb-4">
         <div className="max-w-5xl mx-auto">

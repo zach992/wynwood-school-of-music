@@ -15,7 +15,7 @@ const GOOGLE_ADS_ENABLED = process.env.NEXT_PUBLIC_ENABLE_GOOGLE_ADS === "true";
 
 const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
+  weight: ["400", "500", "600", "700", "900"],
   display: "swap",
   variable: "--font-brand",
 });
