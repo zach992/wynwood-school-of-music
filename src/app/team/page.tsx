@@ -64,32 +64,18 @@ export default function TeamPage() {
       {/* Founders Section */}
       <section className="bg-wsm-dark px-4 py-8 md:py-12">
         <div className="max-w-5xl mx-auto">
-          {/* Founder Photos */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-            <div className="relative w-full aspect-[4/5] bg-wsm-darker overflow-hidden">
-              <Image
-                src="/images/team/zach-larmer.webp"
-                alt="Zach Larmer, Founder"
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
-            <div className="relative w-full aspect-[4/5] bg-wsm-darker overflow-hidden">
-              <Image
-                src="/images/team/sammy-gonzalez.jpg"
-                alt="Sammy Gonzalez Zeira, Founder"
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
-          </div>
-
-          {/* Founder Bios */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-12">
             {/* Zach */}
             <div>
+              <div className="relative w-full aspect-[4/5] bg-wsm-darker overflow-hidden mb-6">
+                <Image
+                  src="/images/team/zach-larmer.webp"
+                  alt="Zach Larmer, Founder"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
               <h3 className="font-heading text-xl md:text-2xl uppercase font-black text-white mb-6">
                 Zach Larmer, Founder
               </h3>
@@ -112,6 +98,15 @@ export default function TeamPage() {
 
             {/* Sammy */}
             <div>
+              <div className="relative w-full aspect-[4/5] bg-wsm-darker overflow-hidden mb-6">
+                <Image
+                  src="/images/team/sammy-gonzalez.jpg"
+                  alt="Sammy Gonzalez Zeira, Founder"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
               <h3 className="font-heading text-xl md:text-2xl uppercase font-black text-white mb-6">
                 Sammy Gonzalez Zeira, Founder
               </h3>
@@ -155,7 +150,7 @@ export default function TeamPage() {
             Instructors
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-12 gap-x-8">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-y-12 gap-x-4 sm:gap-x-8">
             {instructors.map((instructor) => {
               const hasBio = bioSlugs.has(instructor.slug);
               return (
