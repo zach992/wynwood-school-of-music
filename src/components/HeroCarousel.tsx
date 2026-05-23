@@ -61,6 +61,7 @@ export default function HeroCarousel({
                   : {}),
               }}
               priority={i === 0}
+              fetchPriority={i === 0 ? "high" : undefined}
             />
           </div>
         ))}
