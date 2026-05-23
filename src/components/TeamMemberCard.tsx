@@ -13,7 +13,7 @@ interface TeamMemberCardProps {
 export default function TeamMemberCard({ name, role, imageSrc, imagePosition, buttonLabel, buttonHref }: TeamMemberCardProps) {
   return (
     <div className="flex flex-col items-center text-center">
-      <div className="w-48 h-48 rounded-full overflow-hidden mb-4 bg-wsm-darker">
+      <div className="w-36 h-36 sm:w-48 sm:h-48 rounded-full overflow-hidden mb-4 bg-wsm-darker">
         <Image
           src={imageSrc}
           alt={name}
