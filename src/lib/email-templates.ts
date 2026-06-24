@@ -244,7 +244,8 @@ import { SESSIONS } from "./camp-pricing";
 
 type CampDepositPayload = {
   camperName?: string;
-  camperAge?: string;
+  camperDob?: string;
+  camperAge?: number | null;
   instrument?: string;
   parentName?: string;
   parentEmail?: string;
@@ -289,7 +290,8 @@ export function buildCampDepositStaffEmail(p: CampDepositPayload) {
   const body = quickReply(p.parentName ?? "", p.parentPhone ?? "", p.parentEmail ?? "") +
     section("Camper", [
       row("Name", esc(camperName)),
-      row("Age", esc(p.camperAge)),
+      row("Date of Birth", esc(fmtDate(p.camperDob))),
+      row("Age", p.camperAge != null ? esc(String(p.camperAge)) : ""),
       row("Instrument", esc(p.instrument)),
     ]) +
     `<h3 style="margin:24px 0 4px;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#888;font-weight:600;">Sessions</h3>${sessionsHtml}` +
