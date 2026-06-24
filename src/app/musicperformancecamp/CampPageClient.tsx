@@ -233,7 +233,7 @@ export default function CampPageClient() {
                 Your child<br />steps on<br /><em>the stage.</em>
               </h1>
               <p className="hero-sub">
-                A week-long, fully immersive camp where 8–14 year-olds learn like real musicians — band rehearsals, sectionals, workshops, and a live Friday showcase in the heart of Wynwood.
+                A week-long, fully immersive camp where 8–14 year-olds learn like real musicians, with band rehearsals, sectionals, workshops, and a live Friday showcase in the heart of Wynwood.
               </p>
               <div className="hero-ctas">
                 <a href="#sessions" className="btn btn-primary">Reserve a Session <span className="arrow">→</span></a>
@@ -309,7 +309,7 @@ export default function CampPageClient() {
               <h2 className="display h2">What your child <em>will walk away with</em></h2>
             </div>
             <p className="kicker" style={{ maxWidth: 320, color: "var(--muted)" }}>
-              Every camper — beginner or intermediate — leaves with measurable progress, new friendships, and their first live performance in the books.
+              Every camper, beginner or intermediate, leaves with measurable progress, new friendships, and their first live performance in the books.
             </p>
           </div>
           <div className="outcomes-grid">
@@ -317,7 +317,7 @@ export default function CampPageClient() {
               <div className="tier">For First-Time Campers</div>
               <h3>Beginners will leave able to…</h3>
               <ul className="outcome-list">
-                <li><span className="check"><Check /></span><span className="text"><b>Play a full song on stage with a live band.</b><small>Not a sit-down recital — an amplified performance with peers.</small></span></li>
+                <li><span className="check"><Check /></span><span className="text"><b>Play a full song on stage with a live band.</b><small>Not a sit-down recital, but an amplified performance with peers.</small></span></li>
                 <li><span className="check"><Check /></span><span className="text"><b>Hold their own in a rehearsal.</b><small>Count time, follow a leader, know when to come in and when to lay back.</small></span></li>
                 <li><span className="check"><Check /></span><span className="text"><b>Read basic chord charts and rhythms.</b><small>The foundation of every song they&rsquo;ll ever want to learn next.</small></span></li>
                 <li><span className="check"><Check /></span><span className="text"><b>Feel confident picking up an instrument again.</b><small>The #1 reason we hear from returning parents.</small></span></li>
@@ -351,7 +351,7 @@ export default function CampPageClient() {
           </div>
           <div className="instructors-grid">
             {[
-              { name: "Sammy Gonzalez Zeira", role: "Co-Founder · Guitar · Bass", badge: "Co-Founder", bio: "Touring guitarist and bassist, Director of the Miami Beach Senior High Rock Ensemble, and CEO of Young Musicians Unite — Miami-Dade's free music-education non-profit serving 12,000+ students.", img: "/images/team/sammy-gonzalez.jpg" },
+              { name: "Sammy Gonzalez Zeira", role: "Co-Founder · Guitar · Bass", badge: "Co-Founder", bio: "Touring guitarist and bassist, Director of the Miami Beach Senior High Rock Ensemble, and CEO of Young Musicians Unite, Miami-Dade's free music-education non-profit serving 12,000+ students.", img: "/images/team/sammy-gonzalez.jpg" },
               { name: "Zach Larmer", role: "Co-Founder · Guitar · Composition", badge: "Co-Founder", bio: "Three-time GRAMMY-winning jazz guitarist who has toured the world and shared stages with renowned artists. 13 years educating Miami's young musicians.", img: "/images/team/zach-larmer.webp" },
               { name: "Vale Peñaranda", role: "Voice · Keys · Production", badge: "Voice & Keys", bio: "Berklee and Frost School of Music alum. Recipient of the Eduardo Abaroa Award and a Latin GRAMMY Cultural Foundation Leading Lady, with stages from the Berklee Performance Center to the Suena Caracas Festival.", img: "/images/team/vale-penaranda.jpg" },
               { name: "AJ Hill", role: "Saxophone · Vocals · Drums", badge: "Saxophone", bio: "Twice Grammy-nominated and Oscar-nominated. Has shared the bill with Sly & the Family Stone and Earth Wind & Fire alums, and serves as Artistic Director of the Miami Beach Rock Ensemble.", img: "/images/team/aj-hill-camp.webp" },
@@ -387,12 +387,12 @@ export default function CampPageClient() {
             <ul className="schedule-list">
               {[
                 ["9:00", "Drop-Off, Warm-Up & Bonding", "Coffee for parents at the door. Campers jam loosely while the room fills."],
-                ["10:00", "Music Education Workshops", "Theory, ear training, and songwriting — taught the way working musicians actually use them."],
+                ["10:00", "Music Education Workshops", "Theory, ear training, and songwriting, taught the way working musicians actually use them."],
                 ["11:00", "Band Rehearsal", "Every camper plays in a band grouped by skill level. Friday's setlist starts here."],
                 ["12:15", "Lunch + Community Hour", "Time to unplug, hang out, make friends. The friendships that form here are half the reason kids come back."],
                 ["1:15", "Instrument Sectionals", "Small-group coaching by instrument with our senior instructors."],
                 ["2:30", "Band Rehearsal (Round 2)", "Afternoon run-throughs. This is where the setlist tightens up."],
-                ["3:30", "Dismissal + Pickup", "Campers head home — or straight into Aftercare."],
+                ["3:30", "Dismissal + Pickup", "Campers head home, or straight into Aftercare."],
               ].map(([time, title, desc]) => (
                 <li key={time}>
                   <div className="time">{time}</div>
@@ -406,14 +406,14 @@ export default function CampPageClient() {
             <aside className="schedule-aside">
               <h4>Friday = Showtime</h4>
               <p>
-                Every session ends with a live Friday showcase at our Wynwood stage. Families, friends, lights, amps — the full experience. It&rsquo;s what every day of the week has been pointing toward.
+                Every session ends with a live Friday showcase at our Wynwood stage. Families, friends, lights, amps. The full experience. It&rsquo;s what every day of the week has been pointing toward.
               </p>
               <div className="showcase-banner">
                 <div className="icon">
                   <svg viewBox="0 0 24 24" fill="none"><path d="M12 2v20M2 12h20" stroke="#fff" strokeWidth="2" strokeLinecap="round" /></svg>
                 </div>
                 <div>
-                  <strong>All families invited — free entry</strong>
+                  <strong>All families invited, free entry</strong>
                   <small>Doors open 2:45 PM Fridays. Arrive early, it fills up.</small>
                 </div>
               </div>
@@ -530,11 +530,11 @@ export default function CampPageClient() {
           </div>
 
           <div className="discounts-row">
-            <div className="discount-chip"><b>Save $25/wk</b> — Book 2+ sessions</div>
-            <div className="discount-chip"><b>Save $50/wk</b> — Book 3+ sessions</div>
-            <div className="discount-chip"><b>10% off</b> — Each additional sibling</div>
+            <div className="discount-chip"><b>Save $25/wk</b> on 2+ sessions</div>
+            <div className="discount-chip"><b>Save $50/wk</b> on 3+ sessions</div>
+            <div className="discount-chip"><b>10% off</b> each additional sibling</div>
             {isEarlyBird && (
-              <div className="discount-chip"><b>Save $50/wk</b> — Early Bird through May 15</div>
+              <div className="discount-chip"><b>Save $50/wk</b> with Early Bird through May 15</div>
             )}
           </div>
 
@@ -543,7 +543,7 @@ export default function CampPageClient() {
               <h4>Your Cart</h4>
               <div className="selected-list">
                 {picks.length === 0 ? (
-                  "No sessions selected yet — tap a week above to begin."
+                  "No sessions selected yet. Tap a week above to begin."
                 ) : (
                   picks.map((p) => (
                     <div key={p.code}>
@@ -707,7 +707,7 @@ export default function CampPageClient() {
                 <input type="tel" name="parentPhone" placeholder="Phone" autoComplete="tel" required />
                 <HoneypotField value={interestGuard.honeypot} onChange={interestGuard.setHoneypot} />
                 <button type="submit">Request info</button>
-                <div className="success">✓ Thanks — we&rsquo;ll be in touch within 24 hours.</div>
+                <div className="success">✓ Thanks! We&rsquo;ll be in touch within 24 hours.</div>
               </form>
             </div>
           </div>
@@ -718,7 +718,7 @@ export default function CampPageClient() {
       <section className="final-cta">
         <div className="container">
           <h2 className="display">Your kid&rsquo;s<br /><em>summer story</em><br />starts here.</h2>
-          <p>Early bird pricing ends May 15. Sessions fill in the order reserved — most popular weeks sell out first.</p>
+          <p>Early bird pricing ends May 15. Sessions fill in the order reserved, and the most popular weeks sell out first.</p>
           <a href="#sessions" className="btn btn-yellow">Reserve a Session <span className="arrow">→</span></a>
         </div>
       </section>
@@ -878,7 +878,7 @@ export default function CampPageClient() {
 
           {checkoutOpened && !formError && (
             <p style={{ color: "var(--yellow)", fontSize: 14, marginTop: 8 }}>
-              Checkout opened in a new tab — complete your payment there. Don&rsquo;t see it? Check behind this window or{" "}
+              Checkout opened in a new tab. Complete your payment there. Don&rsquo;t see it? Check behind this window or{" "}
               <button
                 type="button"
                 onClick={handleCheckout}
