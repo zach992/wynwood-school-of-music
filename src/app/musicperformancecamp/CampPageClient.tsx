@@ -289,7 +289,7 @@ export default function CampPageClient() {
               <div className="copy">Kids who have<br />played our stage</div>
             </div>
             <div className="proof-item">
-              <div className="num">8</div>
+              <div className="num">{SESSIONS.length}</div>
               <div className="copy">Weekly sessions<br />all summer long</div>
             </div>
             <div className="proof-item">
