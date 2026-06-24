@@ -10,14 +10,12 @@ export type Session = {
   sold: number;
   startISO: string;
   flag?: string;
-  bridge?: boolean;
   full?: boolean;
 };
 
 export const SESSIONS: Session[] = [
   { code: "A", dates: "June 15 – June 19", month: "Jun", capacity: 24, sold: 13, startISO: "2026-06-15" },
   { code: "B", dates: "June 22 – June 26", month: "Jun", capacity: 24, sold: 16, startISO: "2026-06-22" },
-  { code: "B.5", dates: "June 29 – July 3", month: "Jun/Jul", capacity: 24, sold: 5, startISO: "2026-06-29", flag: "New! Bridge Week", bridge: true },
   { code: "C", dates: "July 6 – July 10", month: "Jul", capacity: 24, sold: 11, startISO: "2026-07-06" },
   { code: "D", dates: "July 13 – July 17", month: "Jul", capacity: 24, sold: 8, startISO: "2026-07-13" },
   { code: "E", dates: "July 20 – July 24", month: "Jul", capacity: 24, sold: 14, startISO: "2026-07-20" },

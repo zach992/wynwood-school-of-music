@@ -483,7 +483,6 @@ export default function CampPageClient() {
                 "session",
                 s.full && "full",
                 past && "past",
-                s.bridge && "bridge",
                 isSelected && "selected",
                 pulseCode === s.code && "pulse",
               ]
@@ -518,7 +517,7 @@ export default function CampPageClient() {
                   </div>
                   <div className="session-cta">
                     <div className="session-price">
-                      {origPrice && !s.bridge && !past && <s>${origPrice}</s>}
+                      {origPrice && !past && <s>${origPrice}</s>}
                       ${displayPrice}
                     </div>
                     <div className="session-select">
