@@ -1300,6 +1300,17 @@
 .camp-page .modal-field input:focus, .camp-page .modal-field select:focus {
   outline: none; border-color: var(--purple);
 }
+/* Native date picker renders dark to match the modal; accent the calendar icon. */
+.camp-page .modal-field input[type="date"] {
+  color-scheme: dark;
+  accent-color: var(--purple);
+}
+.camp-page .modal-field .modal-hint {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--yellow);
+}
 .camp-page .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .camp-page .modal .summary-box {
   padding: 16px;
