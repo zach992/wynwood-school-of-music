@@ -466,7 +466,7 @@ export default function CampPageClient() {
 
           <p style={{ maxWidth: 720, color: "var(--muted)", margin: "-20px 0 32px", fontSize: 15 }}>
             Click a session to add it to your cart. Tap multiple to unlock multi-week bundle savings.
-            Book and pay online — no phone calls, no waiting list, no &ldquo;we&rsquo;ll get back to you.&rdquo;
+            Book and pay online. No phone calls, no waiting list, no &ldquo;we&rsquo;ll get back to you.&rdquo;
           </p>
 
           <div className="sessions-grid">
