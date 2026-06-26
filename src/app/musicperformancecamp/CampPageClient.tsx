@@ -162,15 +162,9 @@ export default function CampPageClient() {
   const [formError, setFormError] = useState<string | null>(null);
   const [checkoutOpened, setCheckoutOpened] = useState(false);
 
-  const formValid =
-    picks.length > 0 &&
-    camperName.trim().length > 1 &&
-    camperDob.trim().length > 0 &&
-    /.+@.+\..+/.test(parentEmail) &&
-    parentPhone.trim().length >= 7;
-
-  // Derive the camper's age from the birthday for a soft (non-blocking) note
-  // when they fall outside the camp's 8–14 range. Mirrors the server's calcAge.
+  // Derive the camper's age from the birthday. Mirrors the server's calcAge:
+  // null means an impossible date (unparseable, future, or implausibly old).
+  // Used both for the soft 8–14 note and to gate checkout against junk dates.
   const camperAgeFromDob = (() => {
     if (!camperDob) return null;
     const d = new Date(camperDob);
@@ -183,6 +177,16 @@ export default function CampPageClient() {
   })();
   const ageOutOfRange =
     camperAgeFromDob != null && (camperAgeFromDob < 8 || camperAgeFromDob > 14);
+
+  const formValid =
+    picks.length > 0 &&
+    camperName.trim().length > 1 &&
+    // Require a real birthday (not just non-empty) so an impossible date typed
+    // past the input's min/max can't launch checkout. Out-of-8–14 ages still
+    // pass — they only trigger the soft note above.
+    camperAgeFromDob !== null &&
+    /.+@.+\..+/.test(parentEmail) &&
+    parentPhone.trim().length >= 7;
 
   const handleCheckout = async () => {
     if (!formValid || submitting) return;

@@ -57,8 +57,19 @@ export async function POST(req: NextRequest) {
   }
 
   // Birthday is the field of record; age is derived for staff convenience and
-  // to keep existing age-based Airtable views working.
+  // to keep existing age-based Airtable views working. calcAge returns null for
+  // unparseable dates, future dates, and implausible ages (>120), so a null here
+  // means the birthday is impossible — reject before creating any Stripe/Airtable
+  // row. (The client's min/max are UI-only and not enforced on the onClick path.)
+  // Note: this rejects only *impossible* dates, not out-of-8–14 ages — those are
+  // intentionally allowed with a soft warning.
   const camperAge = calcAge(body.camperDob); // number | null
+  if (camperAge === null) {
+    return NextResponse.json(
+      { error: "Please enter a valid birthday." },
+      { status: 400 }
+    );
+  }
 
   const stripe = new Stripe(secret);
 
