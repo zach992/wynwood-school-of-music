@@ -33,8 +33,7 @@ export const siteData = {
   social: {
     facebook: "https://www.facebook.com/wynwoodschoolofmusic",
     instagram: "https://www.instagram.com/wynwoodschoolofmusic",
-    youtube: "https://www.youtube.com/@wynwoodschoolofmusic",
-    spotify: "https://open.spotify.com/artist/wynwoodschoolofmusic",
+    youtube: "https://www.youtube.com/@wynwoodschoolofmusic5152",
   },
   announcement: {
     text: "YOUR FIRST MUSIC LESSON IS ON US - CLICK TO START!",

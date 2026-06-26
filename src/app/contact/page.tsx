@@ -1,5 +1,6 @@
 import Image from "next/image";
 import ContactForm from "@/components/ContactForm";
+import { siteData } from "@/lib/site-data";
 
 export const metadata = {
   title: "Sign Up for Music Lessons in Miami",
@@ -80,6 +81,37 @@ export default function ContactPage() {
                   <p className="font-body text-wsm-gray text-sm">
                     info@wynwoodschoolofmusic.com
                   </p>
+                </div>
+
+                <div>
+                  <p className="font-body text-white text-sm font-bold">
+                    HOURS
+                  </p>
+                  <div className="font-body text-wsm-gray text-sm space-y-0.5">
+                    {siteData.hours.regular.map((h) => (
+                      <p key={h.days}>
+                        {h.days}: {h.time}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="font-body text-white text-sm font-bold">
+                    HOLIDAY CLOSURES
+                  </p>
+                  <div className="font-body text-wsm-gray text-sm space-y-3 mt-1">
+                    {Object.entries(siteData.hours.holidayClosures).map(
+                      ([season, dates]) => (
+                        <div key={season}>
+                          <p className="font-bold text-white">{season}</p>
+                          {dates.map((d) => (
+                            <p key={d}>{d}</p>
+                          ))}
+                        </div>
+                      ),
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
