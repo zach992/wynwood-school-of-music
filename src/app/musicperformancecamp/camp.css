@@ -782,10 +782,6 @@
   border-color: var(--purple);
   box-shadow: 0 0 0 1px var(--purple), 0 20px 40px -20px rgba(139,83,117,0.4);
 }
-.camp-page .session.bridge {
-  background: linear-gradient(180deg, rgba(255,216,77,0.05), var(--bg-card));
-  border-color: rgba(255,216,77,0.3);
-}
 .camp-page .session.full { opacity: 0.45; cursor: not-allowed; }
 .camp-page .session.past { opacity: 0.4; cursor: not-allowed; filter: grayscale(0.6); }
 .camp-page .session.past:hover { transform: none; border-color: var(--line); }
