@@ -50,7 +50,6 @@ export default function StructuredData() {
       siteData.social.facebook,
       siteData.social.instagram,
       siteData.social.youtube,
-      siteData.social.spotify,
     ],
   };
 

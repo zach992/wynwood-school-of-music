@@ -3,19 +3,13 @@ import { siteData } from "@/lib/site-data";
 import Button from "./Button";
 
 const quickLinks = [
-  { label: "Home", href: "/" },
-  { label: "About Us", href: "/our-story" },
-  { label: "Team", href: "/team" },
   { label: "Programs & Pricing", href: "/programs-and-pricing" },
-  { label: "Private Lessons", href: "/private-lessons" },
-  { label: "Band Programs", href: "/our-bands" },
   { label: "Summer Camp", href: "/musicperformancecamp" },
+  { label: "Team", href: "/team" },
   { label: "Recitals", href: "/recitals" },
   { label: "Repair", href: "/repair" },
   { label: "Friends of WSM", href: "/friendsofwsm" },
-  { label: "Testimonials", href: "/testimonials" },
   { label: "Contact Us", href: "/contact" },
-  { label: "Privacy Policy", href: "/privacy-policy" },
 ];
 
 function SocialIcon({ href, label, children }: { href: string; label: string; children: React.ReactNode }) {
@@ -80,12 +74,6 @@ export default function Footer() {
                   <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="black" />
                 </svg>
               </SocialIcon>
-              <SocialIcon href={siteData.social.spotify} label="Spotify">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="2" />
-                  <path d="M8 15c3-1 6-1 9 .5M7.5 12.5c4-1.5 8-1.5 11 .5M7 10c4.5-1.5 9.5-1.5 13 1" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-              </SocialIcon>
             </div>
           </div>
 
@@ -113,25 +101,20 @@ export default function Footer() {
                   <p key={h.days}>{h.days}: {h.time}</p>
                 ))}
               </div>
-              <div>
-                <p className="font-black uppercase tracking-wider text-white text-xs mb-1">Holiday Closures</p>
-                {Object.entries(siteData.hours.holidayClosures).map(([season, dates]) => (
-                  <div key={season} className="mb-2">
-                    <p className="font-bold text-white">{season}</p>
-                    {dates.map((d) => (
-                      <p key={d}>{d}</p>
-                    ))}
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Copyright */}
-      <div className="border-t border-white/10 py-6 text-center text-sm text-wsm-gray-dark">
-        <p>&copy; {new Date().getFullYear()} {siteData.name}. All rights reserved.</p>
+      <div className="border-t border-white/10 py-6 px-4 text-center text-sm text-wsm-gray-dark">
+        <p>
+          &copy; {new Date().getFullYear()} {siteData.name}. All rights reserved.
+          <span className="mx-2">·</span>
+          <Link href="/privacy-policy" className="hover:text-wsm-accent transition-colors">
+            Privacy Policy
+          </Link>
+        </p>
       </div>
     </footer>
   );
