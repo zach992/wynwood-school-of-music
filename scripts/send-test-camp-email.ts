@@ -24,7 +24,8 @@ async function main() {
   // Realistic dummy payload — uses real session codes (A + C) so dates render
   const { subject, html, replyTo } = buildCampDepositParentEmail({
     camperName: "Test Camper",
-    camperAge: "10",
+    camperDob: "2015-04-12",
+    camperAge: 10,
     instrument: "Guitar",
     parentName: "Zach Larmer",
     parentEmail: recipient,

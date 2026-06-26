@@ -1,3 +1,23 @@
+/**
+ * True only for a strict `YYYY-MM-DD` string that is a REAL calendar date.
+ * `new Date()` silently normalizes overflow days (e.g. "2015-02-31" → Mar 3),
+ * so we round-trip the parsed UTC components against the input to reject those.
+ * Native `<input type="date">` can't produce such values, but a direct API
+ * POST can — this hardens the trust boundary so junk DOBs don't reach storage.
+ */
+export function isRealISODate(value: unknown): boolean {
+  if (typeof value !== "string") return false;
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!m) return false;
+  const d = new Date(`${value}T00:00:00Z`);
+  if (isNaN(d.getTime())) return false;
+  return (
+    d.getUTCFullYear() === Number(m[1]) &&
+    d.getUTCMonth() + 1 === Number(m[2]) &&
+    d.getUTCDate() === Number(m[3])
+  );
+}
+
 export function calcAge(value: unknown): number | null {
   if (typeof value !== "string" || !value) return null;
   const d = new Date(value);

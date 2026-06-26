@@ -12,6 +12,7 @@ import {
   buildCampDepositParentEmail,
   buildCampDepositStaffEmail,
 } from "@/lib/email-templates";
+import { calcAge } from "@/lib/form-utils";
 
 export const runtime = "nodejs";
 
@@ -54,7 +55,15 @@ export async function POST(req: NextRequest) {
         amountPaidCents: session.amount_total ?? 0,
         currency: session.currency,
         camperName: meta.camper_name,
-        camperAge: meta.camper_age,
+        camperDob: meta.camper_dob ?? "",
+        // Prefer recomputing age from DOB; fall back to the legacy numeric
+        // camper_age for sessions created before the birthday rollout (their
+        // metadata has camper_age but no camper_dob).
+        camperAge:
+          calcAge(meta.camper_dob) ??
+          (meta.camper_age && meta.camper_age.trim() !== ""
+            ? Number(meta.camper_age)
+            : null),
         instrument: meta.instrument,
         parentName: meta.parent_name,
         parentEmail: meta.parent_email || session.customer_details?.email || "",
@@ -96,6 +105,8 @@ export async function POST(req: NextRequest) {
         "Deposit Paid": registration.depositPaid,
         "Balance Owed": registration.balanceOwed,
         "Cart Total": registration.cartTotal,
+        "Student DOB": registration.camperDob || "",
+        "Student Age": registration.camperAge ?? "",
         "Primary Instrument": registration.instrument,
         Sessions: sessionsText,
         "Parent Email": registration.parentEmail,

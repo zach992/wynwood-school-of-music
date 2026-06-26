@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { airtableCreate } from "@/lib/airtable";
 import { computeCart, SESSIONS } from "@/lib/camp-pricing";
+import { calcAge, isRealISODate } from "@/lib/form-utils";
 
 export const runtime = "nodejs";
 
 type CheckoutBody = {
   sessionCodes: string[];
   camperName: string;
-  camperAge: string;
+  camperDob: string;
   instrument: string;
   parentName?: string;
   parentEmail: string;
@@ -20,7 +21,7 @@ function isValidBody(b: unknown): b is CheckoutBody {
   const o = b as Record<string, unknown>;
   if (!Array.isArray(o.sessionCodes) || !o.sessionCodes.every((c) => typeof c === "string")) return false;
   const reqStr = (v: unknown) => typeof v === "string" && v.trim().length > 0;
-  if (!reqStr(o.camperName) || !reqStr(o.camperAge) || !reqStr(o.instrument)) return false;
+  if (!reqStr(o.camperName) || !reqStr(o.camperDob) || !reqStr(o.instrument)) return false;
   if (!reqStr(o.parentEmail) || !reqStr(o.parentPhone)) return false;
   return true;
 }
@@ -53,6 +54,23 @@ export async function POST(req: NextRequest) {
   const cart = computeCart(sessionCodes, Date.now());
   if (cart.deposit <= 0) {
     return NextResponse.json({ error: "Cart total is zero" }, { status: 400 });
+  }
+
+  // Birthday is the field of record; age is derived for staff convenience and
+  // to keep existing age-based Airtable views working. calcAge returns null for
+  // unparseable dates, future dates, and implausible ages (>120), so a null here
+  // means the birthday is impossible — reject before creating any Stripe/Airtable
+  // row. (The client's min/max are UI-only and not enforced on the onClick path.)
+  // Note: this rejects only *impossible* dates, not out-of-8–14 ages — those are
+  // intentionally allowed with a soft warning. isRealISODate also rejects
+  // calendar-impossible dates that new Date() would silently normalize (e.g.
+  // "2015-02-31" → Mar 3), which calcAge alone would accept.
+  const camperAge = calcAge(body.camperDob); // number | null
+  if (!isRealISODate(body.camperDob) || camperAge === null) {
+    return NextResponse.json(
+      { error: "Please enter a valid birthday." },
+      { status: 400 }
+    );
   }
 
   const stripe = new Stripe(secret);
@@ -121,6 +139,8 @@ export async function POST(req: NextRequest) {
       {
         Name: body.camperName || "(no name)",
         Submitted: new Date().toISOString(),
+        "Student DOB": body.camperDob,
+        "Student Age": camperAge ?? "",
         "Primary Instrument": body.instrument,
         Sessions: sessionCodes.length ? sessionCodes.map((s) => `• ${s}`).join("\n") : "",
         "Parent Name": body.parentName ?? "",
@@ -185,7 +205,8 @@ export async function POST(req: NextRequest) {
         kind: "camp_deposit",
         session_codes: sessionCodes.join(","),
         camper_name: body.camperName,
-        camper_age: body.camperAge,
+        camper_dob: body.camperDob,
+        camper_age: camperAge != null ? String(camperAge) : "",
         instrument: body.instrument,
         parent_name: body.parentName ?? "",
         parent_email: body.parentEmail,

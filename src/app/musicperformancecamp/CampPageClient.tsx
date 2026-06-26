@@ -154,7 +154,7 @@ export default function CampPageClient() {
 
   // Reservation form state
   const [camperName, setCamperName] = useState("");
-  const [camperAge, setCamperAge] = useState("");
+  const [camperDob, setCamperDob] = useState("");
   const [instrument, setInstrument] = useState("Voice");
   const [parentEmail, setParentEmail] = useState("");
   const [parentPhone, setParentPhone] = useState("");
@@ -162,10 +162,39 @@ export default function CampPageClient() {
   const [formError, setFormError] = useState<string | null>(null);
   const [checkoutOpened, setCheckoutOpened] = useState(false);
 
+  // Derive the camper's age from the birthday. Mirrors the server's calcAge:
+  // null means an impossible date (unparseable, future, or implausibly old).
+  // Used both for the soft 8–14 note and to gate checkout against junk dates.
+  const camperAgeFromDob = (() => {
+    const parts = /^(\d{4})-(\d{2})-(\d{2})$/.exec(camperDob);
+    if (!parts) return null;
+    const d = new Date(`${camperDob}T00:00:00Z`);
+    if (isNaN(d.getTime())) return null;
+    // Reject calendar-impossible dates new Date() silently rolls over
+    // (e.g. "2015-02-31" → Mar 3) by round-tripping the components.
+    if (
+      d.getUTCFullYear() !== Number(parts[1]) ||
+      d.getUTCMonth() + 1 !== Number(parts[2]) ||
+      d.getUTCDate() !== Number(parts[3])
+    ) {
+      return null;
+    }
+    const now = new Date();
+    let age = now.getUTCFullYear() - d.getUTCFullYear();
+    const m = now.getUTCMonth() - d.getUTCMonth();
+    if (m < 0 || (m === 0 && now.getUTCDate() < d.getUTCDate())) age--;
+    return age >= 0 && age <= 120 ? age : null;
+  })();
+  const ageOutOfRange =
+    camperAgeFromDob != null && (camperAgeFromDob < 8 || camperAgeFromDob > 14);
+
   const formValid =
     picks.length > 0 &&
     camperName.trim().length > 1 &&
-    camperAge.trim().length > 0 &&
+    // Require a real birthday (not just non-empty) so an impossible date typed
+    // past the input's min/max can't launch checkout. Out-of-8–14 ages still
+    // pass — they only trigger the soft note above.
+    camperAgeFromDob !== null &&
     /.+@.+\..+/.test(parentEmail) &&
     parentPhone.trim().length >= 7;
 
@@ -184,7 +213,7 @@ export default function CampPageClient() {
         body: JSON.stringify({
           sessionCodes: Array.from(selected),
           camperName: camperName.trim(),
-          camperAge: camperAge.trim(),
+          camperDob: camperDob.trim(),
           instrument,
           parentEmail: parentEmail.trim(),
           parentPhone: parentPhone.trim(),
@@ -820,16 +849,20 @@ export default function CampPageClient() {
               />
             </div>
             <div className="modal-field">
-              <label>Age</label>
+              <label>Camper&rsquo;s Birthday</label>
               <input
-                type="number"
-                min={8}
-                max={14}
-                placeholder="8–14"
-                value={camperAge}
-                onChange={(e) => setCamperAge(e.target.value)}
+                type="date"
+                max={new Date().toISOString().slice(0, 10)}
+                min="2000-01-01"
+                value={camperDob}
+                onChange={(e) => setCamperDob(e.target.value)}
                 disabled={submitting}
               />
+              {ageOutOfRange && (
+                <p className="modal-hint">
+                  Camp is designed for ages 8&ndash;14 &mdash; you can still reserve a spot.
+                </p>
+              )}
             </div>
           </div>
 
