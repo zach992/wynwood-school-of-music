@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { airtableCreate } from "@/lib/airtable";
 import { computeCart, SESSIONS } from "@/lib/camp-pricing";
-import { calcAge } from "@/lib/form-utils";
+import { calcAge, isRealISODate } from "@/lib/form-utils";
 
 export const runtime = "nodejs";
 
@@ -62,9 +62,11 @@ export async function POST(req: NextRequest) {
   // means the birthday is impossible — reject before creating any Stripe/Airtable
   // row. (The client's min/max are UI-only and not enforced on the onClick path.)
   // Note: this rejects only *impossible* dates, not out-of-8–14 ages — those are
-  // intentionally allowed with a soft warning.
+  // intentionally allowed with a soft warning. isRealISODate also rejects
+  // calendar-impossible dates that new Date() would silently normalize (e.g.
+  // "2015-02-31" → Mar 3), which calcAge alone would accept.
   const camperAge = calcAge(body.camperDob); // number | null
-  if (camperAge === null) {
+  if (!isRealISODate(body.camperDob) || camperAge === null) {
     return NextResponse.json(
       { error: "Please enter a valid birthday." },
       { status: 400 }

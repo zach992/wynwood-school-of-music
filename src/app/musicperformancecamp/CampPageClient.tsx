@@ -166,9 +166,19 @@ export default function CampPageClient() {
   // null means an impossible date (unparseable, future, or implausibly old).
   // Used both for the soft 8–14 note and to gate checkout against junk dates.
   const camperAgeFromDob = (() => {
-    if (!camperDob) return null;
-    const d = new Date(camperDob);
+    const parts = /^(\d{4})-(\d{2})-(\d{2})$/.exec(camperDob);
+    if (!parts) return null;
+    const d = new Date(`${camperDob}T00:00:00Z`);
     if (isNaN(d.getTime())) return null;
+    // Reject calendar-impossible dates new Date() silently rolls over
+    // (e.g. "2015-02-31" → Mar 3) by round-tripping the components.
+    if (
+      d.getUTCFullYear() !== Number(parts[1]) ||
+      d.getUTCMonth() + 1 !== Number(parts[2]) ||
+      d.getUTCDate() !== Number(parts[3])
+    ) {
+      return null;
+    }
     const now = new Date();
     let age = now.getUTCFullYear() - d.getUTCFullYear();
     const m = now.getUTCMonth() - d.getUTCMonth();
