@@ -1237,6 +1237,9 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
+  /* Allow the backdrop itself to scroll if the modal is taller than the
+     viewport (short/landscape phones) so no fields/button get clipped. */
+  overflow-y: auto;
   backdrop-filter: blur(4px);
 }
 .camp-page .modal-backdrop.open { display: flex; }
@@ -1248,6 +1251,10 @@
   width: 100%;
   padding: 40px;
   position: relative;
+  /* Cap height to the viewport (minus backdrop padding) and scroll the
+     modal's own contents when they overflow on short viewports. */
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
 }
 .camp-page .modal h3 {
   font-family: "Anton", sans-serif;

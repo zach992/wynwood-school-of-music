@@ -156,6 +156,7 @@ export default function CampPageClient() {
   const [camperName, setCamperName] = useState("");
   const [camperDob, setCamperDob] = useState("");
   const [instrument, setInstrument] = useState("Voice");
+  const [parentName, setParentName] = useState("");
   const [parentEmail, setParentEmail] = useState("");
   const [parentPhone, setParentPhone] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -195,6 +196,7 @@ export default function CampPageClient() {
     // past the input's min/max can't launch checkout. Out-of-8–14 ages still
     // pass — they only trigger the soft note above.
     camperAgeFromDob !== null &&
+    parentName.trim().length > 1 &&
     /.+@.+\..+/.test(parentEmail) &&
     parentPhone.trim().length >= 7;
 
@@ -215,6 +217,7 @@ export default function CampPageClient() {
           camperName: camperName.trim(),
           camperDob: camperDob.trim(),
           instrument,
+          parentName: parentName.trim(),
           parentEmail: parentEmail.trim(),
           parentPhone: parentPhone.trim(),
         }),
@@ -880,6 +883,18 @@ export default function CampPageClient() {
               <option>Drums</option>
               <option>Not sure yet</option>
             </select>
+          </div>
+
+          <div className="modal-field">
+            <label>Parent / Guardian Name</label>
+            <input
+              type="text"
+              placeholder="First & last"
+              autoComplete="name"
+              value={parentName}
+              onChange={(e) => setParentName(e.target.value)}
+              disabled={submitting}
+            />
           </div>
 
           <div className="modal-row">
