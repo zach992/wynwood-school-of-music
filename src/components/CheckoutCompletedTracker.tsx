@@ -25,8 +25,6 @@ export default function CheckoutCompletedTracker({
     if (sessionStorage.getItem(key)) return;
 
     let cancelled = false;
-    let interval: number | undefined;
-    let timeout: number | undefined;
 
     const fire = () => {
       if (cancelled) return;
@@ -46,7 +44,7 @@ export default function CheckoutCompletedTracker({
       return;
     }
 
-    interval = window.setInterval(() => {
+    const interval = window.setInterval(() => {
       if (isLoaded()) {
         window.clearInterval(interval);
         window.clearTimeout(timeout);
@@ -55,7 +53,7 @@ export default function CheckoutCompletedTracker({
     }, 50);
     // Stop polling after 10s. If init hasn't happened by then, the user
     // is offline or NEXT_PUBLIC_POSTHOG_KEY is missing — nothing to fire.
-    timeout = window.setTimeout(() => {
+    const timeout = window.setTimeout(() => {
       window.clearInterval(interval);
     }, 10_000);
 
