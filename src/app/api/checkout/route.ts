@@ -11,7 +11,7 @@ type CheckoutBody = {
   camperName: string;
   camperDob: string;
   instrument: string;
-  parentName?: string;
+  parentName: string;
   parentEmail: string;
   parentPhone: string;
 };
@@ -22,7 +22,7 @@ function isValidBody(b: unknown): b is CheckoutBody {
   if (!Array.isArray(o.sessionCodes) || !o.sessionCodes.every((c) => typeof c === "string")) return false;
   const reqStr = (v: unknown) => typeof v === "string" && v.trim().length > 0;
   if (!reqStr(o.camperName) || !reqStr(o.camperDob) || !reqStr(o.instrument)) return false;
-  if (!reqStr(o.parentEmail) || !reqStr(o.parentPhone)) return false;
+  if (!reqStr(o.parentName) || !reqStr(o.parentEmail) || !reqStr(o.parentPhone)) return false;
   return true;
 }
 
@@ -143,7 +143,7 @@ export async function POST(req: NextRequest) {
         "Student Age": camperAge ?? "",
         "Primary Instrument": body.instrument,
         Sessions: sessionCodes.length ? sessionCodes.map((s) => `• ${s}`).join("\n") : "",
-        "Parent Name": body.parentName ?? "",
+        "Parent Name": body.parentName,
         "Parent Email": body.parentEmail,
         "Parent Phone": body.parentPhone,
         "Lead Status": "Cart Started",
@@ -208,7 +208,7 @@ export async function POST(req: NextRequest) {
         camper_dob: body.camperDob,
         camper_age: camperAge != null ? String(camperAge) : "",
         instrument: body.instrument,
-        parent_name: body.parentName ?? "",
+        parent_name: body.parentName,
         parent_email: body.parentEmail,
         parent_phone: body.parentPhone,
         cart_list: String(cart.list),
