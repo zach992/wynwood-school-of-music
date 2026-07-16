@@ -9,8 +9,14 @@ const instructorSlugs = [
   "angel-perez",
   "yamil-granda",
   "patricio-acevedo",
-  "sergio-zavala",
   "aj-hill",
+];
+
+// Former instructors — their /team/[slug] pages are retired. Both the old
+// root-level Squarespace URL and the retired /team/[slug] route (live and
+// indexed since launch) redirect to /team so neither 404s.
+const retiredInstructorSlugs = [
+  "sergio-zavala",
   "jake-mongin",
   "nestor-rigaud",
 ];
@@ -32,6 +38,11 @@ const nextConfig: NextConfig = {
       })),
       // Former instructor — page retired, redirect to /team
       { source: "/thania-sanz", destination: "/team", permanent: true },
+      // Former instructors — retire both the root-level and /team/[slug] URLs
+      ...retiredInstructorSlugs.flatMap((slug) => [
+        { source: `/${slug}`, destination: "/team", permanent: true },
+        { source: `/team/${slug}`, destination: "/team", permanent: true },
+      ]),
 
       // Squarespace legacy URLs (from old sitemap) → closest topical page
       { source: "/home", destination: "/", permanent: true },

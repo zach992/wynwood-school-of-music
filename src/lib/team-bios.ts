@@ -121,18 +121,6 @@ export const teamBios: TeamBio[] = [
     social: "@patricello",
   },
   {
-    slug: "sergio-zavala",
-    name: "Sergio Zavala",
-    role: "Guitar",
-    portraitSrc: "/images/team/bios/sergio-zavala.webp",
-    bioParagraphs: [
-      "Guitarist Sergio Zavala graduated from Florida International University in 2018 earning a B.A in Jazz guitar performance and again in 2021 with a M.A in the same field. He studied guitar under Tom Limpincott and performed with the schools top ensembles. Currently, he is performing all over Florida with multiple bands playing different styles ranging from Jazz to R'nB, Rock, Soul, and Funk.",
-      "As a teacher, Sergio aims to provide you with the strong foundation that you need to become fluent in guitar and music. Whether your goals are to learn music to play in a band or to write your own, Sergio will guide you through the necessary steps to reach them. He believes in maintaining a positive and encouraging learning environment that allows room for growth and understanding.",
-    ],
-    philosophy: undefined,
-    social: "@sergio_zavala_3",
-  },
-  {
     slug: "aj-hill",
     name: "AJ Hill",
     role: "Saxophone, Vocals, Drums",
@@ -142,31 +130,6 @@ export const teamBios: TeamBio[] = [
     ],
     philosophy: undefined,
     social: undefined,
-  },
-  {
-    slug: "jake-mongin",
-    name: "Jake Mongin",
-    role: "Guitar, Bass, Keyboard, Music Theory",
-    portraitSrc: "/images/team/bios/jake-mongin.webp",
-    bioParagraphs: [
-      "Born in Detroit, jazz guitarist Jake Mongin has been a part of the jazz scene in South Florida and abroad since 2019. After moving to Orlando in 2010, Jake has participated in numerous festival, concert and club performances with musicians from all generations. As a leader, Jake has performed in jazz clubs throughout the state of Florida from the Blue Bamboo in Orlando to the London Club in Naples. Despite having a background in jazz, Jake has appeared on various recordings and live bands in all genres from pop and hard rock.",
-    ],
-    philosophy: undefined,
-    social: "@jakemongin",
-  },
-  {
-    slug: "nestor-rigaud",
-    name: "Nestor Rigaud",
-    role: "Music Production, Guitar, Bass",
-    portraitSrc: "/images/team/bios/nestor-rigaud.webp",
-    bioParagraphs: [
-      "Nestor has played guitar and bass for 15 years and through that, he fell in love with recording music both as a producer and a recording engineer. He went on to study music production and recording at Berklee college of music where he developed his recording and playing skills further.",
-      "Nestor has been recording himself and local acts for over 10 years and has lots of experience in different styles and how to achieve many different sounds. He loves creating in the moment and if he has any free time you can find him creating little songs and beats. Nestor has been teaching music for 8 years and is focused in figuring out what you want to do and how to arrive there.",
-      "As a producer, one of the most important skills one can have is creating and finishing an idea so, Nestor emphasizes creativity in his production lessons as well as getting you familiar with recording software and gear.",
-      "Nestor wants to help you get that song out of your head and into the world!",
-    ],
-    philosophy: undefined,
-    social: "@nestjrig",
   },
   {
     slug: "ana-liu",
@@ -213,7 +176,7 @@ export const teamBios: TeamBio[] = [
   {
     slug: "juan-jaimes",
     name: "Juan Jaimes",
-    role: "Guitar, Music Theory",
+    role: "Guitar, Bass, Music Theory",
     portraitSrc: "/images/team/bios/juan-jaimes.webp",
     bioParagraphs: [
       "Juan Jaimes is an instrumentalist and Florida-based performer from Medellín, Colombia. A Young Musicians Unite and Interlochen Arts Academy alumnus, he graduated in spring 2024 with a major in Jazz Guitar Performance and Improvisation, studying under Dr. Matthew Cochran and Chris Glassman.",
@@ -239,7 +202,7 @@ export const teamBios: TeamBio[] = [
   {
     slug: "mitchell-mattox",
     name: "Mitchell Mattox",
-    role: "Drums, Music Production",
+    role: "Drums, Piano, Guitar, Bass",
     portraitSrc: "/images/team/bios/mitchell-mattox.webp",
     bioParagraphs: [
       "Born and raised in Arizona, Mitchell Mattox learned the joy of music from listening to Motown and classic rock on the radio — his favorite band and first concert being Rush in 2007. After dozens of hours playing Rock Band 2 with his brother, he decided to try the real thing and began drum lessons with seasoned local teacher Clyde Score.",
