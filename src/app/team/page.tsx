@@ -22,10 +22,13 @@ const instructors: Instructor[] = [
   { name: "Angel Perez", role: "Keyboard, Music Theory", imageSrc: "/images/team/angel-perez.jpg", slug: "angel-perez" },
   { name: "Yamil Granda", role: "Bass, Guitar", imageSrc: "/images/team/yamil-granda.jpg", slug: "yamil-granda" },
   { name: "Patricio Acevedo", role: "Strings (Violin, Viola, Cello)", imageSrc: "/images/team/patricio-acevedo.webp", slug: "patricio-acevedo" },
-  { name: "Sergio Zavala", role: "Guitar", imageSrc: "/images/team/sergio-zavala.webp", slug: "sergio-zavala" },
   { name: "AJ Hill", role: "Saxophone, Voice, Drums", imageSrc: "/images/team/aj-hill.webp", slug: "aj-hill" },
-  { name: "Jake Mongin", role: "Guitar, Music Theory", imageSrc: "/images/team/jake-mongin.webp", slug: "jake-mongin" },
-  { name: "Nestor Rigaud", role: "Guitar, Bass, Music Production", imageSrc: "/images/team/nestor-rigaud.webp", slug: "nestor-rigaud" },
+  { name: "Ana Liu", role: "Guitar, Music Production", imageSrc: "/images/team/ana-liu.webp", slug: "ana-liu" },
+  { name: "Isabella Varela", role: "Voice", imageSrc: "/images/team/isabella-varela.webp", slug: "isabella-varela" },
+  { name: "Enrique Pulley", role: "Drums, Music Production, Piano, Guitar", imageSrc: "/images/team/enrique-pulley.webp", slug: "enrique-pulley" },
+  { name: "Juan Jaimes", role: "Guitar, Bass, Music Theory", imageSrc: "/images/team/juan-jaimes.webp", slug: "juan-jaimes" },
+  { name: "Kali Fong", role: "Voice", imageSrc: "/images/team/kali-fong.webp", slug: "kali-fong" },
+  { name: "Mitchell Mattox", role: "Drums, Piano, Guitar, Bass", imageSrc: "/images/team/mitchell-mattox.webp", slug: "mitchell-mattox" },
 ];
 
 const bioSlugs = new Set(

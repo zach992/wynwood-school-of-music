@@ -115,19 +115,26 @@ async function collectRedirectSources() {
   const text = await fs.readFile(configPath, "utf8");
   const sources = new Set();
   for (const m of text.matchAll(/source:\s*[`"']([^`"']+)[`"']/g)) {
+    // Skip un-expanded template literals (e.g. `/${slug}`); they're resolved
+    // against the slug arrays below.
+    if (m[1].includes("${")) continue;
     sources.add(m[1]);
   }
-  // Also resolve template-literal slugs like `/${slug}` against the
-  // instructorSlugs array declared in the same file.
-  const slugListMatch = text.match(
-    /const\s+instructorSlugs\s*=\s*\[([\s\S]*?)\]/,
+  // Resolve template-literal sources against every *Slugs array declared in the
+  // same file — instructorSlugs, retiredInstructorSlugs, and any added later.
+  // Matching on the name suffix rather than one hard-coded array keeps a new
+  // slug list from silently dropping out of this audit.
+  const slugs = new Set();
+  for (const m of text.matchAll(/const\s+\w*Slugs\s*=\s*\[([\s\S]*?)\]/g)) {
+    for (const s of m[1].matchAll(/["']([a-z0-9-]+)["']/gi)) slugs.add(s[1]);
+  }
+  // Template sources look like `/${slug}` or `/team/${slug}`; expand each
+  // distinct prefix across every known slug.
+  const prefixes = new Set(
+    Array.from(text.matchAll(/source:\s*`([^`]*)\$\{slug\}`/g), (m) => m[1]),
   );
-  if (slugListMatch) {
-    const slugs = Array.from(
-      slugListMatch[1].matchAll(/["']([a-z0-9-]+)["']/gi),
-      (m) => m[1],
-    );
-    for (const slug of slugs) sources.add(`/${slug}`);
+  for (const prefix of prefixes) {
+    for (const slug of slugs) sources.add(`${prefix}${slug}`);
   }
   return sources;
 }
