@@ -10,6 +10,9 @@ const instructorSlugs = [
   "yamil-granda",
   "patricio-acevedo",
   "aj-hill",
+  // Previously a student/testimonial page on the old Squarespace site; now an
+  // instructor, so /ana-liu points at her bio rather than the team index.
+  "ana-liu",
 ];
 
 // Former instructors — their /team/[slug] pages are retired. Both the old
@@ -64,9 +67,9 @@ const nextConfig: NextConfig = {
       // Generic galleries — closest match is /recitals (the only photo-heavy page)
       { source: "/gallery", destination: "/recitals", permanent: true },
       { source: "/gallery-2", destination: "/recitals", permanent: true },
+      // Isabella's old page used her nickname; point it at her instructor bio.
+      { source: "/bella-varela", destination: "/team/isabella-varela", permanent: true },
       // Former testimonial / student bio pages → /team (similar to /thania-sanz)
-      { source: "/ana-liu", destination: "/team", permanent: true },
-      { source: "/bella-varela", destination: "/team", permanent: true },
       { source: "/anastasia-chubb", destination: "/team", permanent: true },
       { source: "/vivian-valls", destination: "/team", permanent: true },
       // Squarespace draft / test pages → real equivalents

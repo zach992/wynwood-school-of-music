@@ -7,10 +7,13 @@ Things to do once `wynwoodschoolofmusic.com` points at the new Next.js build.
 Hit each old URL in incognito; confirm a 301/308 redirect lands on the new path with a 200.
 
 ```bash
-# 9 current instructor URLs (root → /team/[slug])
+# 10 current instructor URLs (root → /team/[slug])
 curl -sI https://www.wynwoodschoolofmusic.com/leo-cattani | head -3
 # repeat for: alex-ibanez, vale-penaranda, augusto-di-catarina, renzo-vargas,
-# angel-perez, yamil-granda, patricio-acevedo, aj-hill
+# angel-perez, yamil-granda, patricio-acevedo, aj-hill, ana-liu
+
+# Isabella's old nickname URL → her bio
+curl -sI https://www.wynwoodschoolofmusic.com/bella-varela | head -3
 
 # Former instructors — both the root URL and /team/[slug] should land on /team
 curl -sI https://www.wynwoodschoolofmusic.com/sergio-zavala | head -3
