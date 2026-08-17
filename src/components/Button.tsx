@@ -17,8 +17,12 @@ export default function Button({ href, children, variant = "primary", className 
   };
   const classes = `${base} ${variants[variant]} ${className}`;
   const isExternal = /^https?:\/\//.test(href);
+  // Documents under /public are static files, not routes: next/link would try to
+  // resolve them through the router. They also open in a new tab so a visitor
+  // reading the calendar doesn't lose their place on the page behind it.
+  const isDocument = /\.pdf$/i.test(href);
 
-  if (isExternal) {
+  if (isExternal || isDocument) {
     return (
       <a href={href} target="_blank" rel="noopener noreferrer" className={classes} onClick={onClick}>
         {children}

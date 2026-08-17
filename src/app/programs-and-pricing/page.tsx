@@ -220,12 +220,12 @@ export default function ProgramsAndPricingPage() {
           {/* Action Buttons — same grid as columns so each button centers under its column */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mt-12">
             <div className="flex justify-center">
-              <Button href="https://drive.google.com/file/d/16nOpF2bE_r0wGF8DSFIrZBd7Atz9Cvqy/view">
+              <Button href="/documents/wsm-calendar-pricing-2026-2027.pdf">
                 Calendar + Pricing
               </Button>
             </div>
             <div className="flex justify-center">
-              <Button href="https://drive.google.com/file/d/1iO4gLJbIedw_CqpWmAEO4iafwoTbl8Xl/view">
+              <Button href="/documents/wsm-payment-cancellation-policies-2026-2027.pdf">
                 Payment + Cancellation Policies
               </Button>
             </div>
