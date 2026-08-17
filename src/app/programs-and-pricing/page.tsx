@@ -194,7 +194,7 @@ export default function ProgramsAndPricingPage() {
               </p>
 
               <div className="font-body text-wsm-gray text-base space-y-1 mb-6">
-                <p>90 Minutes, 1x/Week | $195 Per Month</p>
+                <p>90 Minutes, 1x/Week | $225 Per Month</p>
                 <p>*Private Lessons Required</p>
               </div>
 
