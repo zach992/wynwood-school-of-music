@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Button from "@/components/Button";
+import DonateButton from "@/components/DonateButton";
 import ImageCarousel from "@/components/ImageCarousel";
+import SectionMark from "@/components/SectionMark";
 
 const recipientImages = [
   { src: "/images/friendsofwsm/recipients/recipient-01.webp", alt: "Current scholarship recipient performing" },
@@ -91,6 +93,9 @@ export default function FriendsOfWSMPage() {
           <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl uppercase font-black text-white max-w-4xl leading-tight">
             Friends of Wynwood School of Music
           </h1>
+          <div className="mt-8">
+            <DonateButton location="friendsofwsm-hero" />
+          </div>
         </div>
       </section>
 
@@ -272,6 +277,29 @@ export default function FriendsOfWSMPage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Donate CTA — the page's single conversion moment. "Music matters" is the
+          program's own phrase (the Music Matters Scholarship Fund it grew out of). */}
+      <section className="bg-[#222222] px-4 py-20 md:py-28">
+        <div className="max-w-3xl mx-auto text-center">
+          <div className="flex justify-center mb-8">
+            <SectionMark size={48} />
+          </div>
+          <h2 className="font-heading text-5xl md:text-7xl uppercase font-black text-white mb-6 tracking-tight leading-[0.95]">
+            Music Matters.
+          </h2>
+          <p className="font-body text-wsm-gray text-base md:text-lg leading-relaxed mb-10 max-w-xl mx-auto text-balance">
+            Every scholarship here is donor-funded. Your gift goes straight to
+            lessons, materials, and one-on-one coaching for a Miami student.
+          </p>
+          <div className="flex justify-center">
+            <DonateButton location="friendsofwsm-closing-band" />
+          </div>
+          <p className="font-body text-wsm-gray-dark text-xs uppercase tracking-wider mt-6">
+            Donations are tax-deductible
+          </p>
         </div>
       </section>
 
