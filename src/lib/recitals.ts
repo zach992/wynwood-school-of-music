@@ -65,14 +65,14 @@ export const recitalSeasons: RecitalSeason[] = [
       },
       {
         id: "winter-2026-private-lesson-recitals-sat",
-        name: "Private Lesson Recitals",
+        name: "Private Lesson Recitals Day One",
         seoDescription: "Students from across the school perform.",
         date: "2026-12-12",
         price: "$15",
       },
       {
         id: "winter-2026-private-lesson-recitals-sun",
-        name: "Private Lesson Recitals",
+        name: "Private Lesson Recitals Day Two",
         seoDescription: "Students from across the school perform.",
         date: "2026-12-13",
         price: "$15",
@@ -92,14 +92,14 @@ export const recitalSeasons: RecitalSeason[] = [
       },
       {
         id: "spring-2027-private-lesson-recitals-sat",
-        name: "Private Lesson Recitals",
+        name: "Private Lesson Recitals Day One",
         seoDescription: "Students from across the school perform.",
         date: "2027-05-22",
         price: "$15",
       },
       {
         id: "spring-2027-private-lesson-recitals-sun",
-        name: "Private Lesson Recitals",
+        name: "Private Lesson Recitals Day Two",
         seoDescription: "Students from across the school perform.",
         date: "2027-05-23",
         price: "$15",

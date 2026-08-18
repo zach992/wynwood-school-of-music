@@ -108,10 +108,10 @@ export default function RecitalsPage() {
       <section className="bg-wsm-dark px-4 pt-8 pb-4">
         <div className="max-w-5xl mx-auto">
           <p className="font-body text-wsm-gray text-base md:text-lg leading-relaxed max-w-2xl">
-            Twice a year the whole school plays Inkub8 — a Miami venue with a
-            stage and a door time, not a school auditorium. Bands take the
-            showcase; private lesson students take the recital nights. If
-            you&apos;re enrolled, you&apos;re already on the bill.
+            Twice a year our students take the stage for a weekend of shows,
+            playing what they&apos;ve been working on all semester. Our band
+            programs rock the house at the Band Showcase, and our private lesson
+            students show their stuff at the Private Lesson Recitals. Join us.
           </p>
         </div>
       </section>
