@@ -60,8 +60,12 @@ export default function Header() {
                 >
                   {link.label}
                 </Link>
+                {/* focus-within mirrors hover so the submenu also opens when the
+                    parent link is tabbed to: `invisible` takes the children out
+                    of the tab order, so without it they are unreachable by
+                    keyboard. */}
                 {hasChildren && (
-                  <div className="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                  <div className="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200 z-50">
                     <div className="bg-wsm-darker border border-white/10 rounded-md shadow-xl min-w-[200px] py-2">
                       {link.children!.map((child) => (
                         <Link

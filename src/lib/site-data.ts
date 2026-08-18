@@ -41,7 +41,20 @@ export const siteData = {
   },
 };
 
-export const navLinks = [
+export type NavLink = {
+  label: string;
+  href: string;
+  children?: { label: string; href: string }[];
+  /**
+   * Renders a top-level item in promo yellow instead of the usual white, to pull
+   * attention to whatever we're actively pushing. Seasonal: set it while a
+   * program is being promoted, drop it once that season is over. Nothing uses it
+   * right now (Summer Camp had it through summer 2026).
+   */
+  highlight?: boolean;
+};
+
+export const navLinks: NavLink[] = [
   { label: "Home", href: "/" },
   {
     label: "About Us",
@@ -60,12 +73,8 @@ export const navLinks = [
       { label: "Programs & Pricing", href: "/programs-and-pricing" },
       { label: "Private Lessons", href: "/private-lessons" },
       { label: "Band Programs", href: "/our-bands" },
+      { label: "Summer Camp", href: "/musicperformancecamp" },
     ],
-  },
-  {
-    label: "Summer Camp",
-    href: "/musicperformancecamp",
-    highlight: true,
   },
   { label: "Recitals", href: "/recitals" },
   { label: "Contact Us", href: "/contact" },
