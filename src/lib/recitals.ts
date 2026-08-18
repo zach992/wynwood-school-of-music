@@ -15,8 +15,11 @@ export type RecitalEvent = {
   /** Stable id, used as a React key and schema.org fragment. */
   id: string;
   name: string;
-  /** One line on who plays and what it is. */
-  blurb: string;
+  /**
+   * Feeds the schema.org description only — not rendered on the page.
+   * Search results still want a sentence; the page itself doesn't.
+   */
+  seoDescription: string;
   /** Date-only ISO (YYYY-MM-DD). Set times aren't published yet, so we don't invent them. */
   date: string;
   price: string;
@@ -56,21 +59,21 @@ export const recitalSeasons: RecitalSeason[] = [
       {
         id: "winter-2026-band-showcase",
         name: "Winter Band Showcase",
-        blurb: "Student bands perform full sets, live.",
+        seoDescription: "Student bands perform full sets, live.",
         date: "2026-12-11",
         price: "$20",
       },
       {
         id: "winter-2026-private-lesson-recitals-sat",
         name: "Private Lesson Recitals",
-        blurb: "Students from across the school perform.",
+        seoDescription: "Students from across the school perform.",
         date: "2026-12-12",
         price: "$15",
       },
       {
         id: "winter-2026-private-lesson-recitals-sun",
         name: "Private Lesson Recitals",
-        blurb: "Students from across the school perform.",
+        seoDescription: "Students from across the school perform.",
         date: "2026-12-13",
         price: "$15",
       },
@@ -83,21 +86,21 @@ export const recitalSeasons: RecitalSeason[] = [
       {
         id: "spring-2027-band-showcase",
         name: "Spring Band Showcase",
-        blurb: "Student bands perform full sets, live.",
+        seoDescription: "Student bands perform full sets, live.",
         date: "2027-05-21",
         price: "$20",
       },
       {
         id: "spring-2027-private-lesson-recitals-sat",
         name: "Private Lesson Recitals",
-        blurb: "Students from across the school perform.",
+        seoDescription: "Students from across the school perform.",
         date: "2027-05-22",
         price: "$15",
       },
       {
         id: "spring-2027-private-lesson-recitals-sun",
         name: "Private Lesson Recitals",
-        blurb: "Students from across the school perform.",
+        seoDescription: "Students from across the school perform.",
         date: "2027-05-23",
         price: "$15",
       },
@@ -105,17 +108,65 @@ export const recitalSeasons: RecitalSeason[] = [
   },
 ];
 
-/** Parsed as noon UTC so the calendar date can't slip a day across time zones. */
+/** Shows are in Miami; a date is only "past" once that local day is over. */
+const VENUE_TZ = "America/New_York";
+
+/** Offset (local - UTC, in ms) that VENUE_TZ was observing at a given instant. */
+function venueOffsetMs(instant: number): number {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: VENUE_TZ,
+    hour12: false,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  })
+    .formatToParts(new Date(instant))
+    .reduce<Record<string, string>>((acc, part) => {
+      if (part.type !== "literal") acc[part.type] = part.value;
+      return acc;
+    }, {});
+
+  const asIfUtc = Date.UTC(
+    Number(parts.year),
+    Number(parts.month) - 1,
+    Number(parts.day),
+    Number(parts.hour) % 24,
+    Number(parts.minute),
+    Number(parts.second)
+  );
+  return asIfUtc - instant;
+}
+
+/**
+ * Noon UTC — used only to format the date label, never to decide what's past.
+ * Midday keeps the calendar date stable whichever way a formatter leans.
+ */
 export function eventTime(event: RecitalEvent): number {
   return Date.parse(`${event.date}T12:00:00Z`);
 }
 
-/** Seasons reduced to events that haven't happened yet; empty seasons drop out. */
+/**
+ * The instant the event's local calendar day ends in Miami.
+ *
+ * Filtering on this rather than on the date itself matters: the Winter
+ * showcase is an evening show, and anchoring to noon UTC would have dropped it
+ * from the page at 7am local — about twelve hours before doors.
+ */
+export function eventEndOfDay(event: RecitalEvent): number {
+  const [year, month, day] = event.date.split("-").map(Number);
+  const nextMidnightUtc = Date.UTC(year, month - 1, day + 1, 0, 0, 0);
+  return nextMidnightUtc - venueOffsetMs(nextMidnightUtc);
+}
+
+/** Seasons reduced to events that haven't finished yet; empty seasons drop out. */
 export function upcomingSeasons(now: number = Date.now()): RecitalSeason[] {
   return recitalSeasons
     .map((season) => ({
       ...season,
-      events: season.events.filter((e) => eventTime(e) >= now),
+      events: season.events.filter((e) => eventEndOfDay(e) > now),
     }))
     .filter((season) => season.events.length > 0);
 }

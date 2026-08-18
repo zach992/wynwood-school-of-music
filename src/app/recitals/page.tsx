@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Button from "@/components/Button";
 import SectionMark from "@/components/SectionMark";
 import {
@@ -45,6 +46,8 @@ export default function RecitalsPage() {
   // claims ticket availability once there is somewhere to actually buy one.
   const eventSchemas = seasons.flatMap((season) =>
     season.events.map((event) => ({
+      id: event.id,
+      schema: {
       "@context": "https://schema.org",
       "@type": "Event",
       name: `Wynwood School of Music — ${event.name} (${season.label})`,
@@ -63,8 +66,9 @@ export default function RecitalsPage() {
           addressCountry: "US",
         },
       },
-      description: event.blurb,
+      description: event.seoDescription,
       organizer: { "@id": `${SITE_URL}#organization` },
+      ...(event.flyer ? { image: `${SITE_URL}${event.flyer}` } : {}),
       ...(event.ticketsUrl
         ? {
             offers: {
@@ -76,14 +80,15 @@ export default function RecitalsPage() {
             },
           }
         : {}),
+      },
     }))
   );
 
   return (
     <>
-      {eventSchemas.map((schema) => (
+      {eventSchemas.map(({ id, schema }) => (
         <script
-          key={schema.name}
+          key={id}
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
         />
@@ -103,10 +108,10 @@ export default function RecitalsPage() {
       <section className="bg-wsm-dark px-4 pt-8 pb-4">
         <div className="max-w-5xl mx-auto">
           <p className="font-body text-wsm-gray text-base md:text-lg leading-relaxed max-w-2xl">
-            Twice a year our students take a real stage in front of a real
-            audience. Band students play the showcase, private lesson students
-            play the recitals, and every student is registered automatically —
-            there is nothing to sign up for.
+            Twice a year the whole school plays Inkub8 — a Miami venue with a
+            stage and a door time, not a school auditorium. Bands take the
+            showcase; private lesson students take the recital nights. If
+            you&apos;re enrolled, you&apos;re already on the bill.
           </p>
         </div>
       </section>
@@ -151,13 +156,24 @@ export default function RecitalsPage() {
                       </span>
                     </div>
 
+                    {/* Artwork is optional: dates go up as soon as they're
+                        confirmed, and the flyer slots in whenever it exists. */}
+                    {event.flyer && (
+                      <div className="relative w-24 sm:w-28 aspect-[3/4] shrink-0 overflow-hidden rounded">
+                        <Image
+                          src={event.flyer}
+                          alt={`${event.name} flyer`}
+                          fill
+                          sizes="112px"
+                          className="object-cover"
+                        />
+                      </div>
+                    )}
+
                     <div className="flex-1 min-w-0">
                       <h3 className="font-heading text-2xl md:text-3xl uppercase font-black text-white leading-tight">
                         {event.name}
                       </h3>
-                      <p className="font-body text-wsm-gray text-sm mt-1">
-                        {event.blurb}
-                      </p>
                     </div>
 
                     <div className="flex items-center justify-between sm:justify-end sm:flex-col sm:items-end gap-3 sm:gap-2 shrink-0">
