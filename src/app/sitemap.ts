@@ -14,7 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/private-lessons`, lastModified: now, priority: 0.8, changeFrequency: "monthly" },
     { url: `${baseUrl}/our-bands`, lastModified: now, priority: 0.8, changeFrequency: "monthly" },
     { url: `${baseUrl}/musicperformancecamp`, lastModified: now, priority: 0.9, changeFrequency: "monthly" },
-    { url: `${baseUrl}/recitals`, lastModified: now, priority: 0.7, changeFrequency: "weekly" },
+    { url: `${baseUrl}/recitals`, lastModified: now, priority: 0.7, changeFrequency: "monthly" },
     { url: `${baseUrl}/testimonials`, lastModified: now, priority: 0.6, changeFrequency: "monthly" },
     { url: `${baseUrl}/repair`, lastModified: now, priority: 0.7, changeFrequency: "monthly" },
     { url: `${baseUrl}/friendsofwsm`, lastModified: now, priority: 0.7, changeFrequency: "monthly" },
