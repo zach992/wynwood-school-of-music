@@ -15,18 +15,28 @@ export const siteData = {
       { days: "Saturday", time: "CLOSED" },
       { days: "Sunday", time: "11AM-8PM" },
     ],
+    /**
+     * Source of truth: public/documents/wsm-calendar-pricing-2026-2027.pdf
+     * ("Holiday Closures" per semester, plus the weeks marked CLOSED on the
+     * semester grids). Refresh this whenever a new school-year calendar PDF is
+     * posted.
+     */
     holidayClosures: {
-      "Fall 2025": [
-        'Monday, September 1st "Labor Day"',
-        'Friday, October 31st "Halloween"',
+      "Fall 2026": [
+        'Monday, September 7th "Labor Day"',
+        'Saturday, October 31st "Halloween"',
+        'Sunday, November 22nd - Saturday, November 28th "Thanksgiving Break"',
+        'Sunday, December 20th - Saturday, January 2nd "Winter Break"',
       ],
-      "Spring 2026": [
-        'Sunday, April 5th "Easter Sunday"',
-        'Sunday, May 10th "Mother\'s Day"',
-        'Monday, May 25th "Memorial Day"',
+      "Spring 2027": [
+        'Sunday, March 21st - Saturday, March 27th "Spring Break"',
+        'Sunday, March 28th "Easter Sunday"',
+        'Sunday, May 9th "Mother\'s Day"',
       ],
-      "Summer 2026": [
-        'Sunday, June 21st "Father\'s Day"',
+      "Summer 2027": [
+        'Monday, May 31st "Memorial Day"',
+        'Sunday, June 20th "Father\'s Day"',
+        'Sunday, July 4th "Independence Day"',
       ],
     },
   },
