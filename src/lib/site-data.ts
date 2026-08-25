@@ -17,15 +17,19 @@ export const siteData = {
     ],
     /**
      * Source of truth: public/documents/wsm-calendar-pricing-2026-2027.pdf
-     * ("Holiday Closures" per semester). Refresh this whenever a new school-year
-     * calendar PDF is posted.
+     * ("Holiday Closures" per semester, plus the weeks marked CLOSED on the
+     * semester grids). Refresh this whenever a new school-year calendar PDF is
+     * posted.
      */
     holidayClosures: {
       "Fall 2026": [
         'Monday, September 7th "Labor Day"',
         'Saturday, October 31st "Halloween"',
+        'Sunday, November 22nd - Saturday, November 28th "Thanksgiving Break"',
+        'Sunday, December 20th - Saturday, January 2nd "Winter Break"',
       ],
       "Spring 2027": [
+        'Sunday, March 21st - Saturday, March 27th "Spring Break"',
         'Sunday, March 28th "Easter Sunday"',
         'Sunday, May 9th "Mother\'s Day"',
       ],
