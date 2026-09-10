@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import posthog from "posthog-js";
+import { reportLead } from "@/lib/meta-pixel";
 import { HoneypotField, useFormGuard } from "./FormGuard";
 
 const instruments = ["Voice", "Guitar", "Keyboard", "Bass", "Drums"];
@@ -73,6 +74,10 @@ export default function CampSignupForm() {
       });
       if (!res.ok) throw new Error(`Submission failed (${res.status})`);
       posthog.capture("form_submitted", { form: "camp-interest" });
+      // Fired here, on confirmed submit success, rather than on button
+      // click: a click-triggered event also counts visitors who failed
+      // validation or errored out, who are not leads.
+      reportLead("camp-interest");
       router.push("/summer-camp-thank-you");
     } catch (err) {
       console.error("Camp signup submit error:", err);

@@ -10,6 +10,7 @@ import { PostHogProvider } from "@/components/PostHogProvider";
 import ScrollToTop from "@/components/ScrollToTop";
 import StructuredData from "@/components/StructuredData";
 import { GOOGLE_ADS_ENABLED, GOOGLE_ADS_ID } from "@/lib/google-ads";
+import { META_PIXEL_ENABLED, META_PIXEL_ID } from "@/lib/meta-pixel";
 
 const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
@@ -78,6 +79,40 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 gtag('config', '${GOOGLE_ADS_ID}');
               `}
             </Script>
+          </>
+        )}
+        {META_PIXEL_ENABLED && (
+          <>
+            {/* Meta Pixel. The snippet's own fbq('track','PageView') is the
+                only PageView call on the site — fbevents.js installs a History
+                API listener and re-fires PageView on client-side route changes
+                by itself, so adding a Next.js route-change tracker on top would
+                double-count every navigation. (Google Ads needs no equivalent:
+                it has no pageview conversion.) */}
+            <Script id="meta-pixel" strategy="afterInteractive">
+              {`
+                !function(f,b,e,v,n,t,s)
+                {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                n.queue=[];t=b.createElement(e);t.async=!0;
+                t.src=v;s=b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t,s)}(window,document,'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+                fbq('init', '${META_PIXEL_ID}');
+                fbq('track', 'PageView');
+              `}
+            </Script>
+            <noscript>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                height="1"
+                width="1"
+                style={{ display: "none" }}
+                alt=""
+                src={`https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`}
+              />
+            </noscript>
           </>
         )}
         <PostHogProvider>

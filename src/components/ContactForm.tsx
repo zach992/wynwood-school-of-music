@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import posthog from "posthog-js";
 import { reportConversion } from "@/lib/google-ads";
+import { reportLead } from "@/lib/meta-pixel";
 import { HoneypotField, useFormGuard } from "./FormGuard";
 
 const subjects = [
@@ -82,6 +83,7 @@ export default function ContactForm() {
       // click: a click-triggered conversion also counts visitors who
       // failed validation or errored out, who are not leads.
       reportConversion("contact");
+      reportLead("contact");
       router.push("/thank-you");
     } catch (err) {
       console.error("Contact form submit error:", err);

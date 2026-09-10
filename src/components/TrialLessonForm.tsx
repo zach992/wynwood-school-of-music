@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import posthog from "posthog-js";
 import { reportConversion } from "@/lib/google-ads";
+import { reportLead } from "@/lib/meta-pixel";
 import { HoneypotField, useFormGuard } from "./FormGuard";
 
 const instruments = [
@@ -69,6 +70,7 @@ export default function TrialLessonForm() {
       // click: a click-triggered conversion also counts visitors who
       // failed validation or errored out, who are not leads.
       reportConversion("free-trial");
+      reportLead("trial-lesson");
       router.push("/your-trial");
     } catch (err) {
       console.error("Trial lesson form submit error:", err);

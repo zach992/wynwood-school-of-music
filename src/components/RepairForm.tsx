@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import posthog from "posthog-js";
+import { reportLead } from "@/lib/meta-pixel";
 import { HoneypotField, useFormGuard } from "./FormGuard";
 
 const services = [
@@ -68,6 +69,10 @@ export default function RepairForm() {
       });
       if (!res.ok) throw new Error(`Submission failed (${res.status})`);
       posthog.capture("form_submitted", { form: "repair" });
+      // Fired here, on confirmed submit success, rather than on button
+      // click: a click-triggered event also counts visitors who failed
+      // validation or errored out, who are not leads.
+      reportLead("repair");
       setSubmitted(true);
     } catch (err) {
       console.error("Repair form submit error:", err);

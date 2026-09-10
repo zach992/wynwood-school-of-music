@@ -75,6 +75,7 @@ Always return `200 OK` on rejection — never tell the bot why. Logging the reje
 - 📬 **Mailchimp** — adds parent as subscriber to audience "Wynwood School of Music" with tags `Lead — Contact Form` + per-instrument tags.
 - 🔁 **Zapier** — webhook (`ZAPIER_CONTACT_WEBHOOK_URL`) → Basecamp to-do for the team.
 - 🎯 **Google Ads conversion** — `Lead - Contact Form` (client-side, on submit success). See "Google Ads conversion tracking" below.
+- 🔵 **Meta Pixel** — `Lead` event, `content_name: "contact"` (client-side, on submit success). See "Meta Pixel" below.
 
 **Fields:**
 1. Student Name (first + last) — required
@@ -105,6 +106,7 @@ Always return `200 OK` on rejection — never tell the bot why. Logging the reje
 - 📧 Resend email → `RESEND_NOTIFY_TO`.
 - 📬 Mailchimp → tag `Lead — Repair Request`.
 - 🔁 Zapier (`ZAPIER_REPAIR_WEBHOOK_URL`) → Basecamp to-do.
+- 🔵 **Meta Pixel** — `Lead` event, `content_name: "repair"` (client-side, on submit success). See "Meta Pixel" below.
 
 **Fields:**
 1. Name (first + last) — required
@@ -130,6 +132,7 @@ Always return `200 OK` on rejection — never tell the bot why. Logging the reje
 - 📧 Resend email → `RESEND_NOTIFY_TO`.
 - 📬 Mailchimp → tags `Lead — Summer Camp` + `Instrument — <primary>`.
 - 🔁 Zapier (`ZAPIER_CAMP_WEBHOOK_URL`) → Basecamp to-do.
+- 🔵 **Meta Pixel** — `Lead` event, `content_name: "camp-interest"` (client-side, on submit success). See "Meta Pixel" below.
 
 **Fields:**
 1. Student Name (first + last) — required
@@ -161,6 +164,7 @@ Always return `200 OK` on rejection — never tell the bot why. Logging the reje
 - 📧 Resend email → `RESEND_NOTIFY_TO`.
 - 📬 Mailchimp → tags `Lead — Walt Grace` + per-instrument tags.
 - 🔁 Zapier (`ZAPIER_WGV_WEBHOOK_URL`) → Basecamp to-do.
+- 🔵 **Meta Pixel** — `Lead` event, `content_name: "wgv"` (client-side, on submit success). See "Meta Pixel" below.
 
 **Notes:** Co-branded landing page for Walt Grace Vintage customers redeeming a free lesson. May warrant a separate recipient (someone at WGV?) or a tag on the same recipient inbox to distinguish leads.
 
@@ -192,6 +196,7 @@ Always return `200 OK` on rejection — never tell the bot why. Logging the reje
 - 📬 Mailchimp → tags `Lead — Trial Lesson` + `Instrument — <selected>`.
 - 🔁 Zapier (`ZAPIER_TRIAL_WEBHOOK_URL`) → Basecamp to-do.
 - 🎯 **Google Ads conversion** — `Lead - Free Trial` (client-side, on submit success). See "Google Ads conversion tracking" below.
+- 🔵 **Meta Pixel** — `Lead` event, `content_name: "trial-lesson"` (client-side, on submit success). See "Meta Pixel" below.
 
 **Notes:** This is the ad/landing-page funnel ("Play Your First Song in 30 Days"). Likely tied to paid traffic and may have its own analytics/conversion tracking requirements.
 
@@ -278,6 +283,73 @@ Google returns `200` for any label, valid or not, so a network hit alone doesn't
 label is right. Confirm end to end in **Google Ads → Goals → Conversions**, where the
 action's status moves to "Recording conversions" (can lag a few hours). Google Tag
 Assistant is the fastest way to watch a hit live.
+
+---
+
+## Meta Pixel
+
+Pixel **1047538668081853**. Base snippet in `src/app/layout.tsx`, gated on
+`NEXT_PUBLIC_ENABLE_META_PIXEL=true`. The `Lead` event and its parameters live in
+**`src/lib/meta-pixel.ts`**, which mirrors `src/lib/google-ads.ts` — one module per ad
+platform, so no form component ever contains vendor snippet code.
+
+### PageView is automatic — do NOT add a route-change tracker
+
+`fbevents.js` installs its own History API listener and re-fires `PageView` on
+client-side route changes by itself. Verified against this site: a Next.js `<Link>`
+navigation produces a second `ev=PageView` hit with the new `dl=` URL and no code from
+us. **Adding a Next.js route-change PageView tracker would double-count every
+navigation.** This is the opposite of PostHog, which needs `capture_pageview: false`
+plus a manual tracker (`PostHogProvider.tsx`), and of Google Ads, which has no pageview
+conversion at all. Three platforms, three different rules — don't copy one to another.
+
+### Lead event
+
+All five lead forms fire the same standard `Lead` event on submit success. Meta has one
+`Lead` event rather than Google's per-action labels, so the form is distinguished by
+parameter:
+
+| Form | `content_name` |
+|---|---|
+| Contact | `contact` |
+| Trial Lesson | `trial-lesson` |
+| Repair | `repair` |
+| Walt Grace (WGV) | `wgv` |
+| Camp Interest | `camp-interest` |
+
+All five also send `content_category: "lead-form"`.
+
+This is why all five fire here while only two report to Google Ads: a Google conversion
+action feeds Smart Bidding directly, so mixing intents corrupts it. Meta segmentation
+happens *after* collection — to optimize on a subset, create a **Custom Conversion** in
+Events Manager filtered on `content_name`. Keep these values stable; renaming one
+orphans any Custom Conversion or audience already filtering on it.
+
+### Rules for this integration
+
+- **Fire on submit success, never on click.** Meta defines `Lead` as "a submission of
+  information by a customer… for example, submitting a form or signing up for a trial" —
+  a submission, not a click. Every form here POSTs via `fetch`, so a click-triggered
+  event would also count visitors who failed validation, tripped the bot guard, or hit an
+  API error.
+- **No PII is sent.** Advanced Matching (hashed email/phone) is deliberately not enabled,
+  matching the Google Ads decision. It needs an Events Manager toggle and a
+  privacy-policy update, and should be its own reviewed change.
+- **No Conversions API.** Pixel-only, so iOS/ad-blocker loss is expected. If CAPI is
+  added later, `reportLead` must also send a shared `eventID` so Meta can dedupe the
+  browser and server copies of the same lead.
+
+### Not wired
+
+The Stripe camp deposit fires no Meta event. `InitiateCheckout` and `Purchase` (with the
+real deposit value) are the correct events and would let Meta optimize toward revenue
+rather than lead volume — same gap as on the Google Ads side.
+
+### Verifying
+
+Use the **Meta Pixel Helper** Chrome extension, or Events Manager → Test Events. In
+DevTools, look for requests to `facebook.com/tr/` — `ev=PageView` on load and on each
+route change, and `ev=Lead` with `cd[content_name]=…` on submit.
 
 ---
 
