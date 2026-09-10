@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import posthog from "posthog-js";
+import { reportConversion } from "@/lib/google-ads";
 import { HoneypotField, useFormGuard } from "./FormGuard";
 
 const instruments = [
@@ -64,6 +65,10 @@ export default function TrialLessonForm() {
       });
       if (!res.ok) throw new Error(`Submission failed (${res.status})`);
       posthog.capture("form_submitted", { form: "trial-lesson" });
+      // Fired here, on confirmed submit success, rather than on button
+      // click: a click-triggered conversion also counts visitors who
+      // failed validation or errored out, who are not leads.
+      reportConversion("free-trial");
       router.push("/your-trial");
     } catch (err) {
       console.error("Trial lesson form submit error:", err);

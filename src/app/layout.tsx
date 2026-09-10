@@ -9,9 +9,7 @@ import Footer from "@/components/Footer";
 import { PostHogProvider } from "@/components/PostHogProvider";
 import ScrollToTop from "@/components/ScrollToTop";
 import StructuredData from "@/components/StructuredData";
-
-const GOOGLE_ADS_ID = "AW-700940936";
-const GOOGLE_ADS_ENABLED = process.env.NEXT_PUBLIC_ENABLE_GOOGLE_ADS === "true";
+import { GOOGLE_ADS_ENABLED, GOOGLE_ADS_ID } from "@/lib/google-ads";
 
 const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
@@ -64,11 +62,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="bg-wsm-dark text-white font-body min-h-screen flex flex-col">
         {GOOGLE_ADS_ENABLED && (
           <>
+            {/* afterInteractive, not lazyOnload: lazyOnload waits for browser
+                idle after load, so a fast form submit can beat the tag and
+                drop the conversion. A measurement tag has to be ready before
+                the action it measures. */}
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
-              strategy="lazyOnload"
+              strategy="afterInteractive"
             />
-            <Script id="google-ads-gtag" strategy="lazyOnload">
+            <Script id="google-ads-gtag" strategy="afterInteractive">
               {`
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
