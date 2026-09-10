@@ -116,35 +116,57 @@ Always return `200 OK` on rejection — never tell the bot why. Logging the reje
 
 ---
 
-### 3. Summer Camp Signup Form
+### 3. Summer Camp Interest Form
+
+> ⚠️ **Read this before wiring anything camp-related.** The live camp form is the
+> "Not quite ready?" interest form embedded **inline** in
+> `src/app/musicperformancecamp/CampPageClient.tsx`, posting to `/api/camp-lead`.
+>
+> `src/components/CampSignupForm.tsx` + `/api/camp-signup` are the **old** full
+> registration form. That component is imported only from `src/app/_archive/`, which
+> Next.js excludes from routing entirely (underscore-prefixed folders are private), and
+> `/camp-signup` 301s to `/musicperformancecamp` (`next.config.ts:57`). It is
+> unreachable in production. Instrumenting it does nothing — a mistake already made
+> once, caught in review on PR #27.
 
 | | |
 |---|---|
-| **Page** | `/camp-signup` |
-| **Component** | `src/components/CampSignupForm.tsx` |
-| **API route** | `src/app/api/camp-signup/route.ts` |
-| **Submit redirect** | `/summer-camp-thank-you` |
-| **Squarespace formId** | `5ef50bf482b8e941cd6cec71` (legacy) |
+| **Page** | `/musicperformancecamp` |
+| **Component** | inline in `src/app/musicperformancecamp/CampPageClient.tsx` |
+| **API route** | `src/app/api/camp-lead/route.ts` |
+| **Submit behavior** | Inline success message (no redirect) |
 | **Status** | ✅ Wired |
 
-**Active destinations** (all fired in parallel by `/api/camp-signup`):
-- 📊 Airtable → `Summer Camp Signups` table.
+**Active destinations** (fired by `/api/camp-lead`):
+- 📊 Airtable → `AIRTABLE_CAMP_TABLE` (default `Summer Camp Signups`), Lead Source = Interest Form.
 - 📧 Resend email → `RESEND_NOTIFY_TO`.
-- 📬 Mailchimp → tags `Lead — Summer Camp` + `Instrument — <primary>`.
-- 🔁 Zapier (`ZAPIER_CAMP_WEBHOOK_URL`) → Basecamp to-do.
+- 📬 Mailchimp → tags `Lead — Camp Interest` + `Website Lead <year>`.
 - 🔵 **Meta Pixel** — `Lead` event, `content_name: "camp-interest"` (client-side, on submit success). See "Meta Pixel" below.
 
-**Fields:**
-1. Student Name (first + last) — required
-2. Student Date of Birth — required
-3. Primary instrument — radio: Voice / Guitar / Keyboard / Bass / Drums — required
-4. Experience level — radio: Beginner / Intermediate / Advanced — required
-5. Sessions — checkbox (7 weekly sessions, June–August 2026) — required
-6. Genres — checkbox: Rock / Jazz / Songwriting / Funk / Pop — required
-7. Parent / Guardian Name (first + last) — required
-8. Parent / Guardian Phone — required
-9. Parent / Guardian Email — required
-10. How did you hear about us? — text — required
+**Fields:** Parent name, email, phone (plus honeypot). Deliberately short — it's an
+"ask a question" capture, not a registration.
+
+**Known issue (pre-existing, not a tracking bug):** the handler calls `setEmailDone(true)`
+*before* awaiting the POST, so a visitor sees the success message even if the request
+fails and the lead is lost. Analytics events correctly fire only on `res.ok`, so
+PostHog/Meta will under-count relative to what visitors were shown. Worth fixing
+separately.
+
+---
+
+### 3b. Summer Camp Registration Form (ARCHIVED — not reachable)
+
+| | |
+|---|---|
+| **Page** | ~~`/camp-signup`~~ → 301s to `/musicperformancecamp` |
+| **Component** | `src/components/CampSignupForm.tsx` (imported only from `_archive/`) |
+| **API route** | `src/app/api/camp-signup/route.ts` (still live, receives nothing) |
+| **Squarespace formId** | `5ef50bf482b8e941cd6cec71` (legacy) |
+| **Status** | 🗄️ Archived — no production traffic |
+
+Kept in the tree in case full registration returns. Its `reportLead("camp-interest")`
+call is inert today and would be correct if the page were restored. Registration is
+currently handled by Stripe checkout on `/musicperformancecamp` instead.
 
 ---
 

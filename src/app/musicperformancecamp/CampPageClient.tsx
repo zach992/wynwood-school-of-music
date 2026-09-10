@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import posthog from "posthog-js";
+import { reportLead } from "@/lib/meta-pixel";
 import {
   SESSIONS,
   BASE_EARLY,
@@ -724,11 +725,17 @@ export default function CampPageClient() {
                   };
                   setEmailDone(true);
                   try {
-                    await fetch("/api/camp-lead", {
+                    const res = await fetch("/api/camp-lead", {
                       method: "POST",
                       headers: { "content-type": "application/json" },
                       body: JSON.stringify(payload),
                     });
+                    if (!res.ok) throw new Error(`Submission failed (${res.status})`);
+                    posthog.capture("form_submitted", { form: "camp-interest" });
+                    // Fired here, on confirmed submit success, rather than on button
+                    // click: a click-triggered event also counts visitors who failed
+                    // validation or errored out, who are not leads.
+                    reportLead("camp-interest");
                   } catch (err) {
                     console.error("Camp lead form submit error:", err);
                   }
