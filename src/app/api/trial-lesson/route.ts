@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { airtableCreate } from "@/lib/airtable";
 import { sendFormNotification } from "@/lib/email";
 import { buildTrialEmail } from "@/lib/email-templates";
-import { calcAge, checkSpamGuard, fmtBirthdayMMDD, joinNonEmpty } from "@/lib/form-utils";
+import { acceptedResponse, calcAge, checkSpamGuard, discardedResponse, fmtBirthdayMMDD, joinNonEmpty } from "@/lib/form-utils";
 import { mailchimpUpsertSubscriber } from "@/lib/mailchimp";
 
 export async function POST(req: NextRequest) {
@@ -13,9 +13,9 @@ export async function POST(req: NextRequest) {
     return new Response(null, { status: 400 });
   }
 
-  if (checkSpamGuard(body)) return new Response(null, { status: 200 });
+  if (checkSpamGuard(body)) return discardedResponse();
 
-  const { website: _hp, _renderedAt: _t, ...p } = body;
+  const { website: _hp, _elapsedMs: _t, ...p } = body;
   const studentName = joinNonEmpty(p.studentFirstName, p.studentLastName);
   const parentName = joinNonEmpty(p.parentFirstName, p.parentLastName);
 
@@ -79,5 +79,5 @@ export async function POST(req: NextRequest) {
     }).catch((err) => console.error("[api/trial-lesson] Zapier forward failed:", err));
   }
 
-  return new Response(null, { status: 200 });
+  return acceptedResponse();
 }

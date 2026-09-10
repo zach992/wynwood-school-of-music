@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { airtableCreate } from "@/lib/airtable";
 import { sendFormNotification } from "@/lib/email";
-import { checkSpamGuard } from "@/lib/form-utils";
+import { acceptedResponse, checkSpamGuard, discardedResponse } from "@/lib/form-utils";
 import { mailchimpUpsertSubscriber } from "@/lib/mailchimp";
 
 /**
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     return new Response(null, { status: 400 });
   }
 
-  if (checkSpamGuard(body)) return new Response(null, { status: 200 });
+  if (checkSpamGuard(body)) return discardedResponse();
 
   const parentName = typeof body.parentName === "string" ? body.parentName.trim() : "";
   const parentEmail = typeof body.parentEmail === "string" ? body.parentEmail.trim() : "";
@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
     }).catch((err) => console.error("[api/camp-lead] Resend failed:", err));
   }
 
-  return new Response(null, { status: 200 });
+  return acceptedResponse();
 }
 
 function escapeHtml(s: string): string {

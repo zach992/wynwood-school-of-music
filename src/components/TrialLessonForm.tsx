@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import posthog from "posthog-js";
 import { reportConversion } from "@/lib/google-ads";
+import { reportLead } from "@/lib/meta-pixel";
 import { HoneypotField, useFormGuard } from "./FormGuard";
 
 const instruments = [
@@ -64,11 +65,22 @@ export default function TrialLessonForm() {
         body: JSON.stringify({ ...formData, ...guard.payload() }),
       });
       if (!res.ok) throw new Error(`Submission failed (${res.status})`);
-      posthog.capture("form_submitted", { form: "trial-lesson" });
-      // Fired here, on confirmed submit success, rather than on button
-      // click: a click-triggered conversion also counts visitors who
-      // failed validation or errored out, who are not leads.
-      reportConversion("free-trial");
+      // A 200 alone does not mean the lead was stored: the API returns a bare
+      // 200 when the spam guard discards a submission, deliberately telling a
+      // bot nothing. Only the explicit accepted flag means a real lead landed,
+      // so only that reports a conversion. See src/lib/form-utils.ts.
+      const accepted = await res
+        .json()
+        .then((d: { accepted?: boolean } | null) => d?.accepted === true)
+        .catch(() => false);
+      if (accepted) {
+        posthog.capture("form_submitted", { form: "trial-lesson" });
+        // Reported on confirmed acceptance rather than on button click:
+        // a click-triggered conversion also counts visitors who failed
+        // validation or errored out, who are not leads.
+        reportConversion("free-trial");
+        reportLead("trial-lesson");
+      }
       router.push("/your-trial");
     } catch (err) {
       console.error("Trial lesson form submit error:", err);

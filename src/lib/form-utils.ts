@@ -31,11 +31,52 @@ export function calcAge(value: unknown): number | null {
   return age >= 0 && age <= 120 ? age : null;
 }
 
+/** Minimum plausible human fill time. Mirrors MIN_HUMAN_FILL_MS in FormGuard.tsx. */
+const MIN_HUMAN_FILL_MS = 3_000;
+
+/**
+ * True when a submission looks automated and should be silently discarded.
+ *
+ * The elapsed time arrives as a client-measured *duration* (`_elapsedMs`), not
+ * as an absolute timestamp. An earlier version sent `_renderedAt` from the
+ * browser clock and compared it against the server clock, which silently
+ * discarded legitimate visitors whose device clock ran ahead — they passed the
+ * client-side check, then vanished here while still being shown a success
+ * message. A duration is immune to clock skew, and costs nothing in spam
+ * resistance: the value was always client-supplied and equally spoofable.
+ */
 export function checkSpamGuard(body: Record<string, unknown>): boolean {
   if (typeof body.website === "string" && body.website.length > 0) return true;
-  const renderedAt = body._renderedAt;
-  if (typeof renderedAt !== "number" || Date.now() - renderedAt < 3_000) return true;
+  const elapsedMs = body._elapsedMs;
+  if (typeof elapsedMs !== "number" || !Number.isFinite(elapsedMs)) return true;
+  if (elapsedMs < MIN_HUMAN_FILL_MS) return true;
   return false;
+}
+
+/**
+ * 200 + `{ accepted: true }` — the submission passed the guards and was
+ * forwarded to its destinations.
+ *
+ * This flag exists so the client can tell acceptance from silent rejection.
+ * A bare 200 is deliberately ambiguous (see discardedResponse), so `res.ok`
+ * alone is not a safe trigger for reporting a conversion to Google or Meta.
+ */
+export function acceptedResponse(): Response {
+  return new Response(JSON.stringify({ accepted: true }), {
+    status: 200,
+    headers: { "content-type": "application/json" },
+  });
+}
+
+/**
+ * 200 with an empty body — returned when a submission trips the spam guards.
+ *
+ * Still a 200 on purpose: never tell a bot why it failed. The *absence* of the
+ * `accepted` flag is the signal, which a scripted client is unlikely to read
+ * and a real one uses to suppress its conversion events.
+ */
+export function discardedResponse(): Response {
+  return new Response(null, { status: 200 });
 }
 
 export function joinNonEmpty(...parts: unknown[]): string {

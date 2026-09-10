@@ -20,39 +20,61 @@ Every form ships with two invisible spam guards via `src/components/FormGuard.ts
 
 Both checks run client-side today (silent no-op if either trips). When we wire the API routes, the **server must enforce them too** — client checks alone are bypassable.
 
-### API contract for the future server route
+### API contract
 
-Each form's `handleSubmit` already includes the guard fields in its payload:
+Each form's `handleSubmit` includes the guard fields in its payload:
 
 ```ts
 {
   // ...real form fields...
-  website: string,        // honeypot — should always be ""
-  _renderedAt: number,    // ms timestamp from form render
+  website: string,     // honeypot — should always be ""
+  _elapsedMs: number,  // ms the visitor spent on the form, measured client-side
 }
 ```
 
-In every API route (`src/app/api/<form>/route.ts`):
+**`_elapsedMs` is a duration, not a timestamp — this matters.** The original design
+sent `_renderedAt` (an absolute `Date.now()` from the browser) and the server compared
+it against its own clock. A visitor whose device clock ran a few seconds fast therefore
+passed the client-side check and was then silently discarded server-side — the lead
+reached neither Airtable, Resend, nor Mailchimp, while the visitor was shown a success
+message. A client-measured duration is immune to clock skew and gives up nothing: the
+value was always client-supplied and equally spoofable. Caught by Codex review on PR #27.
+
+Every route uses the shared helpers in `src/lib/form-utils.ts` — do not re-implement
+these inline:
 
 ```ts
-const body = await req.json();
+import { acceptedResponse, checkSpamGuard, discardedResponse } from "@/lib/form-utils";
 
-// Honeypot tripped — return success to avoid signaling the bot
-if (body.website && body.website.length > 0) {
-  return new Response(null, { status: 200 });
-}
-
-// Submitted too fast to be human (< 3 seconds)
-if (typeof body._renderedAt !== "number" || Date.now() - body._renderedAt < 3_000) {
-  return new Response(null, { status: 200 });
-}
-
-// Strip guard fields before forwarding to email/storage
-const { website: _hp, _renderedAt: _t, ...payload } = body;
-// ... send `payload` to Resend / Sheet / Mailchimp / etc.
+if (checkSpamGuard(body)) return discardedResponse();   // 200, empty body
+const { website: _hp, _elapsedMs: _t, ...payload } = body;  // strip guard fields
+// ...forward payload to Airtable / Resend / Mailchimp / Zapier...
+return acceptedResponse();                               // 200, { accepted: true }
 ```
 
-Always return `200 OK` on rejection — never tell the bot why. Logging the rejection internally is fine and useful for tuning.
+### Why rejection returns 200 — and why the body matters
+
+A tripped guard returns **200 with an empty body**: never tell a bot why it failed.
+But that makes a bare `200` ambiguous, so `res.ok` alone is *not* a safe trigger for
+reporting a conversion — it fires for discarded submissions too. Genuine acceptance
+returns `{ accepted: true }`, and every client gates its analytics on that flag:
+
+```ts
+if (!res.ok) throw new Error(`Submission failed (${res.status})`);
+const accepted = await res
+  .json()
+  .then((d: { accepted?: boolean } | null) => d?.accepted === true)
+  .catch(() => false);
+if (accepted) {
+  posthog.capture("form_submitted", { form: "…" });
+  reportConversion("…");  // Google Ads, where applicable
+  reportLead("…");        // Meta
+}
+// The success message / redirect is NOT gated — a suspected bot should still
+// see success, which is the entire point of the ambiguous 200.
+```
+
+Logging a rejection server-side is fine and useful for tuning.
 
 ---
 
@@ -75,6 +97,7 @@ Always return `200 OK` on rejection — never tell the bot why. Logging the reje
 - 📬 **Mailchimp** — adds parent as subscriber to audience "Wynwood School of Music" with tags `Lead — Contact Form` + per-instrument tags.
 - 🔁 **Zapier** — webhook (`ZAPIER_CONTACT_WEBHOOK_URL`) → Basecamp to-do for the team.
 - 🎯 **Google Ads conversion** — `Lead - Contact Form` (client-side, on submit success). See "Google Ads conversion tracking" below.
+- 🔵 **Meta Pixel** — `Lead` event, `content_name: "contact"` (client-side, on submit success). See "Meta Pixel" below.
 
 **Fields:**
 1. Student Name (first + last) — required
@@ -105,6 +128,7 @@ Always return `200 OK` on rejection — never tell the bot why. Logging the reje
 - 📧 Resend email → `RESEND_NOTIFY_TO`.
 - 📬 Mailchimp → tag `Lead — Repair Request`.
 - 🔁 Zapier (`ZAPIER_REPAIR_WEBHOOK_URL`) → Basecamp to-do.
+- 🔵 **Meta Pixel** — `Lead` event, `content_name: "repair"` (client-side, on submit success). See "Meta Pixel" below.
 
 **Fields:**
 1. Name (first + last) — required
@@ -114,34 +138,59 @@ Always return `200 OK` on rejection — never tell the bot why. Logging the reje
 
 ---
 
-### 3. Summer Camp Signup Form
+### 3. Summer Camp Interest Form
+
+> ⚠️ **Read this before wiring anything camp-related.** The live camp form is the
+> "Not quite ready?" interest form embedded **inline** in
+> `src/app/musicperformancecamp/CampPageClient.tsx`, posting to `/api/camp-lead`.
+>
+> `src/components/CampSignupForm.tsx` + `/api/camp-signup` are the **old** full
+> registration form. That component is imported only from `src/app/_archive/`, which
+> Next.js excludes from routing entirely (underscore-prefixed folders are private), and
+> `/camp-signup` 301s to `/musicperformancecamp` (`next.config.ts:57`). It is
+> unreachable in production. Instrumenting it does nothing — a mistake already made
+> once, caught in review on PR #27.
 
 | | |
 |---|---|
-| **Page** | `/camp-signup` |
-| **Component** | `src/components/CampSignupForm.tsx` |
-| **API route** | `src/app/api/camp-signup/route.ts` |
-| **Submit redirect** | `/summer-camp-thank-you` |
-| **Squarespace formId** | `5ef50bf482b8e941cd6cec71` (legacy) |
+| **Page** | `/musicperformancecamp` |
+| **Component** | inline in `src/app/musicperformancecamp/CampPageClient.tsx` |
+| **API route** | `src/app/api/camp-lead/route.ts` |
+| **Submit behavior** | Inline success message (no redirect) |
 | **Status** | ✅ Wired |
 
-**Active destinations** (all fired in parallel by `/api/camp-signup`):
-- 📊 Airtable → `Summer Camp Signups` table.
+**Active destinations** (fired by `/api/camp-lead`):
+- 📊 Airtable → `AIRTABLE_CAMP_TABLE` (default `Summer Camp Signups`), Lead Source = Interest Form.
 - 📧 Resend email → `RESEND_NOTIFY_TO`.
-- 📬 Mailchimp → tags `Lead — Summer Camp` + `Instrument — <primary>`.
-- 🔁 Zapier (`ZAPIER_CAMP_WEBHOOK_URL`) → Basecamp to-do.
+- 📬 Mailchimp → tags `Lead — Camp Interest` + `Website Lead <year>`.
+- 🔵 **Meta Pixel** — `Lead` event, `content_name: "camp-interest"` (client-side, on submit success). See "Meta Pixel" below.
 
-**Fields:**
-1. Student Name (first + last) — required
-2. Student Date of Birth — required
-3. Primary instrument — radio: Voice / Guitar / Keyboard / Bass / Drums — required
-4. Experience level — radio: Beginner / Intermediate / Advanced — required
-5. Sessions — checkbox (7 weekly sessions, June–August 2026) — required
-6. Genres — checkbox: Rock / Jazz / Songwriting / Funk / Pop — required
-7. Parent / Guardian Name (first + last) — required
-8. Parent / Guardian Phone — required
-9. Parent / Guardian Email — required
-10. How did you hear about us? — text — required
+**Fields:** Parent name, email, phone (plus honeypot). Deliberately short — it's an
+"ask a question" capture, not a registration.
+
+**Known issue (pre-existing, still open):** the handler calls `setEmailDone(true)`
+*before* awaiting the POST, so a visitor sees the success message even if the request
+fails outright (network error, 5xx) and the lead is lost. The clock-skew cause of silent
+loss is fixed (see "API contract" above), but a genuine transport failure still shows
+success. Analytics correctly fire only on `{ accepted: true }`, so PostHog/Meta
+under-count relative to what visitors were shown rather than over-count. Worth fixing
+separately — it is a UX change, not a tracking one.
+
+---
+
+### 3b. Summer Camp Registration Form (ARCHIVED — not reachable)
+
+| | |
+|---|---|
+| **Page** | ~~`/camp-signup`~~ → 301s to `/musicperformancecamp` |
+| **Component** | `src/components/CampSignupForm.tsx` (imported only from `_archive/`) |
+| **API route** | `src/app/api/camp-signup/route.ts` (still live, receives nothing) |
+| **Squarespace formId** | `5ef50bf482b8e941cd6cec71` (legacy) |
+| **Status** | 🗄️ Archived — no production traffic |
+
+Kept in the tree in case full registration returns. Its `reportLead("camp-interest")`
+call is inert today and would be correct if the page were restored. Registration is
+currently handled by Stripe checkout on `/musicperformancecamp` instead.
 
 ---
 
@@ -161,6 +210,7 @@ Always return `200 OK` on rejection — never tell the bot why. Logging the reje
 - 📧 Resend email → `RESEND_NOTIFY_TO`.
 - 📬 Mailchimp → tags `Lead — Walt Grace` + per-instrument tags.
 - 🔁 Zapier (`ZAPIER_WGV_WEBHOOK_URL`) → Basecamp to-do.
+- 🔵 **Meta Pixel** — `Lead` event, `content_name: "wgv"` (client-side, on submit success). See "Meta Pixel" below.
 
 **Notes:** Co-branded landing page for Walt Grace Vintage customers redeeming a free lesson. May warrant a separate recipient (someone at WGV?) or a tag on the same recipient inbox to distinguish leads.
 
@@ -192,6 +242,7 @@ Always return `200 OK` on rejection — never tell the bot why. Logging the reje
 - 📬 Mailchimp → tags `Lead — Trial Lesson` + `Instrument — <selected>`.
 - 🔁 Zapier (`ZAPIER_TRIAL_WEBHOOK_URL`) → Basecamp to-do.
 - 🎯 **Google Ads conversion** — `Lead - Free Trial` (client-side, on submit success). See "Google Ads conversion tracking" below.
+- 🔵 **Meta Pixel** — `Lead` event, `content_name: "trial-lesson"` (client-side, on submit success). See "Meta Pixel" below.
 
 **Notes:** This is the ad/landing-page funnel ("Play Your First Song in 30 Days"). Likely tied to paid traffic and may have its own analytics/conversion tracking requirements.
 
@@ -278,6 +329,73 @@ Google returns `200` for any label, valid or not, so a network hit alone doesn't
 label is right. Confirm end to end in **Google Ads → Goals → Conversions**, where the
 action's status moves to "Recording conversions" (can lag a few hours). Google Tag
 Assistant is the fastest way to watch a hit live.
+
+---
+
+## Meta Pixel
+
+Pixel **1047538668081853**. Base snippet in `src/app/layout.tsx`, gated on
+`NEXT_PUBLIC_ENABLE_META_PIXEL=true`. The `Lead` event and its parameters live in
+**`src/lib/meta-pixel.ts`**, which mirrors `src/lib/google-ads.ts` — one module per ad
+platform, so no form component ever contains vendor snippet code.
+
+### PageView is automatic — do NOT add a route-change tracker
+
+`fbevents.js` installs its own History API listener and re-fires `PageView` on
+client-side route changes by itself. Verified against this site: a Next.js `<Link>`
+navigation produces a second `ev=PageView` hit with the new `dl=` URL and no code from
+us. **Adding a Next.js route-change PageView tracker would double-count every
+navigation.** This is the opposite of PostHog, which needs `capture_pageview: false`
+plus a manual tracker (`PostHogProvider.tsx`), and of Google Ads, which has no pageview
+conversion at all. Three platforms, three different rules — don't copy one to another.
+
+### Lead event
+
+All five lead forms fire the same standard `Lead` event on submit success. Meta has one
+`Lead` event rather than Google's per-action labels, so the form is distinguished by
+parameter:
+
+| Form | `content_name` |
+|---|---|
+| Contact | `contact` |
+| Trial Lesson | `trial-lesson` |
+| Repair | `repair` |
+| Walt Grace (WGV) | `wgv` |
+| Camp Interest | `camp-interest` |
+
+All five also send `content_category: "lead-form"`.
+
+This is why all five fire here while only two report to Google Ads: a Google conversion
+action feeds Smart Bidding directly, so mixing intents corrupts it. Meta segmentation
+happens *after* collection — to optimize on a subset, create a **Custom Conversion** in
+Events Manager filtered on `content_name`. Keep these values stable; renaming one
+orphans any Custom Conversion or audience already filtering on it.
+
+### Rules for this integration
+
+- **Fire on submit success, never on click.** Meta defines `Lead` as "a submission of
+  information by a customer… for example, submitting a form or signing up for a trial" —
+  a submission, not a click. Every form here POSTs via `fetch`, so a click-triggered
+  event would also count visitors who failed validation, tripped the bot guard, or hit an
+  API error.
+- **No PII is sent.** Advanced Matching (hashed email/phone) is deliberately not enabled,
+  matching the Google Ads decision. It needs an Events Manager toggle and a
+  privacy-policy update, and should be its own reviewed change.
+- **No Conversions API.** Pixel-only, so iOS/ad-blocker loss is expected. If CAPI is
+  added later, `reportLead` must also send a shared `eventID` so Meta can dedupe the
+  browser and server copies of the same lead.
+
+### Not wired
+
+The Stripe camp deposit fires no Meta event. `InitiateCheckout` and `Purchase` (with the
+real deposit value) are the correct events and would let Meta optimize toward revenue
+rather than lead volume — same gap as on the Google Ads side.
+
+### Verifying
+
+Use the **Meta Pixel Helper** Chrome extension, or Events Manager → Test Events. In
+DevTools, look for requests to `facebook.com/tr/` — `ev=PageView` on load and on each
+route change, and `ev=Lead` with `cd[content_name]=…` on submit.
 
 ---
 

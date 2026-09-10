@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import posthog from "posthog-js";
+import { reportLead } from "@/lib/meta-pixel";
 import {
   SESSIONS,
   BASE_EARLY,
@@ -724,11 +725,27 @@ export default function CampPageClient() {
                   };
                   setEmailDone(true);
                   try {
-                    await fetch("/api/camp-lead", {
+                    const res = await fetch("/api/camp-lead", {
                       method: "POST",
                       headers: { "content-type": "application/json" },
                       body: JSON.stringify(payload),
                     });
+                    if (!res.ok) throw new Error(`Submission failed (${res.status})`);
+                    // A 200 alone does not mean the lead was stored: the API returns a bare
+                    // 200 when the spam guard discards a submission, deliberately telling a
+                    // bot nothing. Only the explicit accepted flag means a real lead landed,
+                    // so only that reports a conversion. See src/lib/form-utils.ts.
+                    const accepted = await res
+                      .json()
+                      .then((d: { accepted?: boolean } | null) => d?.accepted === true)
+                      .catch(() => false);
+                    if (accepted) {
+                      posthog.capture("form_submitted", { form: "camp-interest" });
+                      // Reported on confirmed acceptance rather than on button click:
+                      // a click-triggered event also counts visitors who failed
+                      // validation or errored out, who are not leads.
+                      reportLead("camp-interest");
+                    }
                   } catch (err) {
                     console.error("Camp lead form submit error:", err);
                   }

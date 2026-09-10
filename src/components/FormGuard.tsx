@@ -37,7 +37,12 @@ export function useFormGuard() {
   function payload() {
     return {
       website: honeypot,
-      _renderedAt: renderedAtRef.current,
+      // A client-measured duration, not a timestamp. Sending an absolute
+      // browser timestamp for the server to diff against its own clock
+      // silently discarded visitors whose device clock ran ahead. See
+      // checkSpamGuard in src/lib/form-utils.ts.
+      _elapsedMs:
+        renderedAtRef.current === 0 ? 0 : Date.now() - renderedAtRef.current,
     };
   }
 
