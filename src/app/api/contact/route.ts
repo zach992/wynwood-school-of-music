@@ -2,7 +2,12 @@ import { NextRequest } from "next/server";
 import { airtableCreate } from "@/lib/airtable";
 import { sendFormNotification } from "@/lib/email";
 import { buildContactEmail, buildContactAutoReply } from "@/lib/email-templates";
-import { fmtBirthdayMMDD } from "@/lib/form-utils";
+import {
+  acceptedResponse,
+  checkSpamGuard,
+  discardedResponse,
+  fmtBirthdayMMDD,
+} from "@/lib/form-utils";
 import { mailchimpUpsertSubscriber } from "@/lib/mailchimp";
 
 function esc(value: unknown): string {
@@ -85,18 +90,12 @@ export async function POST(req: NextRequest) {
     return new Response(null, { status: 400 });
   }
 
-  // Honeypot tripped — silently succeed so the bot doesn't learn anything
-  if (typeof body.website === "string" && body.website.length > 0) {
-    return new Response(null, { status: 200 });
-  }
+  // Honeypot tripped, or submitted faster than a human could fill it out.
+  // Silently succeed so the bot doesn't learn anything. Previously inlined
+  // here; now shared so all six routes agree on the rules.
+  if (checkSpamGuard(body)) return discardedResponse();
 
-  // Submitted faster than a human could fill it out
-  const renderedAt = body._renderedAt;
-  if (typeof renderedAt !== "number" || Date.now() - renderedAt < 3_000) {
-    return new Response(null, { status: 200 });
-  }
-
-  const { website: _hp, _renderedAt: _t, ...payload } = body;
+  const { website: _hp, _elapsedMs: _t, ...payload } = body;
   const { emailSubject, emailBody } = buildEmail(payload);
   const studentAge = calcAge(payload.dob);
   const subjectsArr = Array.isArray(payload.subjects)
@@ -215,5 +214,5 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  return new Response(null, { status: 200 });
+  return acceptedResponse();
 }

@@ -20,39 +20,61 @@ Every form ships with two invisible spam guards via `src/components/FormGuard.ts
 
 Both checks run client-side today (silent no-op if either trips). When we wire the API routes, the **server must enforce them too** — client checks alone are bypassable.
 
-### API contract for the future server route
+### API contract
 
-Each form's `handleSubmit` already includes the guard fields in its payload:
+Each form's `handleSubmit` includes the guard fields in its payload:
 
 ```ts
 {
   // ...real form fields...
-  website: string,        // honeypot — should always be ""
-  _renderedAt: number,    // ms timestamp from form render
+  website: string,     // honeypot — should always be ""
+  _elapsedMs: number,  // ms the visitor spent on the form, measured client-side
 }
 ```
 
-In every API route (`src/app/api/<form>/route.ts`):
+**`_elapsedMs` is a duration, not a timestamp — this matters.** The original design
+sent `_renderedAt` (an absolute `Date.now()` from the browser) and the server compared
+it against its own clock. A visitor whose device clock ran a few seconds fast therefore
+passed the client-side check and was then silently discarded server-side — the lead
+reached neither Airtable, Resend, nor Mailchimp, while the visitor was shown a success
+message. A client-measured duration is immune to clock skew and gives up nothing: the
+value was always client-supplied and equally spoofable. Caught by Codex review on PR #27.
+
+Every route uses the shared helpers in `src/lib/form-utils.ts` — do not re-implement
+these inline:
 
 ```ts
-const body = await req.json();
+import { acceptedResponse, checkSpamGuard, discardedResponse } from "@/lib/form-utils";
 
-// Honeypot tripped — return success to avoid signaling the bot
-if (body.website && body.website.length > 0) {
-  return new Response(null, { status: 200 });
-}
-
-// Submitted too fast to be human (< 3 seconds)
-if (typeof body._renderedAt !== "number" || Date.now() - body._renderedAt < 3_000) {
-  return new Response(null, { status: 200 });
-}
-
-// Strip guard fields before forwarding to email/storage
-const { website: _hp, _renderedAt: _t, ...payload } = body;
-// ... send `payload` to Resend / Sheet / Mailchimp / etc.
+if (checkSpamGuard(body)) return discardedResponse();   // 200, empty body
+const { website: _hp, _elapsedMs: _t, ...payload } = body;  // strip guard fields
+// ...forward payload to Airtable / Resend / Mailchimp / Zapier...
+return acceptedResponse();                               // 200, { accepted: true }
 ```
 
-Always return `200 OK` on rejection — never tell the bot why. Logging the rejection internally is fine and useful for tuning.
+### Why rejection returns 200 — and why the body matters
+
+A tripped guard returns **200 with an empty body**: never tell a bot why it failed.
+But that makes a bare `200` ambiguous, so `res.ok` alone is *not* a safe trigger for
+reporting a conversion — it fires for discarded submissions too. Genuine acceptance
+returns `{ accepted: true }`, and every client gates its analytics on that flag:
+
+```ts
+if (!res.ok) throw new Error(`Submission failed (${res.status})`);
+const accepted = await res
+  .json()
+  .then((d: { accepted?: boolean } | null) => d?.accepted === true)
+  .catch(() => false);
+if (accepted) {
+  posthog.capture("form_submitted", { form: "…" });
+  reportConversion("…");  // Google Ads, where applicable
+  reportLead("…");        // Meta
+}
+// The success message / redirect is NOT gated — a suspected bot should still
+// see success, which is the entire point of the ambiguous 200.
+```
+
+Logging a rejection server-side is fine and useful for tuning.
 
 ---
 
@@ -146,11 +168,13 @@ Always return `200 OK` on rejection — never tell the bot why. Logging the reje
 **Fields:** Parent name, email, phone (plus honeypot). Deliberately short — it's an
 "ask a question" capture, not a registration.
 
-**Known issue (pre-existing, not a tracking bug):** the handler calls `setEmailDone(true)`
+**Known issue (pre-existing, still open):** the handler calls `setEmailDone(true)`
 *before* awaiting the POST, so a visitor sees the success message even if the request
-fails and the lead is lost. Analytics events correctly fire only on `res.ok`, so
-PostHog/Meta will under-count relative to what visitors were shown. Worth fixing
-separately.
+fails outright (network error, 5xx) and the lead is lost. The clock-skew cause of silent
+loss is fixed (see "API contract" above), but a genuine transport failure still shows
+success. Analytics correctly fire only on `{ accepted: true }`, so PostHog/Meta
+under-count relative to what visitors were shown rather than over-count. Worth fixing
+separately — it is a UX change, not a tracking one.
 
 ---
 

@@ -78,12 +78,22 @@ export default function ContactForm() {
       if (!res.ok) {
         throw new Error(`Submission failed (${res.status})`);
       }
-      posthog.capture("form_submitted", { form: "contact" });
-      // Fired here, on confirmed submit success, rather than on button
-      // click: a click-triggered conversion also counts visitors who
-      // failed validation or errored out, who are not leads.
-      reportConversion("contact");
-      reportLead("contact");
+      // A 200 alone does not mean the lead was stored: the API returns a bare
+      // 200 when the spam guard discards a submission, deliberately telling a
+      // bot nothing. Only the explicit accepted flag means a real lead landed,
+      // so only that reports a conversion. See src/lib/form-utils.ts.
+      const accepted = await res
+        .json()
+        .then((d: { accepted?: boolean } | null) => d?.accepted === true)
+        .catch(() => false);
+      if (accepted) {
+        posthog.capture("form_submitted", { form: "contact" });
+        // Reported on confirmed acceptance rather than on button click:
+        // a click-triggered conversion also counts visitors who failed
+        // validation or errored out, who are not leads.
+        reportConversion("contact");
+        reportLead("contact");
+      }
       router.push("/thank-you");
     } catch (err) {
       console.error("Contact form submit error:", err);
