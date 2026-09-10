@@ -2,7 +2,7 @@
 
 Inventory of every form on the site, where it currently sends data, and where it needs to be wired up. Use this as the checklist when we set up real submission handling (email, database, Mailchimp, Zapier, etc.).
 
-Last updated: 2026-05-04
+Last updated: 2026-09-10
 
 ---
 
@@ -74,6 +74,7 @@ Always return `200 OK` on rejection — never tell the bot why. Logging the reje
 - 📧 **Resend email** — formatted HTML notification to `RESEND_NOTIFY_TO` (default `info@wynwoodschoolofmusic.com`).
 - 📬 **Mailchimp** — adds parent as subscriber to audience "Wynwood School of Music" with tags `Lead — Contact Form` + per-instrument tags.
 - 🔁 **Zapier** — webhook (`ZAPIER_CONTACT_WEBHOOK_URL`) → Basecamp to-do for the team.
+- 🎯 **Google Ads conversion** — `Lead - Contact Form` (client-side, on submit success). See "Google Ads conversion tracking" below.
 
 **Fields:**
 1. Student Name (first + last) — required
@@ -190,6 +191,7 @@ Always return `200 OK` on rejection — never tell the bot why. Logging the reje
 - 📧 Resend email → `RESEND_NOTIFY_TO`.
 - 📬 Mailchimp → tags `Lead — Trial Lesson` + `Instrument — <selected>`.
 - 🔁 Zapier (`ZAPIER_TRIAL_WEBHOOK_URL`) → Basecamp to-do.
+- 🎯 **Google Ads conversion** — `Lead - Free Trial` (client-side, on submit success). See "Google Ads conversion tracking" below.
 
 **Notes:** This is the ad/landing-page funnel ("Play Your First Song in 30 Days"). Likely tied to paid traffic and may have its own analytics/conversion tracking requirements.
 
@@ -225,6 +227,57 @@ Always return `200 OK` on rejection — never tell the bot why. Logging the reje
 |---|---|---|
 | `info@wynwoodschoolofmusic.com` | Footer + sidebar "Sign Up" CTA on every page | General school inbox |
 | `info@friendsofwsm.org` | `/friendsofwsm` page only | Friends of WSM separate inbox |
+
+---
+
+## Google Ads conversion tracking
+
+Google Ads account **AW-700940936**. The base gtag.js tag lives in `src/app/layout.tsx`,
+gated on `NEXT_PUBLIC_ENABLE_GOOGLE_ADS=true` (set on Railway production). Conversion
+labels and the reporting helper live in **`src/lib/google-ads.ts`** — that file is the
+single source of truth for labels.
+
+| Conversion action | Key | Label | Fires from |
+|---|---|---|---|
+| Lead - Free Trial | `free-trial` | `pWs0COa-ufIcEIiFns4C` | `TrialLessonForm.tsx` on submit success |
+| Lead - Contact Form | `contact` | `temPCOm-ufIcEIiFns4C` | `ContactForm.tsx` on submit success |
+
+**Not wired to Google Ads:** Repair, WGV, Camp Interest, and the Stripe camp deposit.
+They have no conversion action in the Ads account yet. Feeding them into
+`Lead - Contact Form` would mix unrelated intents into the signal Smart Bidding
+optimizes on, so each needs its own action + label first.
+
+### Rules for this integration
+
+- **Fire on submit success, never on click.** Google's copy-paste snippet uses an
+  `onclick="gtag_report_conversion(url)"` handler, which is built for a plain `<a href>`
+  that needs its navigation delayed. Every form here POSTs via `fetch`, so a
+  click-triggered conversion would also count visitors who failed validation, tripped
+  the bot guard, or hit an API error — none of whom are leads.
+- **Never paste Google's snippet verbatim.** The Ads UI emits an identically-named
+  `gtag_report_conversion` function for *every* conversion action, so two of them in one
+  codebase means the second silently overwrites the first. Add the label to
+  `CONVERSION_LABELS` and call `reportConversion()` instead.
+- **Keep the tag on `afterInteractive`.** `lazyOnload` waits for browser idle after load;
+  a fast submit can beat it and drop the conversion outright.
+- **No PII is sent.** Enhanced Conversions (hashed email/phone) are deliberately not
+  enabled. Turning them on requires an account-side toggle in Google Ads *and* a
+  privacy-policy update, and should be its own reviewed change.
+
+### Adding a new conversion action
+
+1. Get the conversion label from Google Ads → Goals → Conversions → *(action)* → Tag setup.
+2. Add it to `CONVERSION_LABELS` in `src/lib/google-ads.ts`.
+3. Call `reportConversion("<key>")` right after the `posthog.capture` on that form's
+   submit-success path.
+4. Add a row to the table above.
+
+### Verifying
+
+Google returns `200` for any label, valid or not, so a network hit alone doesn't prove the
+label is right. Confirm end to end in **Google Ads → Goals → Conversions**, where the
+action's status moves to "Recording conversions" (can lag a few hours). Google Tag
+Assistant is the fastest way to watch a hit live.
 
 ---
 
