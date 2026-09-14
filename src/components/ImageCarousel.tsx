@@ -16,6 +16,12 @@ const widthVarClasses: Record<1 | 2 | 3, string> = {
   3: "[--item-w:88%] md:[--item-w:calc((100%-2rem)/3)]",
 };
 
+const imageSizes: Record<1 | 2 | 3, string> = {
+  1: "(min-width: 1056px) 768px, (min-width: 768px) calc(75vw - 24px), calc(88vw - 28px)",
+  2: "(min-width: 1056px) 504px, (min-width: 768px) calc(50vw - 24px), calc(88vw - 28px)",
+  3: "(min-width: 1056px) 331px, (min-width: 768px) calc(33.333vw - 21px), calc(88vw - 28px)",
+};
+
 export default function ImageCarousel({
   images,
   intervalMs = 5500,
@@ -44,6 +50,7 @@ export default function ImageCarousel({
 
   const showControls = images.length > visible;
   const widthCls = widthVarClasses[visible];
+  const sizes = imageSizes[visible];
 
   return (
     <div className="relative">
@@ -54,7 +61,7 @@ export default function ImageCarousel({
             transform: `translateX(calc(-${index} * (var(--item-w) + 1rem)))`,
           }}
         >
-          {images.map((img, i) => (
+          {images.map((img) => (
             <div
               key={img.src}
               className={`shrink-0 w-[var(--item-w)] ${aspectClass} relative overflow-hidden rounded bg-wsm-darker`}
@@ -63,9 +70,8 @@ export default function ImageCarousel({
                 src={img.src}
                 alt={img.alt}
                 fill
-                sizes="(min-width: 768px) 50vw, 88vw"
+                sizes={sizes}
                 className="object-cover"
-                priority={i < visible}
               />
             </div>
           ))}

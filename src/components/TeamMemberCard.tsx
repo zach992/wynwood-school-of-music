@@ -19,6 +19,7 @@ export default function TeamMemberCard({ name, role, imageSrc, imagePosition, bu
           alt={name}
           width={192}
           height={192}
+          sizes="(min-width: 640px) 192px, 144px"
           className="object-cover w-full h-full"
           style={imagePosition ? { objectPosition: imagePosition } : undefined}
         />

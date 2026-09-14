@@ -129,6 +129,7 @@ export default function HomePage() {
                   src="/images/homepage/private-lessons-bass.jpg"
                   alt="Bass guitar private lesson at Wynwood School of Music"
                   fill
+                  sizes="(min-width: 1056px) 496px, (min-width: 768px) calc(50vw - 32px), calc(100vw - 32px)"
                   className="object-cover"
                 />
               </div>
@@ -146,6 +147,7 @@ export default function HomePage() {
                   src="/images/homepage/band-programs-avalanche.webp"
                   alt="Avalanche band performing at Wynwood School of Music"
                   fill
+                  sizes="(min-width: 1056px) 496px, (min-width: 768px) calc(50vw - 32px), calc(100vw - 32px)"
                   className="object-cover"
                 />
               </div>
@@ -164,6 +166,7 @@ export default function HomePage() {
             src="/images/homepage/band-banner.jpg"
             alt="Band performance at Wynwood School of Music"
             fill
+            sizes="100vw"
             className="object-cover"
           />
           <div className="absolute inset-0 bg-black/50" />

@@ -58,6 +58,7 @@ export default function ProgramsAndPricingPage() {
                 src="/images/programs/testimonial-bg.webp"
                 alt="Musician performing on stage"
                 fill
+                sizes="(min-width: 1056px) 1024px, calc(100vw - 32px)"
                 className="object-cover"
               />
               {/* Overlay with quote - positioned on right half */}
@@ -133,7 +134,7 @@ export default function ProgramsAndPricingPage() {
                 alt="Child playing drums at Wynwood School of Music"
                 fill
                 className="object-cover"
-                sizes="(min-width: 768px) 50vw, 100vw"
+                sizes="(min-width: 1056px) 488px, (min-width: 768px) calc(50vw - 40px), calc(100vw - 32px)"
               />
             </div>
           </div>

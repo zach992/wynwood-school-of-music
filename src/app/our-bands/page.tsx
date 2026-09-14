@@ -91,7 +91,7 @@ export default function OurBandsPage() {
                 alt="Students performing live at Wynwood School of Music"
                 fill
                 className="object-cover"
-                sizes="(min-width: 768px) 50vw, 100vw"
+                sizes="(min-width: 1056px) 488px, (min-width: 768px) calc(50vw - 40px), calc(100vw - 32px)"
                 priority
               />
             </div>
@@ -138,7 +138,7 @@ export default function OurBandsPage() {
                       alt={band.alt}
                       fill
                       className="object-cover"
-                      sizes="(min-width: 768px) 50vw, 100vw"
+                      sizes="(min-width: 1056px) 488px, (min-width: 768px) calc(50vw - 40px), calc(100vw - 32px)"
                     />
                   </div>
                 </div>
@@ -207,7 +207,7 @@ export default function OurBandsPage() {
                 alt="Students performing at Wynwood School of Music"
                 fill
                 className="object-cover"
-                sizes="(min-width: 768px) 42vw, 100vw"
+                sizes="(min-width: 1056px) 427px, (min-width: 768px) calc(41.667vw - 13px), calc(100vw - 32px)"
               />
             </div>
             <div className="md:col-span-7 bg-wsm-accent/85 p-8 md:p-12 flex flex-col justify-center">

@@ -76,7 +76,7 @@ export default function WgvPage() {
                 alt="Student playing at the Wynwood School of Music"
                 fill
                 className="object-cover"
-                sizes="(min-width: 1024px) 360px, 100vw"
+                sizes="(min-width: 1024px) 360px, calc(100vw - 32px)"
               />
             </div>
 

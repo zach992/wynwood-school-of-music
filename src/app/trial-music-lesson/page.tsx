@@ -124,7 +124,7 @@ export default function TrialMusicLessonPage() {
               alt="Young musician playing at the Wynwood School of Music"
               fill
               className="object-cover"
-              sizes="(min-width: 768px) 50vw, 100vw"
+              sizes="(min-width: 1056px) 488px, (min-width: 768px) calc(50vw - 40px), calc(100vw - 32px)"
               priority
             />
           </div>
