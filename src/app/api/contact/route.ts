@@ -9,6 +9,7 @@ import {
   fmtBirthdayMMDD,
 } from "@/lib/form-utils";
 import { mailchimpUpsertSubscriber } from "@/lib/mailchimp";
+import { airtableAttributionFields } from "@/lib/lead-attribution";
 
 function esc(value: unknown): string {
   if (value === null || value === undefined) return "";
@@ -95,7 +96,7 @@ export async function POST(req: NextRequest) {
   // here; now shared so all six routes agree on the rules.
   if (checkSpamGuard(body)) return discardedResponse();
 
-  const { website: _hp, _elapsedMs: _t, ...payload } = body;
+  const { website: _hp, _elapsedMs: _t, _attribution, ...payload } = body;
   const { emailSubject, emailBody } = buildEmail(payload);
   const studentAge = calcAge(payload.dob);
   const subjectsArr = Array.isArray(payload.subjects)
@@ -104,6 +105,7 @@ export async function POST(req: NextRequest) {
   const studentFullName = [payload.studentFirstName, payload.studentLastName].filter(Boolean).join(" ");
   const parentFullName = [payload.parentFirstName, payload.parentLastName].filter(Boolean).join(" ");
   const submittedAt = new Date().toISOString();
+  const leadId = crypto.randomUUID();
 
   const enriched = {
     ...payload,
@@ -132,6 +134,7 @@ export async function POST(req: NextRequest) {
     "Parent Phone": payload.parentPhone,
     "How Heard": payload.hearAboutUs,
     "Lead Status": "New",
+    ...airtableAttributionFields(_attribution, leadId),
   });
 
   const emailPromise: Promise<unknown> = process.env.RESEND_API_KEY
@@ -214,5 +217,5 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  return acceptedResponse();
+  return acceptedResponse({ leadId });
 }

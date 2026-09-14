@@ -54,15 +54,16 @@ export function checkSpamGuard(body: Record<string, unknown>): boolean {
 }
 
 /**
- * 200 + `{ accepted: true }` — the submission passed the guards and was
- * forwarded to its destinations.
+ * 200 + `{ accepted: true, ...data }` — the submission passed the guards and
+ * was forwarded to its destinations. Routes may return a non-PII correlation
+ * ID so the browser analytics event can be joined to the stored lead.
  *
  * This flag exists so the client can tell acceptance from silent rejection.
  * A bare 200 is deliberately ambiguous (see discardedResponse), so `res.ok`
  * alone is not a safe trigger for reporting a conversion to Google or Meta.
  */
-export function acceptedResponse(): Response {
-  return new Response(JSON.stringify({ accepted: true }), {
+export function acceptedResponse(data: Record<string, unknown> = {}): Response {
+  return new Response(JSON.stringify({ accepted: true, ...data }), {
     status: 200,
     headers: { "content-type": "application/json" },
   });

@@ -4,6 +4,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import posthog from "posthog-js";
 import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
 import { Suspense, useEffect } from "react";
+import { captureLeadAttributionFromUrl } from "@/lib/lead-attribution";
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -36,6 +37,7 @@ function PageviewTracker() {
 
   useEffect(() => {
     if (!pathname || !ph) return;
+    captureLeadAttributionFromUrl();
     const url =
       window.origin +
       pathname +
