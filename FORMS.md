@@ -168,13 +168,9 @@ Logging a rejection server-side is fine and useful for tuning.
 **Fields:** Parent name, email, phone (plus honeypot). Deliberately short — it's an
 "ask a question" capture, not a registration.
 
-**Known issue (pre-existing, still open):** the handler calls `setEmailDone(true)`
-*before* awaiting the POST, so a visitor sees the success message even if the request
-fails outright (network error, 5xx) and the lead is lost. The clock-skew cause of silent
-loss is fixed (see "API contract" above), but a genuine transport failure still shows
-success. Analytics correctly fire only on `{ accepted: true }`, so PostHog/Meta
-under-count relative to what visitors were shown rather than over-count. Worth fixing
-separately — it is a UX change, not a tracking one.
+The success message, PostHog event, and Meta `Lead` event all share the same confirmed
+`{ accepted: true }` branch. Network and API failures keep the form available and show
+a retryable error; duplicate submissions are blocked while the request is pending.
 
 ---
 
