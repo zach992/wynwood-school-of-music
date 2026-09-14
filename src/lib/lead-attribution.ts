@@ -21,6 +21,8 @@ export type LeadAttribution = {
 const STORAGE_KEY = "wsm_lead_attribution_v1";
 const MAX_SHORT_VALUE = 500;
 const MAX_URL_VALUE = 2_000;
+const ATTRIBUTION_TTL_MS = 90 * 24 * 60 * 60 * 1_000;
+const MAX_CLOCK_SKEW_MS = 24 * 60 * 60 * 1_000;
 
 const queryMappings = {
   gclid: "gclid",
@@ -71,8 +73,27 @@ export function sanitizeLeadAttribution(value: unknown): LeadAttribution {
 function readStoredAttribution(): LeadAttribution {
   if (typeof window === "undefined") return {};
   try {
-    return sanitizeLeadAttribution(JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "{}"));
+    const stored = sanitizeLeadAttribution(
+      JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "{}")
+    );
+    const capturedAt = stored.capturedAt ? Date.parse(stored.capturedAt) : NaN;
+    const age = Date.now() - capturedAt;
+
+    // Never let a historical click claim a new lead indefinitely. Missing or
+    // malformed timestamps are treated as stale, as are timestamps far enough
+    // in the future to indicate corrupted data rather than ordinary clock skew.
+    if (
+      !Number.isFinite(capturedAt) ||
+      age > ATTRIBUTION_TTL_MS ||
+      age < -MAX_CLOCK_SKEW_MS
+    ) {
+      window.localStorage.removeItem(STORAGE_KEY);
+      return {};
+    }
+
+    return stored;
   } catch {
+    window.localStorage.removeItem(STORAGE_KEY);
     return {};
   }
 }
