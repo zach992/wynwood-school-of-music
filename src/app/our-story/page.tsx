@@ -45,6 +45,7 @@ export default function OurStoryPage() {
                   src="/images/our-story/founders.jpg"
                   alt="Sammy Gonzalez Zeira and Zach Larmer, founders of Wynwood School of Music"
                   fill
+                  sizes="(min-width: 1056px) 410px, (min-width: 768px) calc(40vw - 13px), calc(100vw - 32px)"
                   className="object-cover"
                   priority
                 />

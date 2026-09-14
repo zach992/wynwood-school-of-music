@@ -17,6 +17,7 @@ export default function RepairPage() {
           src="/images/repair/hero.jpg"
           alt="Wynwood School of Music Repair Shop"
           fill
+          sizes="100vw"
           className="object-cover"
           priority
         />
@@ -46,6 +47,7 @@ export default function RepairPage() {
               src="/images/repair/shop-1.jpg"
               alt="Repair workshop with tools and instruments"
               fill
+              sizes="(min-width: 1056px) 504px, (min-width: 768px) calc(50vw - 24px), calc(100vw - 32px)"
               className="object-cover"
             />
           </div>
@@ -54,6 +56,7 @@ export default function RepairPage() {
               src="/images/repair/shop-2.jpg"
               alt="Repair workshop workbench"
               fill
+              sizes="(min-width: 1056px) 504px, (min-width: 768px) calc(50vw - 24px), calc(100vw - 32px)"
               className="object-cover"
             />
           </div>
@@ -318,6 +321,7 @@ export default function RepairPage() {
               src="/images/repair/gallery-1.jpg"
               alt="Repair workshop detail"
               fill
+              sizes="(min-width: 1056px) 250px, (min-width: 768px) calc(25vw - 14px), calc(50vw - 20px)"
               className="object-cover"
             />
           </div>
@@ -326,6 +330,7 @@ export default function RepairPage() {
               src="/images/repair/gallery-2.jpg"
               alt="Repair workshop detail"
               fill
+              sizes="(min-width: 1056px) 250px, (min-width: 768px) calc(25vw - 14px), calc(50vw - 20px)"
               className="object-cover"
             />
           </div>
@@ -334,6 +339,7 @@ export default function RepairPage() {
               src="/images/repair/gallery-3.jpg"
               alt="Repair workshop detail"
               fill
+              sizes="(min-width: 1056px) 250px, (min-width: 768px) calc(25vw - 14px), calc(50vw - 20px)"
               className="object-cover"
             />
           </div>
@@ -342,6 +348,7 @@ export default function RepairPage() {
               src="/images/repair/gallery-4.jpg"
               alt="Repair workshop detail"
               fill
+              sizes="(min-width: 1056px) 250px, (min-width: 768px) calc(25vw - 14px), calc(50vw - 20px)"
               className="object-cover"
             />
           </div>

@@ -75,6 +75,7 @@ export default function TeamPage() {
                   src="/images/team/zach-larmer.webp"
                   alt="Zach Larmer, Founder"
                   fill
+                  sizes="(min-width: 1056px) 488px, (min-width: 768px) calc(50vw - 40px), calc(100vw - 32px)"
                   className="object-cover"
                   priority
                 />
@@ -106,8 +107,8 @@ export default function TeamPage() {
                   src="/images/team/sammy-gonzalez.jpg"
                   alt="Sammy Gonzalez Zeira, Founder"
                   fill
+                  sizes="(min-width: 1056px) 488px, (min-width: 768px) calc(50vw - 40px), calc(100vw - 32px)"
                   className="object-cover"
-                  priority
                 />
               </div>
               <h3 className="font-heading text-xl md:text-2xl uppercase font-black text-white mb-6">

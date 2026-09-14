@@ -85,6 +85,7 @@ export default function FriendsOfWSMPage() {
           src="/images/friendsofwsm/hero.jpg"
           alt="Friends of Wynwood School of Music"
           fill
+          sizes="100vw"
           className="object-cover"
           priority
         />
@@ -109,6 +110,7 @@ export default function FriendsOfWSMPage() {
                   src="/images/friendsofwsm/our-impact.jpg"
                   alt="WSM student performing on stage"
                   fill
+                  sizes="(min-width: 1056px) 461px, (min-width: 768px) calc(45vw - 14px), calc(100vw - 32px)"
                   className="object-cover"
                 />
               </div>
@@ -231,7 +233,7 @@ export default function FriendsOfWSMPage() {
                   src="/images/friendsofwsm/history.jpg"
                   alt="Micaela Godoy, scholarship recipient, performing live"
                   fill
-                  sizes="(min-width: 768px) 45vw, 100vw"
+                  sizes="(min-width: 1056px) 461px, (min-width: 768px) calc(45vw - 14px), calc(100vw - 32px)"
                   className="object-cover"
                 />
               </div>
@@ -264,6 +266,7 @@ export default function FriendsOfWSMPage() {
                     src={recipient.image}
                     alt={recipient.name}
                     fill
+                    sizes="(min-width: 1056px) 325px, (min-width: 640px) calc(33.333vw - 27px), calc(50vw - 28px)"
                     className="object-cover"
                   />
                 </div>

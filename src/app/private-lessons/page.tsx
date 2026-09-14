@@ -94,7 +94,7 @@ export default function PrivateLessonsPage() {
                 src="/images/private-lessons/sax.webp"
                 alt="Saxophonist performing at the Wynwood School of Music"
                 fill
-                sizes="(min-width: 768px) 42vw, 100vw"
+                sizes="(min-width: 1056px) 427px, (min-width: 768px) calc(41.667vw - 13px), calc(100vw - 32px)"
                 className="object-cover"
               />
             </div>
@@ -160,7 +160,7 @@ export default function PrivateLessonsPage() {
                 alt="Young pianist focused at the keyboard during a private lesson"
                 fill
                 className="object-cover"
-                sizes="(min-width: 768px) 50vw, 100vw"
+                sizes="(min-width: 1056px) 488px, (min-width: 768px) calc(50vw - 40px), calc(100vw - 32px)"
               />
             </div>
           </div>
@@ -229,7 +229,7 @@ export default function PrivateLessonsPage() {
                 alt="Young performer singing on stage at a Wynwood School of Music recital"
                 fill
                 className="object-cover"
-                sizes="(min-width: 768px) 50vw, 100vw"
+                sizes="(min-width: 1056px) 488px, (min-width: 768px) calc(50vw - 40px), calc(100vw - 32px)"
               />
             </div>
           </div>

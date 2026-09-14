@@ -124,7 +124,7 @@ export default function ContactPage() {
                   alt="Adult music lessons at Wynwood School of Music"
                   fill
                   className="object-cover"
-                  sizes="(min-width: 1024px) 320px, 100vw"
+                  sizes="(min-width: 1024px) 320px, calc(100vw - 32px)"
                 />
               </div>
               <div className="relative w-full aspect-[2/3] overflow-hidden">
@@ -133,7 +133,7 @@ export default function ContactPage() {
                   alt="Youth music lessons at Wynwood School of Music"
                   fill
                   className="object-cover"
-                  sizes="(min-width: 1024px) 320px, 100vw"
+                  sizes="(min-width: 1024px) 320px, calc(100vw - 32px)"
                 />
               </div>
             </div>
