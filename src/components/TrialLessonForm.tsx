@@ -5,6 +5,10 @@ import { useRouter } from "next/navigation";
 import posthog from "posthog-js";
 import { reportConversion } from "@/lib/google-ads";
 import { reportLead } from "@/lib/meta-pixel";
+import {
+  getLeadAttribution,
+  posthogAttributionProperties,
+} from "@/lib/lead-attribution";
 import { HoneypotField, useFormGuard } from "./FormGuard";
 
 const instruments = [
@@ -59,22 +63,27 @@ export default function TrialLessonForm() {
     setSubmitting(true);
     setSubmitError(null);
     try {
+      const attribution = getLeadAttribution(posthog.get_distinct_id());
       const res = await fetch("/api/trial-lesson", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ ...formData, ...guard.payload() }),
+        body: JSON.stringify({ ...formData, ...guard.payload(), _attribution: attribution }),
       });
       if (!res.ok) throw new Error(`Submission failed (${res.status})`);
       // A 200 alone does not mean the lead was stored: the API returns a bare
       // 200 when the spam guard discards a submission, deliberately telling a
       // bot nothing. Only the explicit accepted flag means a real lead landed,
       // so only that reports a conversion. See src/lib/form-utils.ts.
-      const accepted = await res
+      const result = await res
         .json()
-        .then((d: { accepted?: boolean } | null) => d?.accepted === true)
-        .catch(() => false);
-      if (accepted) {
-        posthog.capture("form_submitted", { form: "trial-lesson" });
+        .then((d: { accepted?: boolean; leadId?: string } | null) => d)
+        .catch(() => null);
+      if (result?.accepted === true) {
+        posthog.capture("form_submitted", {
+          form: "trial-lesson",
+          lead_id: result.leadId,
+          ...posthogAttributionProperties(attribution),
+        });
         // Reported on confirmed acceptance rather than on button click:
         // a click-triggered conversion also counts visitors who failed
         // validation or errored out, who are not leads.

@@ -4,6 +4,7 @@ import { sendFormNotification } from "@/lib/email";
 import { buildTrialEmail } from "@/lib/email-templates";
 import { acceptedResponse, calcAge, checkSpamGuard, discardedResponse, fmtBirthdayMMDD, joinNonEmpty } from "@/lib/form-utils";
 import { mailchimpUpsertSubscriber } from "@/lib/mailchimp";
+import { airtableAttributionFields } from "@/lib/lead-attribution";
 
 export async function POST(req: NextRequest) {
   let body: Record<string, unknown>;
@@ -15,9 +16,10 @@ export async function POST(req: NextRequest) {
 
   if (checkSpamGuard(body)) return discardedResponse();
 
-  const { website: _hp, _elapsedMs: _t, ...p } = body;
+  const { website: _hp, _elapsedMs: _t, _attribution, ...p } = body;
   const studentName = joinNonEmpty(p.studentFirstName, p.studentLastName);
   const parentName = joinNonEmpty(p.parentFirstName, p.parentLastName);
+  const leadId = crypto.randomUUID();
 
   const tableName = process.env.AIRTABLE_TRIAL_TABLE || "Pvt Lesson Landing Page Leads";
 
@@ -35,6 +37,7 @@ export async function POST(req: NextRequest) {
       "How Heard": p.hearAboutUs,
       "Other Info": p.notes,
       "Lead Status": "New",
+      ...airtableAttributionFields(_attribution, leadId),
     });
   } catch (err) {
     console.error("[api/trial-lesson] Airtable write failed:", err);
@@ -79,5 +82,5 @@ export async function POST(req: NextRequest) {
     }).catch((err) => console.error("[api/trial-lesson] Zapier forward failed:", err));
   }
 
-  return acceptedResponse();
+  return acceptedResponse({ leadId });
 }
