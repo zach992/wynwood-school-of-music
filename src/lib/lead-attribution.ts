@@ -72,6 +72,16 @@ export function sanitizeLeadAttribution(value: unknown): LeadAttribution {
 
 function readStoredAttribution(): LeadAttribution {
   if (typeof window === "undefined") return {};
+
+  const removeStoredAttribution = () => {
+    try {
+      window.localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // Storage may be blocked by browser policy. Attribution is optional, so
+      // failed cleanup must not prevent a lead form from being submitted.
+    }
+  };
+
   try {
     const stored = sanitizeLeadAttribution(
       JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "{}")
@@ -87,13 +97,13 @@ function readStoredAttribution(): LeadAttribution {
       age > ATTRIBUTION_TTL_MS ||
       age < -MAX_CLOCK_SKEW_MS
     ) {
-      window.localStorage.removeItem(STORAGE_KEY);
+      removeStoredAttribution();
       return {};
     }
 
     return stored;
   } catch {
-    window.localStorage.removeItem(STORAGE_KEY);
+    removeStoredAttribution();
     return {};
   }
 }
