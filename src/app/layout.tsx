@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Anton, Barlow_Condensed, Instrument_Serif, Manrope } from "next/font/google";
+import { Anton, Barlow_Condensed, Manrope } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import AnnouncementBar from "@/components/AnnouncementBar";
@@ -19,23 +19,13 @@ const barlowCondensed = Barlow_Condensed({
   variable: "--font-brand",
 });
 
-// Camp typography is self-hosted with the rest of the site fonts. These faces are
-// not preloaded because they are used only on the camp route; browsers request them
-// only when camp content (including its urgency bar) is rendered.
+// The root-level camp urgency bar needs these variables. The camp route layout
+// uses matching font definitions to preload the same files only on that route.
 const campDisplay = Anton({
   subsets: ["latin"],
   weight: "400",
   display: "swap",
   variable: "--font-camp-display",
-  preload: false,
-});
-
-const campSerif = Instrument_Serif({
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
-  display: "swap",
-  variable: "--font-camp-serif",
   preload: false,
 });
 
@@ -89,7 +79,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${barlowCondensed.variable} ${campDisplay.variable} ${campSerif.variable} ${campBody.variable}`}
+      className={`${barlowCondensed.variable} ${campDisplay.variable} ${campBody.variable}`}
     >
       <body className="bg-wsm-dark text-white font-body min-h-screen flex flex-col">
         {GOOGLE_ADS_ENABLED && (
