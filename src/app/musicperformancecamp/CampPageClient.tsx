@@ -78,6 +78,9 @@ export default function CampPageClient() {
 
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [emailDone, setEmailDone] = useState(false);
+  const [emailSubmitting, setEmailSubmitting] = useState(false);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const emailSubmittingRef = useRef(false);
   const [modalOpen, setModalOpen] = useState(false);
   const interestGuard = useFormGuard();
   const [pulseCode, setPulseCode] = useState<string | null>(null);
@@ -267,6 +270,58 @@ export default function CampPageClient() {
       if (checkoutTab && !checkoutTab.closed) checkoutTab.close();
       setFormError("Network error. Please try again.");
       setSubmitting(false);
+    }
+  };
+
+  const handleInterestSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (interestGuard.isLikelyBot() || emailSubmittingRef.current) return;
+
+    const fd = new FormData(e.currentTarget);
+    const payload = {
+      parentName: String(fd.get("parentName") ?? ""),
+      parentEmail: String(fd.get("parentEmail") ?? ""),
+      parentPhone: String(fd.get("parentPhone") ?? ""),
+      ...interestGuard.payload(),
+    };
+
+    emailSubmittingRef.current = true;
+    setEmailSubmitting(true);
+    setEmailError(null);
+
+    try {
+      const res = await fetch("/api/camp-lead", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error(`Submission failed (${res.status})`);
+
+      // Spam-guard discards intentionally return a quiet 200 without accepted=true.
+      // Preserve that silence, but never show a success state for an unstored lead.
+      const accepted = await res
+        .json()
+        .then((d: { accepted?: boolean } | null) => d?.accepted === true)
+        .catch(() => false);
+      if (!accepted) return;
+
+      // Keep analytics on the same confirmed-success branch as the UI. Neither
+      // event fires for validation, spam-guard, API, or network failures.
+      setEmailDone(true);
+      try {
+        posthog.capture("form_submitted", { form: "camp-interest" });
+      } catch (analyticsError) {
+        console.error("PostHog camp lead report failed:", analyticsError);
+      }
+      reportLead("camp-interest");
+    } catch (err) {
+      console.error("Camp lead form submit error:", err);
+      setEmailError(
+        "Something went wrong sending your request. Please try again or call 305-359-5515."
+      );
+    } finally {
+      emailSubmittingRef.current = false;
+      setEmailSubmitting(false);
     }
   };
 
@@ -730,50 +785,20 @@ export default function CampPageClient() {
               <p>Enter your info and someone from our team will be in touch within 24 hours to answer your questions.</p>
               <form
                 className={`email-form${emailDone ? " done" : ""}`}
-                onSubmit={async (e) => {
-                  e.preventDefault();
-                  if (interestGuard.isLikelyBot()) return;
-                  const fd = new FormData(e.currentTarget);
-                  const payload = {
-                    parentName: String(fd.get("parentName") ?? ""),
-                    parentEmail: String(fd.get("parentEmail") ?? ""),
-                    parentPhone: String(fd.get("parentPhone") ?? ""),
-                    ...interestGuard.payload(),
-                  };
-                  setEmailDone(true);
-                  try {
-                    const res = await fetch("/api/camp-lead", {
-                      method: "POST",
-                      headers: { "content-type": "application/json" },
-                      body: JSON.stringify(payload),
-                    });
-                    if (!res.ok) throw new Error(`Submission failed (${res.status})`);
-                    // A 200 alone does not mean the lead was stored: the API returns a bare
-                    // 200 when the spam guard discards a submission, deliberately telling a
-                    // bot nothing. Only the explicit accepted flag means a real lead landed,
-                    // so only that reports a conversion. See src/lib/form-utils.ts.
-                    const accepted = await res
-                      .json()
-                      .then((d: { accepted?: boolean } | null) => d?.accepted === true)
-                      .catch(() => false);
-                    if (accepted) {
-                      posthog.capture("form_submitted", { form: "camp-interest" });
-                      // Reported on confirmed acceptance rather than on button click:
-                      // a click-triggered event also counts visitors who failed
-                      // validation or errored out, who are not leads.
-                      reportLead("camp-interest");
-                    }
-                  } catch (err) {
-                    console.error("Camp lead form submit error:", err);
-                  }
-                }}
+                onSubmit={handleInterestSubmit}
+                aria-busy={emailSubmitting}
               >
                 <input type="text" name="parentName" placeholder="Parent's full name" autoComplete="name" required />
                 <input type="email" name="parentEmail" placeholder="Email" autoComplete="email" required />
                 <input type="tel" name="parentPhone" placeholder="Phone" autoComplete="tel" required />
                 <HoneypotField value={interestGuard.honeypot} onChange={interestGuard.setHoneypot} />
-                <button type="submit">Request info</button>
-                <div className="success">✓ Thanks! We&rsquo;ll be in touch within 24 hours.</div>
+                <button type="submit" disabled={emailSubmitting}>
+                  {emailSubmitting ? "Sending…" : "Request info"}
+                </button>
+                {emailError && <div className="error" role="alert">{emailError}</div>}
+                <div className="success" role="status" aria-live="polite">
+                  ✓ Thanks! We&rsquo;ll be in touch within 24 hours.
+                </div>
               </form>
             </div>
           </div>
