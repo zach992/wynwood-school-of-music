@@ -1,15 +1,13 @@
 /* Camp page yellow urgency bar — rendered above the site Header.
    Selectors are scoped under .wsm-urgency so they don't leak. */
 
-@import url("https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;600;700&display=swap");
-
 .wsm-urgency {
   background: #ffd84d;
   color: #1a120a;
   border-bottom: 1px solid rgba(0, 0, 0, 0.25);
   position: relative;
   z-index: 60;
-  font-family: "Manrope", system-ui, -apple-system, sans-serif;
+  font-family: var(--font-camp-body), system-ui, -apple-system, sans-serif;
 }
 .wsm-urgency-inner {
   max-width: 1240px;
@@ -43,7 +41,7 @@
 .wsm-urgency-count {
   display: inline-flex;
   gap: 10px;
-  font-family: "Anton", sans-serif;
+  font-family: var(--font-camp-display), sans-serif;
   font-size: 18px;
   letter-spacing: 0.02em;
 }
@@ -59,7 +57,7 @@
   margin-right: 4px;
 }
 .wsm-urgency-count span small {
-  font-family: "Manrope", sans-serif;
+  font-family: var(--font-camp-body), sans-serif;
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
