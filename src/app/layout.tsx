@@ -1,9 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Anton, Barlow_Condensed, Manrope } from "next/font/google";
+import { Barlow_Condensed } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import AnnouncementBar from "@/components/AnnouncementBar";
-import CampUrgencyBar from "@/components/CampUrgencyBar";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { PostHogProvider } from "@/components/PostHogProvider";
@@ -17,24 +16,6 @@ const barlowCondensed = Barlow_Condensed({
   weight: ["400", "500", "600", "700", "900"],
   display: "swap",
   variable: "--font-brand",
-});
-
-// The root-level camp urgency bar needs these variables. The camp route layout
-// uses matching font definitions to preload the same files only on that route.
-const campDisplay = Anton({
-  subsets: ["latin"],
-  weight: "400",
-  display: "swap",
-  variable: "--font-camp-display",
-  preload: false,
-});
-
-const campBody = Manrope({
-  subsets: ["latin"],
-  weight: "variable",
-  display: "swap",
-  variable: "--font-camp-body",
-  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -77,10 +58,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${barlowCondensed.variable} ${campDisplay.variable} ${campBody.variable}`}
-    >
+    <html lang="en" className={barlowCondensed.variable}>
       <body className="bg-wsm-dark text-white font-body min-h-screen flex flex-col">
         {GOOGLE_ADS_ENABLED && (
           <>
@@ -139,7 +117,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <PostHogProvider>
           <StructuredData />
           <ScrollToTop />
-          <CampUrgencyBar />
           <AnnouncementBar />
           <Header />
           <main className="flex-1">{children}</main>
