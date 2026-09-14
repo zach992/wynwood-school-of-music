@@ -1,4 +1,4 @@
-/* Camp page yellow urgency bar — rendered above the site Header.
+/* Camp page yellow urgency bar.
    Selectors are scoped under .wsm-urgency so they don't leak. */
 
 .wsm-urgency {
