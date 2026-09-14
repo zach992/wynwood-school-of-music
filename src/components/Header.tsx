@@ -21,10 +21,10 @@ export default function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-[background-color,backdrop-filter,border-color] duration-300 ${
+      className={`sticky top-0 z-50 transition-[background-color,backdrop-filter,box-shadow] duration-300 ${
         scrolled || mobileOpen
-          ? "bg-wsm-dark/90 backdrop-blur-md border-b border-white/10"
-          : "bg-transparent border-b border-transparent"
+          ? "bg-wsm-dark/90 backdrop-blur-md shadow-[inset_0_-1px_0_rgba(255,255,255,0.1)]"
+          : "bg-transparent shadow-none"
       }`}
     >
       <div className="max-w-5xl mx-auto px-4 flex items-center justify-between h-20">
