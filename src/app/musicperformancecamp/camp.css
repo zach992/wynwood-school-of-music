@@ -2,8 +2,6 @@
    All selectors are prefixed with .camp-page so styles don't leak
    into the rest of the site. */
 
-@import url("https://fonts.googleapis.com/css2?family=Anton&family=Instrument+Serif:ital@0;1&family=Manrope:wght@300;400;500;600;700;800&display=swap");
-
 .camp-page {
   --bg: #0b0a0c;
   --bg-elev: #141115;
@@ -24,7 +22,7 @@
 
   background: var(--bg);
   color: var(--text);
-  font-family: "Manrope", system-ui, -apple-system, sans-serif;
+  font-family: var(--font-camp-body), system-ui, -apple-system, sans-serif;
   font-weight: 400;
   font-size: 16px;
   line-height: 1.6;
@@ -61,20 +59,20 @@
 
 /* ===== Type ===== */
 .camp-page .display {
-  font-family: "Anton", Impact, sans-serif;
+  font-family: var(--font-camp-display), Impact, sans-serif;
   font-weight: 400;
   letter-spacing: 0.01em;
   line-height: 0.95;
   text-transform: uppercase;
 }
 .camp-page .serif-it {
-  font-family: "Instrument Serif", "Times New Roman", serif;
+  font-family: var(--font-camp-serif), "Times New Roman", serif;
   font-style: italic;
   font-weight: 400;
   letter-spacing: -0.01em;
 }
 .camp-page .eyebrow {
-  font-family: "Manrope", sans-serif;
+  font-family: var(--font-camp-body), sans-serif;
   font-weight: 700;
   font-size: 12px;
   letter-spacing: 0.22em;
@@ -85,7 +83,7 @@
 .camp-page .h2 { font-size: clamp(40px, 6vw, 76px); }
 .camp-page .h3 { font-size: clamp(28px, 3.4vw, 44px); }
 .camp-page .kicker {
-  font-family: "Manrope", sans-serif;
+  font-family: var(--font-camp-body), sans-serif;
   font-weight: 600;
   font-size: 13px;
   letter-spacing: 0.14em;
@@ -135,7 +133,7 @@
 .camp-page .urgency-count {
   display: inline-flex;
   gap: 10px;
-  font-family: "Anton", sans-serif;
+  font-family: var(--font-camp-display), sans-serif;
   font-size: 18px;
   letter-spacing: 0.02em;
 }
@@ -151,7 +149,7 @@
   margin-right: 4px;
 }
 .camp-page .urgency-count span small {
-  font-family: "Manrope", sans-serif;
+  font-family: var(--font-camp-body), sans-serif;
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
@@ -249,7 +247,7 @@
 }
 .camp-page .hero h1 { margin: 0 0 28px; }
 .camp-page .hero h1 em {
-  font-family: "Instrument Serif", serif;
+  font-family: var(--font-camp-serif), serif;
   font-style: italic;
   font-weight: 400;
   color: var(--purple);
@@ -285,7 +283,7 @@
   margin-bottom: 6px;
 }
 .camp-page .hero-fact .value {
-  font-family: "Anton", sans-serif;
+  font-family: var(--font-camp-display), sans-serif;
   font-size: 26px;
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -346,7 +344,7 @@
 }
 .camp-page .hero-video .caption h4 {
   margin: 0;
-  font-family: "Anton", sans-serif;
+  font-family: var(--font-camp-display), sans-serif;
   font-size: 28px;
   text-transform: uppercase;
   letter-spacing: 0.02em;
@@ -373,7 +371,7 @@
   .camp-page .proof-inner { grid-template-columns: repeat(2, 1fr); }
 }
 .camp-page .proof-item .num {
-  font-family: "Anton", sans-serif;
+  font-family: var(--font-camp-display), sans-serif;
   font-size: 42px;
   line-height: 1;
   color: var(--purple);
@@ -404,14 +402,14 @@
 .camp-page .section-head .left { max-width: 720px; }
 .camp-page .section-head h2 { margin: 14px 0 0; }
 .camp-page .section-head h2 em {
-  font-family: "Instrument Serif", serif;
+  font-family: var(--font-camp-serif), serif;
   font-style: italic;
   color: var(--purple);
   text-transform: none;
   letter-spacing: -0.01em;
 }
 .camp-page .section-number {
-  font-family: "Anton", sans-serif;
+  font-family: var(--font-camp-display), sans-serif;
   font-size: 14px;
   color: var(--muted-2);
   letter-spacing: 0.18em;
@@ -439,7 +437,7 @@
   position: relative;
 }
 .camp-page .outcome-card .tier {
-  font-family: "Anton", sans-serif;
+  font-family: var(--font-camp-display), sans-serif;
   font-size: 14px;
   letter-spacing: 0.22em;
   color: var(--purple);
@@ -447,7 +445,7 @@
   text-transform: uppercase;
 }
 .camp-page .outcome-card h3 {
-  font-family: "Anton", sans-serif;
+  font-family: var(--font-camp-display), sans-serif;
   font-weight: 400;
   font-size: 32px;
   text-transform: uppercase;
@@ -527,7 +525,7 @@
   text-transform: uppercase;
 }
 .camp-page .instructor h4 {
-  font-family: "Anton", sans-serif;
+  font-family: var(--font-camp-display), sans-serif;
   font-weight: 400;
   font-size: 22px;
   text-transform: uppercase;
@@ -578,7 +576,7 @@
 }
 .camp-page .schedule-list li:first-child { border-top: 0; }
 .camp-page .schedule-list .time {
-  font-family: "Anton", sans-serif;
+  font-family: var(--font-camp-display), sans-serif;
   font-size: 20px;
   letter-spacing: 0.04em;
   color: var(--purple);
@@ -602,7 +600,7 @@
   padding: 36px;
 }
 .camp-page .schedule-aside h4 {
-  font-family: "Anton", sans-serif;
+  font-family: var(--font-camp-display), sans-serif;
   font-weight: 400;
   font-size: 24px;
   text-transform: uppercase;
@@ -668,7 +666,7 @@
 .camp-page .aftercare-card .mark svg { width: 28px; height: 28px; color: #1a120a; }
 .camp-page .aftercare-card .copy h4 {
   margin: 0 0 4px;
-  font-family: "Anton", sans-serif;
+  font-family: var(--font-camp-display), sans-serif;
   font-weight: 400;
   font-size: 26px;
   text-transform: uppercase;
@@ -681,14 +679,14 @@
 }
 .camp-page .aftercare-card .price {
   text-align: right;
-  font-family: "Anton", sans-serif;
+  font-family: var(--font-camp-display), sans-serif;
   font-size: 42px;
   color: var(--yellow);
   line-height: 1;
 }
 .camp-page .aftercare-card .price small {
   display: block;
-  font-family: "Manrope", sans-serif;
+  font-family: var(--font-camp-body), sans-serif;
   font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -807,7 +805,7 @@
   gap: 12px;
 }
 .camp-page .session-code {
-  font-family: "Anton", sans-serif;
+  font-family: var(--font-camp-display), sans-serif;
   font-size: 34px;
   letter-spacing: 0.04em;
   line-height: 1;
@@ -874,7 +872,7 @@
   border-top: 1px solid var(--line);
 }
 .camp-page .session-price {
-  font-family: "Anton", sans-serif;
+  font-family: var(--font-camp-display), sans-serif;
   font-size: 22px;
 }
 .camp-page .session-price s {
@@ -920,7 +918,7 @@
 }
 .camp-page .bundle-cart h4 {
   margin: 0 0 6px;
-  font-family: "Anton", sans-serif;
+  font-family: var(--font-camp-display), sans-serif;
   font-weight: 400;
   font-size: 22px;
   text-transform: uppercase;
@@ -943,7 +941,7 @@
   padding-top: 10px;
   border-top: 1px solid var(--line);
   color: var(--text);
-  font-family: "Anton", sans-serif;
+  font-family: var(--font-camp-display), sans-serif;
   font-size: 24px;
 }
 
@@ -1042,7 +1040,7 @@
   position: relative;
 }
 .camp-page .testimonial .quote-mark {
-  font-family: "Instrument Serif", serif;
+  font-family: var(--font-camp-serif), serif;
   font-style: italic;
   font-size: 90px;
   color: var(--purple);
@@ -1051,7 +1049,7 @@
   display: block;
 }
 .camp-page .testimonial blockquote {
-  font-family: "Instrument Serif", serif;
+  font-family: var(--font-camp-serif), serif;
   font-style: italic;
   font-size: 22px;
   line-height: 1.35;
@@ -1119,7 +1117,7 @@
 .camp-page .faq-item summary::-webkit-details-marker { display: none; }
 .camp-page .faq-item summary::after {
   content: "+";
-  font-family: "Anton", sans-serif;
+  font-family: var(--font-camp-display), sans-serif;
   font-size: 28px;
   color: var(--purple);
   line-height: 1;
@@ -1143,7 +1141,7 @@
 }
 .camp-page .email-card h4 {
   margin: 0 0 10px;
-  font-family: "Anton", sans-serif;
+  font-family: var(--font-camp-display), sans-serif;
   font-weight: 400;
   font-size: 26px;
   text-transform: uppercase;
@@ -1214,7 +1212,7 @@
   font-size: clamp(50px, 8vw, 100px);
 }
 .camp-page .final-cta h2 em {
-  font-family: "Instrument Serif", serif;
+  font-family: var(--font-camp-serif), serif;
   font-style: italic;
   text-transform: none;
   letter-spacing: -0.01em;
@@ -1259,7 +1257,7 @@
   overflow-y: auto;
 }
 .camp-page .modal h3 {
-  font-family: "Anton", sans-serif;
+  font-family: var(--font-camp-display), sans-serif;
   font-weight: 400;
   font-size: 30px;
   text-transform: uppercase;
@@ -1327,7 +1325,7 @@
 }
 .camp-page .modal .summary-box .line { display: flex; justify-content: space-between; padding: 4px 0; color: var(--muted); }
 .camp-page .modal .summary-box .line.total {
-  font-family: "Anton", sans-serif; font-size: 22px; color: var(--text);
+  font-family: var(--font-camp-display), sans-serif; font-size: 22px; color: var(--text);
   padding-top: 10px; border-top: 1px solid var(--line); margin-top: 6px;
 }
 
@@ -1391,7 +1389,7 @@
   animation: pill-pop 0.4s cubic-bezier(0.2, 0.85, 0.2, 1);
 }
 .camp-page .code-pill-letter {
-  font-family: "Anton", sans-serif;
+  font-family: var(--font-camp-display), sans-serif;
   background: var(--purple);
   color: var(--text);
   font-size: 13px;
@@ -1444,7 +1442,7 @@
   gap: 10px;
 }
 .camp-page .sticky-cart-total strong {
-  font-family: "Anton", sans-serif;
+  font-family: var(--font-camp-display), sans-serif;
   font-weight: 400;
   font-size: 26px;
   letter-spacing: 0.02em;
