@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import posthog from "posthog-js";
 import { reportLead } from "@/lib/meta-pixel";
@@ -14,6 +15,24 @@ import {
 } from "@/lib/camp-pricing";
 import { HoneypotField, useFormGuard } from "@/components/FormGuard";
 import { campFaqs } from "./faqs";
+
+const CAMP_INSTRUCTORS = [
+  { name: "Sammy Gonzalez Zeira", role: "Co-Founder · Guitar · Bass", badge: "Co-Founder", bio: "Touring guitarist and bassist, Director of the Miami Beach Senior High Rock Ensemble, and CEO of Young Musicians Unite, Miami-Dade's free music-education non-profit serving 12,000+ students.", img: "/images/team/sammy-gonzalez.jpg" },
+  { name: "Zach Larmer", role: "Co-Founder · Guitar · Composition", badge: "Co-Founder", bio: "Three-time GRAMMY-winning jazz guitarist who has toured the world and shared stages with renowned artists. 13 years educating Miami's young musicians.", img: "/images/team/zach-larmer.webp" },
+  { name: "Vale Peñaranda", role: "Voice · Keys · Production", badge: "Voice & Keys", bio: "Berklee and Frost School of Music alum. Recipient of the Eduardo Abaroa Award and a Latin GRAMMY Cultural Foundation Leading Lady, with stages from the Berklee Performance Center to the Suena Caracas Festival.", img: "/images/team/vale-penaranda.jpg" },
+  { name: "AJ Hill", role: "Saxophone · Vocals · Drums", badge: "Saxophone", bio: "Twice Grammy-nominated and Oscar-nominated. Has shared the bill with Sly & the Family Stone and Earth Wind & Fire alums, and serves as Artistic Director of the Miami Beach Rock Ensemble.", img: "/images/team/aj-hill-camp.webp" },
+] as const;
+
+const CAMP_GALLERY_IMAGES = [
+  { cls: "g-1", src: "/images/camp/gallery/gallery-01-hero.jpg", alt: "Sun Salutation full band on the WSM stage", sizes: "(min-width: 1240px) 606px, (min-width: 761px) 50vw, 100vw" },
+  { cls: "g-2", src: "/images/camp/gallery/gallery-05.jpg", alt: "Young singer mid-song with a guitarist beside her", sizes: "(min-width: 1240px) 297px, (min-width: 761px) 25vw, 50vw" },
+  { cls: "g-3", src: "/images/camp/gallery/gallery-06.jpg", alt: "Teen camper beaming with a red electric guitar on stage", sizes: "(min-width: 1240px) 297px, (min-width: 761px) 25vw, 50vw" },
+  { cls: "g-4", src: "/images/camp/gallery/gallery-07.jpg", alt: "Teen camper with acoustic guitar on stage, drums behind", sizes: "(min-width: 1240px) 297px, (min-width: 761px) 25vw, 50vw" },
+  { cls: "g-5", src: "/images/camp/gallery/gallery-08.jpg", alt: "Black-and-white drummer mid-fill in front of the WSM backdrop", sizes: "(min-width: 1240px) 297px, (min-width: 761px) 25vw, 50vw" },
+  { cls: "g-6", src: "/images/camp/gallery/gallery-02-wide.jpg", alt: "Full teen band performing under purple stage lights", sizes: "(min-width: 1240px) 400px, (min-width: 761px) 33vw, 100vw" },
+  { cls: "g-7", src: "/images/camp/gallery/gallery-03-wide.jpg", alt: "Instructor with acoustic guitar coaching a young keyboardist mid-lesson", sizes: "(min-width: 1240px) 400px, (min-width: 761px) 33vw, 100vw" },
+  { cls: "g-8", src: "/images/camp/gallery/gallery-04-wide.jpg", alt: "Singer in coral dress on stage accompanied by a pianist", sizes: "(min-width: 1240px) 400px, (min-width: 761px) 33vw, 100vw" },
+] as const;
 
 const Check = () => (
   <svg viewBox="0 0 24 24" fill="none">
@@ -298,11 +317,13 @@ export default function CampPageClient() {
               </div>
             </div>
             <div className="hero-video">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src="/images/camp/showcase-hero.webp"
                 alt="Campers rehearsing in the WSM band room"
-                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                fill
+                sizes="(min-width: 1240px) 606px, (min-width: 961px) 50vw, 100vw"
+                className="object-cover"
+                priority
               />
             </div>
           </div>
@@ -383,16 +404,16 @@ export default function CampPageClient() {
             </p>
           </div>
           <div className="instructors-grid">
-            {[
-              { name: "Sammy Gonzalez Zeira", role: "Co-Founder · Guitar · Bass", badge: "Co-Founder", bio: "Touring guitarist and bassist, Director of the Miami Beach Senior High Rock Ensemble, and CEO of Young Musicians Unite, Miami-Dade's free music-education non-profit serving 12,000+ students.", img: "/images/team/sammy-gonzalez.jpg" },
-              { name: "Zach Larmer", role: "Co-Founder · Guitar · Composition", badge: "Co-Founder", bio: "Three-time GRAMMY-winning jazz guitarist who has toured the world and shared stages with renowned artists. 13 years educating Miami's young musicians.", img: "/images/team/zach-larmer.webp" },
-              { name: "Vale Peñaranda", role: "Voice · Keys · Production", badge: "Voice & Keys", bio: "Berklee and Frost School of Music alum. Recipient of the Eduardo Abaroa Award and a Latin GRAMMY Cultural Foundation Leading Lady, with stages from the Berklee Performance Center to the Suena Caracas Festival.", img: "/images/team/vale-penaranda.jpg" },
-              { name: "AJ Hill", role: "Saxophone · Vocals · Drums", badge: "Saxophone", bio: "Twice Grammy-nominated and Oscar-nominated. Has shared the bill with Sly & the Family Stone and Earth Wind & Fire alums, and serves as Artistic Director of the Miami Beach Rock Ensemble.", img: "/images/team/aj-hill-camp.webp" },
-            ].map((i) => (
+            {CAMP_INSTRUCTORS.map((i) => (
               <div key={i.name} className="instructor reveal">
                 <div className="instructor-photo">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={i.img} alt={i.name} />
+                  <Image
+                    src={i.img}
+                    alt={i.name}
+                    fill
+                    sizes="(min-width: 1240px) 297px, (min-width: 961px) 25vw, (min-width: 541px) 50vw, 100vw"
+                    className="object-cover"
+                  />
                   <span className="badge">{i.badge}</span>
                 </div>
                 <h4>{i.name}</h4>
@@ -639,19 +660,15 @@ export default function CampPageClient() {
             </div>
           </div>
           <div className="gallery-grid">
-            {[
-              { cls: "g-1", src: "/images/camp/gallery/gallery-01-hero.jpg", alt: "Sun Salutation full band on the WSM stage" },
-              { cls: "g-2", src: "/images/camp/gallery/gallery-05.jpg", alt: "Young singer mid-song with a guitarist beside her" },
-              { cls: "g-3", src: "/images/camp/gallery/gallery-06.jpg", alt: "Teen camper beaming with a red electric guitar on stage" },
-              { cls: "g-4", src: "/images/camp/gallery/gallery-07.jpg", alt: "Teen camper with acoustic guitar on stage, drums behind" },
-              { cls: "g-5", src: "/images/camp/gallery/gallery-08.jpg", alt: "Black-and-white drummer mid-fill in front of the WSM backdrop" },
-              { cls: "g-6", src: "/images/camp/gallery/gallery-02-wide.jpg", alt: "Full teen band performing under purple stage lights" },
-              { cls: "g-7", src: "/images/camp/gallery/gallery-03-wide.jpg", alt: "Instructor with acoustic guitar coaching a young keyboardist mid-lesson" },
-              { cls: "g-8", src: "/images/camp/gallery/gallery-04-wide.jpg", alt: "Singer in coral dress on stage accompanied by a pianist" },
-            ].map((g) => (
+            {CAMP_GALLERY_IMAGES.map((g) => (
               <div key={g.cls} className={`g ${g.cls}`}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={g.src} alt={g.alt} />
+                <Image
+                  src={g.src}
+                  alt={g.alt}
+                  fill
+                  sizes={g.sizes}
+                  className="object-cover"
+                />
               </div>
             ))}
           </div>
