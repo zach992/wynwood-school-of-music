@@ -327,7 +327,7 @@ test("selects the newest complete tagged visit instead of merging two tabs", () 
     JSON.stringify({
       utmSource: "new-campaign",
       landingPage: "https://www.wynwoodschoolofmusic.com/new-landing",
-      capturedAt: "2026-09-15T15:00:00.000Z",
+      capturedAt: new Date(Date.now() - 60 * 60 * 1_000).toISOString(),
     })
   );
   sessionStorage.setItem(
@@ -335,7 +335,7 @@ test("selects the newest complete tagged visit instead of merging two tabs", () 
     JSON.stringify({
       gclid: "old-click-that-must-not-leak",
       landingPage: "https://www.wynwoodschoolofmusic.com/old-landing",
-      capturedAt: "2026-09-15T14:00:00.000Z",
+      capturedAt: new Date(Date.now() - 2 * 60 * 60 * 1_000).toISOString(),
     })
   );
   installBrowser(
@@ -361,7 +361,7 @@ test("uses the newer session record when replacing old persistence fails", () =>
     JSON.stringify({
       gclid: "old-click-that-must-not-leak",
       landingPage: "https://www.wynwoodschoolofmusic.com/old-landing",
-      capturedAt: "2026-09-14T00:00:00.000Z",
+      capturedAt: new Date(Date.now() - 24 * 60 * 60 * 1_000).toISOString(),
     })
   );
   localStorage.writesBlocked = true;
