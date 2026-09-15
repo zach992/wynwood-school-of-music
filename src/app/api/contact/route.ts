@@ -10,6 +10,7 @@ import {
 } from "@/lib/form-utils";
 import { mailchimpUpsertSubscriber } from "@/lib/mailchimp";
 import { airtableAttributionFields } from "@/lib/lead-attribution";
+import { airtableLeadSourceFields, leadTableName } from "@/lib/lead-table";
 
 function esc(value: unknown): string {
   if (value === null || value === undefined) return "";
@@ -120,7 +121,7 @@ export async function POST(req: NextRequest) {
     _emailBody: emailBody,
   };
 
-  const tableName = process.env.AIRTABLE_CONTACT_TABLE || "Main Contact Form Leads";
+  const tableName = leadTableName();
   const airtablePromise = airtableCreate(tableName, {
     Name: studentFullName || "(no name)",
     Submitted: submittedAt,
@@ -134,6 +135,7 @@ export async function POST(req: NextRequest) {
     "Parent Phone": payload.parentPhone,
     "How Heard": payload.hearAboutUs,
     "Lead Status": "New",
+    ...airtableLeadSourceFields("contact"),
     ...airtableAttributionFields(_attribution, leadId),
   });
 

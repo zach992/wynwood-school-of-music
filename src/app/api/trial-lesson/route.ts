@@ -5,6 +5,7 @@ import { buildTrialEmail } from "@/lib/email-templates";
 import { acceptedResponse, calcAge, checkSpamGuard, discardedResponse, fmtBirthdayMMDD, joinNonEmpty } from "@/lib/form-utils";
 import { mailchimpUpsertSubscriber } from "@/lib/mailchimp";
 import { airtableAttributionFields } from "@/lib/lead-attribution";
+import { airtableLeadSourceFields, leadTableName } from "@/lib/lead-table";
 
 export async function POST(req: NextRequest) {
   let body: Record<string, unknown>;
@@ -21,7 +22,7 @@ export async function POST(req: NextRequest) {
   const parentName = joinNonEmpty(p.parentFirstName, p.parentLastName);
   const leadId = crypto.randomUUID();
 
-  const tableName = process.env.AIRTABLE_TRIAL_TABLE || "Pvt Lesson Landing Page Leads";
+  const tableName = leadTableName();
 
   try {
     await airtableCreate(tableName, {
@@ -29,14 +30,16 @@ export async function POST(req: NextRequest) {
       Submitted: new Date().toISOString(),
       "Student DOB": p.dob,
       "Student Age": calcAge(p.dob),
-      Instrument: p.instrument,
-      "Experience Level": p.experience,
+      "Lesson Type": "Private Lessons",
+      Instruments: typeof p.instrument === "string" && p.instrument ? [p.instrument] : undefined,
+      "Years Experience": p.experience,
       "Parent Name": parentName,
       "Parent Email": p.parentEmail,
       "Parent Phone": p.parentPhone,
       "How Heard": p.hearAboutUs,
       "Other Info": p.notes,
       "Lead Status": "New",
+      ...airtableLeadSourceFields("trial"),
       ...airtableAttributionFields(_attribution, leadId),
     });
   } catch (err) {

@@ -92,7 +92,7 @@ Logging a rejection server-side is fine and useful for tuning.
 | **Status** | ✅ Wired |
 
 **Active destinations** (all fired in parallel by `/api/contact`):
-- 📊 **Airtable** — `ALL WSM Leads` base → `Main Contact Form Leads` table.
+- 📊 **Airtable** — `ALL WSM Leads` base → `Leads` table, with `Form Source` set to `Contact Us Form`.
 - 📧 **Resend email** — formatted HTML notification to `RESEND_NOTIFY_TO` (default `info@wynwoodschoolofmusic.com`).
 - 📬 **Mailchimp** — adds parent as subscriber to audience "Wynwood School of Music" with tags `Lead — Contact Form` + per-instrument tags.
 - 🔁 **Zapier** — webhook (`ZAPIER_CONTACT_WEBHOOK_URL`) → Basecamp to-do for the team.
@@ -233,7 +233,7 @@ currently handled by Stripe checkout on `/musicperformancecamp` instead.
 | **Status** | ✅ Wired |
 
 **Active destinations** (all fired in parallel by `/api/trial-lesson`):
-- 📊 Airtable → `Pvt Lesson Landing Page Leads` table.
+- 📊 Airtable → `Leads` table, with `Form Source` set to `Trial Lesson Form`.
 - 📧 Resend email → `RESEND_NOTIFY_TO`.
 - 📬 Mailchimp → tags `Lead — Trial Lesson` + `Instrument — <selected>`.
 - 🔁 Zapier (`ZAPIER_TRIAL_WEBHOOK_URL`) → Basecamp to-do.
