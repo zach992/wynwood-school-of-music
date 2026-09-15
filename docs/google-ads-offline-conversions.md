@@ -20,6 +20,7 @@ has been validated and has enough stable volume to be useful for bidding.
 ```text
 AIRTABLE_TOKEN
 AIRTABLE_BASE_ID
+AIRTABLE_LEADS_TABLE
 CRON_SECRET
 GOOGLE_DATA_MANAGER_PROJECT_ID
 GOOGLE_DATA_MANAGER_CLIENT_ID
@@ -32,8 +33,8 @@ GOOGLE_OFFLINE_CONVERSIONS_ENABLED
 GOOGLE_OFFLINE_CONVERSIONS_LIVE_ENABLED
 ```
 
-If the form routes use `AIRTABLE_CONTACT_TABLE` or `AIRTABLE_TRIAL_TABLE`
-overrides, the conversion feed automatically reads those same table names.
+Both website forms and the conversion feed use the unified `Leads` table. Set
+`AIRTABLE_LEADS_TABLE` only when a deployment needs a different table name.
 
 Current Google Ads IDs:
 

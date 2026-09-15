@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test:lead-table": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test src/lib/lead-table.test.ts",
+    "migrate:airtable-leads": "node scripts/migrate-airtable-leads.mjs",
     "diff-redirects": "node scripts/diff-squarespace-redirects.mjs",
     "sync-google-offline-conversions": "node scripts/run-google-offline-conversions.mjs"
   },

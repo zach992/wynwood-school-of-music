@@ -2,12 +2,10 @@ import "server-only";
 
 import { airtableList, airtableUpdate, type AirtableRecord } from "@/lib/airtable";
 import { ingestOfflineConversion } from "@/lib/google-data-manager";
+import { leadTableName } from "@/lib/lead-table";
 
 function leadTables(): string[] {
-  return [
-    process.env.AIRTABLE_CONTACT_TABLE || "Main Contact Form Leads",
-    process.env.AIRTABLE_TRIAL_TABLE || "Pvt Lesson Landing Page Leads",
-  ];
+  return [leadTableName()];
 }
 const FIELDS = [
   "Lead ID",
