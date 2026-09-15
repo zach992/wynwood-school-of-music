@@ -3,7 +3,12 @@ import "server-only";
 import { airtableList, airtableUpdate, type AirtableRecord } from "@/lib/airtable";
 import { ingestOfflineConversion } from "@/lib/google-data-manager";
 
-const TABLES = ["Main Contact Form Leads", "Pvt Lesson Landing Page Leads"] as const;
+function leadTables(): string[] {
+  return [
+    process.env.AIRTABLE_CONTACT_TABLE || "Main Contact Form Leads",
+    process.env.AIRTABLE_TRIAL_TABLE || "Pvt Lesson Landing Page Leads",
+  ];
+}
 const FIELDS = [
   "Lead ID",
   "Parent Email",
@@ -52,7 +57,7 @@ function errorMessage(stage: Stage, error: unknown): string {
 }
 
 async function uploadStage(
-  table: (typeof TABLES)[number],
+  table: string,
   record: AirtableRecord,
   stage: Stage,
   validateOnly: boolean
@@ -95,18 +100,6 @@ async function uploadStage(
       warningCount: response.fieldWarnings.length,
     });
   }
-
-  if (!validateOnly) {
-    await airtableUpdate(
-      table,
-      record.id,
-      {
-        [stage === "qualified"
-          ? "Google Qualified Lead Uploaded At"
-          : "Google Enrolled Student Uploaded At"]: new Date().toISOString(),
-      }
-    );
-  }
 }
 
 export async function syncOfflineConversions(options: {
@@ -122,7 +115,7 @@ export async function syncOfflineConversions(options: {
     failed: 0,
   };
 
-  for (const table of TABLES) {
+  for (const table of new Set(leadTables())) {
     // Only post-deployment leads have a Lead ID. Requiring it prevents an
     // accidental historical backfill and gives every event a stable key.
     const records = await airtableList(table, {
@@ -147,11 +140,15 @@ export async function syncOfflineConversions(options: {
       }
 
       const errors: string[] = [];
+      const uploadedStages: Stage[] = [];
       for (const stage of stages) {
         try {
           await uploadStage(table, record, stage, validateOnly);
           if (validateOnly) summary.validated += 1;
-          else summary.uploaded += 1;
+          else {
+            summary.uploaded += 1;
+            uploadedStages.push(stage);
+          }
         } catch (error) {
           summary.failed += 1;
           errors.push(errorMessage(stage, error));
@@ -166,14 +163,27 @@ export async function syncOfflineConversions(options: {
 
       if (!validateOnly) {
         try {
+          const uploadedAt = new Date().toISOString();
+          const statusFields: Record<string, string | null> = {
+            "Google Ads Upload Error": errors.length
+              ? `${uploadedAt} — ${errors.join(" | ")}`.slice(0, 10_000)
+              : null,
+          };
+          for (const stage of uploadedStages) {
+            statusFields[
+              stage === "qualified"
+                ? "Google Qualified Lead Uploaded At"
+                : "Google Enrolled Student Uploaded At"
+            ] = uploadedAt;
+          }
+
+          // Persist all successful stage timestamps and the combined diagnostic
+          // atomically. If this PATCH fails, no timestamp advances, so the
+          // stable transaction IDs make the whole record safe to retry.
           await airtableUpdate(
             table,
             record.id,
-            {
-              "Google Ads Upload Error": errors.length
-                ? `${new Date().toISOString()} — ${errors.join(" | ")}`.slice(0, 10_000)
-                : null,
-            },
+            statusFields,
             { preserveNullFields: true }
           );
         } catch (airtableError) {

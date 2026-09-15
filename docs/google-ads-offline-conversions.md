@@ -32,6 +32,9 @@ GOOGLE_OFFLINE_CONVERSIONS_ENABLED
 GOOGLE_OFFLINE_CONVERSIONS_LIVE_ENABLED
 ```
 
+If the form routes use `AIRTABLE_CONTACT_TABLE` or `AIRTABLE_TRIAL_TABLE`
+overrides, the conversion feed automatically reads those same table names.
+
 Current Google Ads IDs:
 
 ```text
