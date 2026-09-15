@@ -3,8 +3,33 @@
 import { useEffect } from "react";
 import posthog from "posthog-js";
 
+// The dedupe flag lives in localStorage, not sessionStorage. Mobile Safari and
+// Chrome iOS evict backgrounded tabs under memory pressure and re-navigate to
+// the stored URL when the user returns, which resurrects the success_url with a
+// blank sessionStorage and re-fires the event — silently, without the user
+// doing anything. localStorage survives that, plus browser restarts and
+// reopening the URL in a new tab.
+//
+// Both helpers swallow storage errors: access throws when a browser blocks site
+// data, and degrading to "fire once per page load" beats throwing in the effect.
+function alreadyFired(key: string) {
+  try {
+    return localStorage.getItem(key) !== null;
+  } catch {
+    return false;
+  }
+}
+
+function markFired(key: string) {
+  try {
+    localStorage.setItem(key, "1");
+  } catch {
+    // Capture already happened; only the dedupe guarantee is lost.
+  }
+}
+
 // Fires once when the Stripe success_url lands. The sessionId comes from
-// Stripe's {CHECKOUT_SESSION_ID} substitution and dedupes refreshes.
+// Stripe's {CHECKOUT_SESSION_ID} substitution and dedupes repeat loads.
 //
 // PostHogProvider initializes the client in its own useEffect. On the
 // initial mount after the full-page navigation back from Stripe, React
@@ -22,18 +47,18 @@ export default function CheckoutCompletedTracker({
     const sessionId = params.get("session_id");
     if (!sessionId) return;
     const key = `ph_checkout_completed:${sessionId}`;
-    if (sessionStorage.getItem(key)) return;
+    if (alreadyFired(key)) return;
 
     let cancelled = false;
 
     const fire = () => {
       if (cancelled) return;
-      if (sessionStorage.getItem(key)) return;
+      if (alreadyFired(key)) return;
       posthog.capture("checkout_completed", {
         product,
         stripe_session_id: sessionId,
       });
-      sessionStorage.setItem(key, "1");
+      markFired(key);
     };
 
     const isLoaded = () =>
