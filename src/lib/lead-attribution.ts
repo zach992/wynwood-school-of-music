@@ -93,14 +93,30 @@ function readStoredAttribution(
     const capturedAt = stored.capturedAt ? Date.parse(stored.capturedAt) : NaN;
     const age = Date.now() - capturedAt;
 
+    if (
+      storageName === "sessionStorage" &&
+      age > ATTRIBUTION_TTL_MS &&
+      hasCampaignAttribution(stored)
+    ) {
+      // Campaign identifiers expire after 90 days, but the landing/referrer
+      // still describe this active browser session. Downgrade the record
+      // instead of discarding the session context with the expired click.
+      const sessionOnly = sanitizeLeadAttribution({
+        landingPage: stored.landingPage,
+        referrer: stored.referrer,
+        capturedAt: stored.capturedAt,
+      });
+      writeStoredAttribution(storageName, storageKey, sessionOnly);
+      return sessionOnly;
+    }
+
     // Never let tagged campaign data claim a new lead beyond its 90-day
     // window, regardless of which store holds the fallback copy. Untagged
     // session data follows the browser session's lifetime. Missing, malformed,
     // or implausibly future timestamps remain invalid in either store.
     if (
       !Number.isFinite(capturedAt) ||
-      (age > ATTRIBUTION_TTL_MS &&
-        (storageName === "localStorage" || hasCampaignAttribution(stored))) ||
+      (storageName === "localStorage" && age > ATTRIBUTION_TTL_MS) ||
       age < -MAX_CLOCK_SKEW_MS
     ) {
       removeStoredAttribution();

@@ -280,13 +280,14 @@ test("organic attribution survives for the full restored browser session", () =>
   assert.equal(attribution.referrer, "https://www.google.com/");
 });
 
-test("tagged session fallback still expires after 90 days", () => {
+test("an expired tagged session keeps landing context but drops campaign fields", () => {
   const sessionStorage = new MemoryStorage();
   sessionStorage.setItem(
     "wsm_lead_session_attribution_v1",
     JSON.stringify({
       gclid: "expired-session-click",
       landingPage: "https://www.wynwoodschoolofmusic.com/paid-landing",
+      referrer: "https://www.google.com/",
       capturedAt: new Date(Date.now() - 91 * 24 * 60 * 60 * 1_000).toISOString(),
     })
   );
@@ -297,15 +298,17 @@ test("tagged session fallback still expires after 90 days", () => {
     sessionStorage
   );
 
-  captureLeadAttributionFromUrl();
-
   const attribution = getLeadAttribution();
   assert.equal(attribution.gclid, undefined);
   assert.equal(
     attribution.landingPage,
-    "https://www.wynwoodschoolofmusic.com/contact"
+    "https://www.wynwoodschoolofmusic.com/paid-landing"
   );
   assert.equal(attribution.referrer, "https://www.google.com/");
+  assert.equal(
+    JSON.parse(sessionStorage.getItem("wsm_lead_session_attribution_v1") || "{}").gclid,
+    undefined
+  );
 });
 
 test("tagged attribution falls back to session storage when persistence is blocked", () => {
