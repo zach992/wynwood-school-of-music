@@ -60,7 +60,7 @@ const targetFields = [
   { name: "Lesson Type", type: "singleSelect", options: { choices: [choice("Private Lessons"), choice("Band and Private Lesson")] } },
   { name: "Instruments", type: "multipleSelects", options: { choices: [
     "Acoustic Guitar", "Bass", "Cello", "Drums", "Electric Bass", "Electric Guitar",
-    "Guitar", "Keyboard", "Music Production", "Music Theory", "Musical Theater (Voice)",
+    "Guitar", "Horns (Saxophone, Trumpet)", "Keyboard", "Music Production", "Music Theory", "Musical Theater (Voice)",
     "Saxophone", "Songwriting", "Spoken Word / Poetry", "Strings (Violin, Viola, Cello)",
     "Trumpet", "Ukulele", "Viola", "Violin", "Voice",
   ].map(choice) } },
