@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "diff-redirects": "node scripts/diff-squarespace-redirects.mjs"
+    "diff-redirects": "node scripts/diff-squarespace-redirects.mjs",
+    "sync-google-offline-conversions": "node scripts/run-google-offline-conversions.mjs"
   },
   "dependencies": {
     "next": "16.2.4",
