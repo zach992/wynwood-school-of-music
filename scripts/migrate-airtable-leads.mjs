@@ -191,6 +191,14 @@ async function createRecords(tableName, records) {
 }
 
 async function main() {
+  const distinctTableNames = new Set([
+    TARGET_TABLE,
+    ...SOURCE_TABLES.map((source) => source.name),
+  ].map((name) => name.toLocaleLowerCase()));
+  if (distinctTableNames.size !== SOURCE_TABLES.length + 1) {
+    throw new Error("Target and legacy source table names must be distinct");
+  }
+
   const tables = await getTables();
   for (const source of SOURCE_TABLES) {
     if (!tables.some((table) => table.name === source.name)) {
