@@ -147,9 +147,11 @@ export async function syncOfflineConversions(options: {
         "AND(NOT({Lead ID}=BLANK()),OR(AND(OR({Final Outcome}='Qualified – Not Enrolled',{Final Outcome}='Enrolled'),{Google Qualified Lead Uploaded At}=BLANK()),AND({Final Outcome}='Enrolled',{Google Enrolled Student Uploaded At}=BLANK())))",
     });
     const maxRecords = Math.max(0, options.maxRecordsPerTable ?? 100);
-    const records = prioritizePendingRecords(pendingRecords).slice(0, maxRecords);
+    const records = prioritizePendingRecords(pendingRecords);
+    let checkpointedRecords = 0;
 
     for (const record of records) {
+      if (checkpointedRecords >= maxRecords) break;
       summary.scanned += 1;
       const outcome = stringField(record, "Final Outcome");
       const stages: Stage[] = [];
@@ -185,7 +187,9 @@ export async function syncOfflineConversions(options: {
         }
       }
 
-      if (!validateOnly) {
+      if (validateOnly) {
+        checkpointedRecords += 1;
+      } else {
         try {
           const uploadedAt = new Date().toISOString();
           const statusFields: Record<string, string | null> = {
@@ -210,6 +214,7 @@ export async function syncOfflineConversions(options: {
             statusFields,
             { preserveNullFields: true }
           );
+          checkpointedRecords += 1;
         } catch (airtableError) {
           summary.failed += 1;
           // Keep processing other leads even when the diagnostic write is the
@@ -222,8 +227,11 @@ export async function syncOfflineConversions(options: {
             error:
               airtableError instanceof Error
                 ? airtableError.message
-                : String(airtableError),
+              : String(airtableError),
           });
+          // Do not let an uncheckpointed record consume the table's workload
+          // allowance. Continue farther through this run so persistent write
+          // failures cannot hold newer leads behind the cap.
         }
       }
     }
