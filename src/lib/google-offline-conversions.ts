@@ -22,6 +22,7 @@ const FIELDS = [
   "Submitted",
   "Google Qualified Lead Uploaded At",
   "Google Enrolled Student Uploaded At",
+  "Google Ads Upload Error",
 ] as const;
 
 type Stage = "qualified" | "enrolled";
@@ -54,6 +55,28 @@ function eventTimestamp(record: AirtableRecord, stage: Stage): string {
 function errorMessage(stage: Stage, error: unknown): string {
   const message = error instanceof Error ? error.message : String(error);
   return `${stage}: ${message}`;
+}
+
+function retryTimestamp(record: AirtableRecord): number {
+  const diagnostic = stringField(record, "Google Ads Upload Error");
+  if (!diagnostic) return 0;
+  const timestamp = diagnostic.split(" — ", 1)[0];
+  const parsed = Date.parse(timestamp);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function prioritizePendingRecords(records: AirtableRecord[]): AirtableRecord[] {
+  return records.sort((left, right) => {
+    const leftHasError = Boolean(stringField(left, "Google Ads Upload Error"));
+    const rightHasError = Boolean(stringField(right, "Google Ads Upload Error"));
+
+    // Never let retries block a lead that has not had its first attempt yet.
+    if (leftHasError !== rightHasError) return leftHasError ? 1 : -1;
+    // Retried failures receive a fresh ISO timestamp, so oldest-first ordering
+    // rotates every failed record through a bounded daily workload.
+    if (leftHasError) return retryTimestamp(left) - retryTimestamp(right);
+    return 0;
+  });
 }
 
 async function uploadStage(
@@ -118,12 +141,13 @@ export async function syncOfflineConversions(options: {
   for (const table of new Set(leadTables())) {
     // Only post-deployment leads have a Lead ID. Requiring it prevents an
     // accidental historical backfill and gives every event a stable key.
-    const records = await airtableList(table, {
+    const pendingRecords = await airtableList(table, {
       fields: [...FIELDS],
       filterByFormula:
         "AND(NOT({Lead ID}=BLANK()),OR(AND(OR({Final Outcome}='Qualified – Not Enrolled',{Final Outcome}='Enrolled'),{Google Qualified Lead Uploaded At}=BLANK()),AND({Final Outcome}='Enrolled',{Google Enrolled Student Uploaded At}=BLANK())))",
-      maxRecords: options.maxRecordsPerTable ?? 100,
     });
+    const maxRecords = Math.max(0, options.maxRecordsPerTable ?? 100);
+    const records = prioritizePendingRecords(pendingRecords).slice(0, maxRecords);
 
     for (const record of records) {
       summary.scanned += 1;
@@ -187,8 +211,11 @@ export async function syncOfflineConversions(options: {
             { preserveNullFields: true }
           );
         } catch (airtableError) {
+          summary.failed += 1;
           // Keep processing other leads even when the diagnostic write is the
-          // part that failed. Stable transaction IDs make later retries safe.
+          // part that failed. Reporting it in the summary makes the endpoint
+          // and Railway worker fail while stable transaction IDs keep retries
+          // safe.
           console.error("Could not update Google Ads status in Airtable", {
             table,
             recordId: record.id,
