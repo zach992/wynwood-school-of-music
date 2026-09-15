@@ -122,6 +122,22 @@ test("internal navigation does not overwrite the first untagged landing page", (
   assert.equal(attribution.referrer, "https://www.bing.com/");
 });
 
+test("does not treat a same-site URL as an acquisition referrer", () => {
+  installBrowser(
+    "https://www.wynwoodschoolofmusic.com/contact",
+    "https://www.wynwoodschoolofmusic.com/private-lessons"
+  );
+
+  captureLeadAttributionFromUrl();
+
+  const attribution = getLeadAttribution();
+  assert.equal(
+    attribution.landingPage,
+    "https://www.wynwoodschoolofmusic.com/contact"
+  );
+  assert.equal(attribution.referrer, undefined);
+});
+
 test("a newly tagged visit replaces untagged session attribution", () => {
   const localStorage = new MemoryStorage();
   const sessionStorage = new MemoryStorage();
@@ -170,6 +186,44 @@ test("a later direct visit does not erase attribution from a recent paid click",
     attribution.landingPage,
     "https://www.wynwoodschoolofmusic.com/?utm_source=google&utm_medium=cpc&gclid=paid-click"
   );
+});
+
+test("keeps the organic session as a fallback after paid attribution expires", () => {
+  const localStorage = new MemoryStorage();
+  const sessionStorage = new MemoryStorage();
+  localStorage.setItem(
+    "wsm_lead_attribution_v1",
+    JSON.stringify({
+      gclid: "still-valid-click",
+      landingPage: "https://www.wynwoodschoolofmusic.com/paid-landing",
+      capturedAt: new Date(Date.now() - 89 * 24 * 60 * 60 * 1_000).toISOString(),
+    })
+  );
+  installBrowser(
+    "https://www.wynwoodschoolofmusic.com/private-lessons",
+    "https://www.google.com/",
+    localStorage,
+    sessionStorage
+  );
+  captureLeadAttributionFromUrl();
+
+  assert.equal(getLeadAttribution().gclid, "still-valid-click");
+
+  localStorage.setItem(
+    "wsm_lead_attribution_v1",
+    JSON.stringify({
+      gclid: "expired-click",
+      landingPage: "https://www.wynwoodschoolofmusic.com/paid-landing",
+      capturedAt: new Date(Date.now() - 91 * 24 * 60 * 60 * 1_000).toISOString(),
+    })
+  );
+  const attribution = getLeadAttribution();
+  assert.equal(attribution.gclid, undefined);
+  assert.equal(
+    attribution.landingPage,
+    "https://www.wynwoodschoolofmusic.com/private-lessons"
+  );
+  assert.equal(attribution.referrer, "https://www.google.com/");
 });
 
 test("expired paid attribution yields to the current organic session", () => {

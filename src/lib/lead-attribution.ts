@@ -128,16 +128,41 @@ function writeStoredAttribution(
   }
 }
 
+function hasCampaignAttribution(attribution: LeadAttribution): boolean {
+  return Object.values(queryMappings).some((field) => Boolean(attribution[field]));
+}
+
 function newestStoredAttribution(
   session: LeadAttribution,
   persistent: LeadAttribution
 ): LeadAttribution {
+  const sessionIsTagged = hasCampaignAttribution(session);
+  const persistentIsTagged = hasCampaignAttribution(persistent);
+  if (sessionIsTagged !== persistentIsTagged) {
+    return sessionIsTagged ? session : persistent;
+  }
+
   const sessionCapturedAt = Date.parse(session.capturedAt || "");
   const persistentCapturedAt = Date.parse(persistent.capturedAt || "");
 
   if (!Number.isFinite(sessionCapturedAt)) return persistent;
   if (!Number.isFinite(persistentCapturedAt)) return session;
   return sessionCapturedAt > persistentCapturedAt ? session : persistent;
+}
+
+function externalReferrer(): string | undefined {
+  const referrer = cleanString(document.referrer, MAX_URL_VALUE);
+  if (!referrer) return undefined;
+
+  try {
+    return new URL(referrer).origin === new URL(window.location.href).origin
+      ? undefined
+      : referrer;
+  } catch {
+    // Browsers normally expose an absolute referrer. If a nonstandard client
+    // supplies something else, retain the bounded value rather than throwing.
+    return referrer;
+  }
 }
 
 /**
@@ -151,17 +176,17 @@ export function captureLeadAttributionFromUrl(): void {
   const hasAttribution = Object.keys(queryMappings).some((key) => params.has(key));
 
   if (!hasAttribution) {
-    const persistent = readStoredAttribution("localStorage", STORAGE_KEY);
     const session = readStoredAttribution("sessionStorage", SESSION_STORAGE_KEY);
 
-    // Preserve a paid/tagged visit for its 90-day attribution window, and
-    // preserve the first page of the current untagged browsing session while
-    // the visitor moves around the site.
-    if (Object.keys(persistent).length || Object.keys(session).length) return;
+    // Preserve the first page of the current untagged browsing session while
+    // the visitor moves around the site. A separate persistent paid record
+    // still takes precedence until it expires, but this session record remains
+    // available as an organic fallback after that point.
+    if (Object.keys(session).length) return;
 
     writeStoredAttribution("sessionStorage", SESSION_STORAGE_KEY, {
       landingPage: window.location.href,
-      referrer: document.referrer || undefined,
+      referrer: externalReferrer(),
       capturedAt: new Date().toISOString(),
     });
     return;
@@ -172,7 +197,7 @@ export function captureLeadAttributionFromUrl(): void {
   // could credit the wrong campaign.
   const next: LeadAttribution = {
     landingPage: window.location.href,
-    referrer: document.referrer || undefined,
+    referrer: externalReferrer(),
     capturedAt: new Date().toISOString(),
   };
 
