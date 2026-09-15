@@ -65,6 +65,12 @@ function retryTimestamp(record: AirtableRecord): number {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
+function submittedTimestamp(record: AirtableRecord): number {
+  const submitted = stringField(record, "Submitted") ?? record.createdTime;
+  const parsed = submitted ? Date.parse(submitted) : 0;
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
 function prioritizePendingRecords(records: AirtableRecord[]): AirtableRecord[] {
   return records.sort((left, right) => {
     const leftHasError = Boolean(stringField(left, "Google Ads Upload Error"));
@@ -75,7 +81,10 @@ function prioritizePendingRecords(records: AirtableRecord[]): AirtableRecord[] {
     // Retried failures receive a fresh ISO timestamp, so oldest-first ordering
     // rotates every failed record through a bounded daily workload.
     if (leftHasError) return retryTimestamp(left) - retryTimestamp(right);
-    return 0;
+    // A status-write outage leaves no diagnostic behind. Newest-first ordering
+    // prevents old uncheckpointed rows from permanently blocking newer leads;
+    // after recovery, successful checkpoints drain the remaining backlog.
+    return submittedTimestamp(right) - submittedTimestamp(left);
   });
 }
 
@@ -158,10 +167,11 @@ export async function syncOfflineConversions(options: {
     }
     const maxRecords = Math.max(0, options.maxRecordsPerTable ?? 100);
     const records = prioritizePendingRecords(pendingRecords);
-    let checkpointedRecords = 0;
+    let attemptedRecords = 0;
 
     for (const record of records) {
-      if (checkpointedRecords >= maxRecords) break;
+      if (attemptedRecords >= maxRecords) break;
+      attemptedRecords += 1;
       summary.scanned += 1;
       const outcome = stringField(record, "Final Outcome");
       const stages: Stage[] = [];
@@ -197,9 +207,7 @@ export async function syncOfflineConversions(options: {
         }
       }
 
-      if (validateOnly) {
-        checkpointedRecords += 1;
-      } else {
+      if (!validateOnly) {
         try {
           const uploadedAt = new Date().toISOString();
           const statusFields: Record<string, string | null> = {
@@ -224,7 +232,6 @@ export async function syncOfflineConversions(options: {
             statusFields,
             { preserveNullFields: true }
           );
-          checkpointedRecords += 1;
         } catch (airtableError) {
           summary.failed += 1;
           // Keep processing other leads even when the diagnostic write is the
@@ -239,9 +246,6 @@ export async function syncOfflineConversions(options: {
                 ? airtableError.message
               : String(airtableError),
           });
-          // Do not let an uncheckpointed record consume the table's workload
-          // allowance. Continue farther through this run so persistent write
-          // failures cannot hold newer leads behind the cap.
         }
       }
     }
