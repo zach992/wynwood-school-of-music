@@ -48,6 +48,15 @@ class BlockedStorage extends MemoryStorage {
   }
 }
 
+class WriteBlockedStorage extends MemoryStorage {
+  writesBlocked = false;
+
+  override setItem(key: string, value: string): void {
+    if (this.writesBlocked) throw new Error("storage write blocked");
+    super.setItem(key, value);
+  }
+}
+
 function installBrowser(
   url: string,
   referrer: string,
@@ -198,6 +207,66 @@ test("tagged attribution falls back to session storage when persistence is block
   assert.doesNotThrow(() => captureLeadAttributionFromUrl());
   const attribution = getLeadAttribution();
   assert.equal(attribution.gclid, "session-click");
+  assert.equal(attribution.landingPage, taggedUrl);
+});
+
+test("selects the newest complete tagged visit instead of merging two tabs", () => {
+  const localStorage = new MemoryStorage();
+  const sessionStorage = new MemoryStorage();
+  localStorage.setItem(
+    "wsm_lead_attribution_v1",
+    JSON.stringify({
+      utmSource: "new-campaign",
+      landingPage: "https://www.wynwoodschoolofmusic.com/new-landing",
+      capturedAt: "2026-09-15T15:00:00.000Z",
+    })
+  );
+  sessionStorage.setItem(
+    "wsm_lead_session_attribution_v1",
+    JSON.stringify({
+      gclid: "old-click-that-must-not-leak",
+      landingPage: "https://www.wynwoodschoolofmusic.com/old-landing",
+      capturedAt: "2026-09-15T14:00:00.000Z",
+    })
+  );
+  installBrowser(
+    "https://www.wynwoodschoolofmusic.com/contact",
+    "",
+    localStorage,
+    sessionStorage
+  );
+
+  const attribution = getLeadAttribution();
+  assert.equal(attribution.utmSource, "new-campaign");
+  assert.equal(attribution.gclid, undefined);
+  assert.equal(
+    attribution.landingPage,
+    "https://www.wynwoodschoolofmusic.com/new-landing"
+  );
+});
+
+test("uses the newer session record when replacing old persistence fails", () => {
+  const localStorage = new WriteBlockedStorage();
+  localStorage.setItem(
+    "wsm_lead_attribution_v1",
+    JSON.stringify({
+      gclid: "old-click-that-must-not-leak",
+      landingPage: "https://www.wynwoodschoolofmusic.com/old-landing",
+      capturedAt: "2026-09-14T00:00:00.000Z",
+    })
+  );
+  localStorage.writesBlocked = true;
+  const sessionStorage = new MemoryStorage();
+  const taggedUrl =
+    "https://www.wynwoodschoolofmusic.com/trial-music-lesson?utm_source=new-campaign&utm_medium=email";
+  installBrowser(taggedUrl, "", localStorage, sessionStorage);
+
+  captureLeadAttributionFromUrl();
+
+  const attribution = getLeadAttribution();
+  assert.equal(attribution.utmSource, "new-campaign");
+  assert.equal(attribution.utmMedium, "email");
+  assert.equal(attribution.gclid, undefined);
   assert.equal(attribution.landingPage, taggedUrl);
 });
 

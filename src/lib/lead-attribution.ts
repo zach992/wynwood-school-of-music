@@ -128,6 +128,18 @@ function writeStoredAttribution(
   }
 }
 
+function newestStoredAttribution(
+  session: LeadAttribution,
+  persistent: LeadAttribution
+): LeadAttribution {
+  const sessionCapturedAt = Date.parse(session.capturedAt || "");
+  const persistentCapturedAt = Date.parse(persistent.capturedAt || "");
+
+  if (!Number.isFinite(sessionCapturedAt)) return persistent;
+  if (!Number.isFinite(persistentCapturedAt)) return session;
+  return sessionCapturedAt > persistentCapturedAt ? session : persistent;
+}
+
 /**
  * Save the first page of an untagged session or the most recent tagged visit.
  * Direct/internal navigation does not erase either the current session entry
@@ -177,9 +189,12 @@ export function captureLeadAttributionFromUrl(): void {
 }
 
 export function getLeadAttribution(posthogDistinctId?: string): LeadAttribution {
+  const stored = newestStoredAttribution(
+    readStoredAttribution("sessionStorage", SESSION_STORAGE_KEY),
+    readStoredAttribution("localStorage", STORAGE_KEY)
+  );
   return sanitizeLeadAttribution({
-    ...readStoredAttribution("sessionStorage", SESSION_STORAGE_KEY),
-    ...readStoredAttribution("localStorage", STORAGE_KEY),
+    ...stored,
     posthogDistinctId,
   });
 }
