@@ -242,12 +242,15 @@ currently handled by Stripe checkout on `/musicperformancecamp` instead.
 
 **Notes:** This is the ad/landing-page funnel ("Play Your First Song in 30 Days"). Likely tied to paid traffic and may have its own analytics/conversion tracking requirements.
 
-**Lead attribution:** Tagged visits are persisted in the browser for up to 90
-days and sent with accepted Contact and Trial Lesson submissions. Each new Airtable row receives a
-unique `Lead ID`, Google click IDs (`GCLID`/`GBRAID`/`WBRAID`), UTMs, ValueTrack
-campaign/ad metadata, landing page, referrer, and PostHog distinct ID. The same
-`Lead ID` is attached to PostHog's `form_submitted` event, providing the
-non-PII join key for later lifecycle events and offline conversion reporting.
+**Lead attribution:** Every visit retains its first landing page and external
+referrer for the current browser session. Tagged visits additionally persist for
+up to 90 days so later direct/internal navigation cannot erase a recent paid
+click. Accepted Contact and Trial Lesson submissions send that context to Airtable.
+Each new row receives a unique `Lead ID`, Google click IDs
+(`GCLID`/`GBRAID`/`WBRAID`), UTMs, ValueTrack campaign/ad metadata when present,
+landing page, referrer, and PostHog distinct ID. The same `Lead ID` is attached to
+PostHog's `form_submitted` event, providing the non-PII join key for later
+lifecycle events and offline conversion reporting.
 
 **Fields:**
 1. Student Name (first + last) — required

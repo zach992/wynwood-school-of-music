@@ -19,6 +19,7 @@ export type LeadAttribution = {
 };
 
 const STORAGE_KEY = "wsm_lead_attribution_v1";
+const SESSION_STORAGE_KEY = "wsm_lead_session_attribution_v1";
 const MAX_SHORT_VALUE = 500;
 const MAX_URL_VALUE = 2_000;
 const ATTRIBUTION_TTL_MS = 90 * 24 * 60 * 60 * 1_000;
@@ -70,12 +71,15 @@ export function sanitizeLeadAttribution(value: unknown): LeadAttribution {
   ) as LeadAttribution;
 }
 
-function readStoredAttribution(): LeadAttribution {
+function readStoredAttribution(
+  storageName: "localStorage" | "sessionStorage",
+  storageKey: string
+): LeadAttribution {
   if (typeof window === "undefined") return {};
 
   const removeStoredAttribution = () => {
     try {
-      window.localStorage.removeItem(STORAGE_KEY);
+      window[storageName].removeItem(storageKey);
     } catch {
       // Storage may be blocked by browser policy. Attribution is optional, so
       // failed cleanup must not prevent a lead form from being submitted.
@@ -84,7 +88,7 @@ function readStoredAttribution(): LeadAttribution {
 
   try {
     const stored = sanitizeLeadAttribution(
-      JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "{}")
+      JSON.parse(window[storageName].getItem(storageKey) || "{}")
     );
     const capturedAt = stored.capturedAt ? Date.parse(stored.capturedAt) : NaN;
     const age = Date.now() - capturedAt;
@@ -108,15 +112,48 @@ function readStoredAttribution(): LeadAttribution {
   }
 }
 
+function writeStoredAttribution(
+  storageName: "localStorage" | "sessionStorage",
+  storageKey: string,
+  attribution: LeadAttribution
+): void {
+  try {
+    window[storageName].setItem(
+      storageKey,
+      JSON.stringify(sanitizeLeadAttribution(attribution))
+    );
+  } catch {
+    // Storage may be blocked by browser policy. Attribution is optional, so a
+    // failed write must never prevent navigation or form submission.
+  }
+}
+
 /**
- * Save the most recent tagged visit. Direct/internal navigation does not erase
- * the paid click that brought the lead to the site.
+ * Save the first page of an untagged session or the most recent tagged visit.
+ * Direct/internal navigation does not erase either the current session entry
+ * or a paid click that is still inside its attribution window.
  */
 export function captureLeadAttributionFromUrl(): void {
   if (typeof window === "undefined") return;
   const params = new URLSearchParams(window.location.search);
   const hasAttribution = Object.keys(queryMappings).some((key) => params.has(key));
-  if (!hasAttribution) return;
+
+  if (!hasAttribution) {
+    const persistent = readStoredAttribution("localStorage", STORAGE_KEY);
+    const session = readStoredAttribution("sessionStorage", SESSION_STORAGE_KEY);
+
+    // Preserve a paid/tagged visit for its 90-day attribution window, and
+    // preserve the first page of the current untagged browsing session while
+    // the visitor moves around the site.
+    if (Object.keys(persistent).length || Object.keys(session).length) return;
+
+    writeStoredAttribution("sessionStorage", SESSION_STORAGE_KEY, {
+      landingPage: window.location.href,
+      referrer: document.referrer || undefined,
+      capturedAt: new Date().toISOString(),
+    });
+    return;
+  }
 
   // Start fresh for each newly tagged visit. Carrying an older GCLID into a
   // newer UTM-only visit (or vice versa) would join two different touches and
@@ -132,16 +169,17 @@ export function captureLeadAttributionFromUrl(): void {
     if (value) next[field as keyof LeadAttribution] = value;
   }
 
-  try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(sanitizeLeadAttribution(next)));
-  } catch {
-    // Attribution must never interfere with navigation or form submission.
-  }
+  // Tagged visits persist for the attribution window. The session copy is a
+  // fallback for browsers that block persistent storage and also replaces any
+  // untagged landing page captured earlier in the same tab.
+  writeStoredAttribution("localStorage", STORAGE_KEY, next);
+  writeStoredAttribution("sessionStorage", SESSION_STORAGE_KEY, next);
 }
 
 export function getLeadAttribution(posthogDistinctId?: string): LeadAttribution {
   return sanitizeLeadAttribution({
-    ...readStoredAttribution(),
+    ...readStoredAttribution("sessionStorage", SESSION_STORAGE_KEY),
+    ...readStoredAttribution("localStorage", STORAGE_KEY),
     posthogDistinctId,
   });
 }
