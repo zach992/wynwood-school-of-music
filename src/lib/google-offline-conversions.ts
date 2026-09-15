@@ -46,9 +46,9 @@ function eventTimestamp(record: AirtableRecord, stage: Stage): string {
   throw new Error(`Lead ${record.id} has no valid conversion timestamp`);
 }
 
-function errorMessage(error: unknown): string {
+function errorMessage(stage: Stage, error: unknown): string {
   const message = error instanceof Error ? error.message : String(error);
-  return `${new Date().toISOString()} — ${message}`.slice(0, 10_000);
+  return `${stage}: ${message}`;
 }
 
 async function uploadStage(
@@ -104,9 +104,7 @@ async function uploadStage(
         [stage === "qualified"
           ? "Google Qualified Lead Uploaded At"
           : "Google Enrolled Student Uploaded At"]: new Date().toISOString(),
-        "Google Ads Upload Error": null,
-      },
-      { preserveNullFields: true }
+      }
     );
   }
 }
@@ -130,7 +128,7 @@ export async function syncOfflineConversions(options: {
     const records = await airtableList(table, {
       fields: [...FIELDS],
       filterByFormula:
-        "AND(NOT({Lead ID}=BLANK()),OR({Final Outcome}='Qualified – Not Enrolled',{Final Outcome}='Enrolled'))",
+        "AND(NOT({Lead ID}=BLANK()),OR(AND(OR({Final Outcome}='Qualified – Not Enrolled',{Final Outcome}='Enrolled'),{Google Qualified Lead Uploaded At}=BLANK()),AND({Final Outcome}='Enrolled',{Google Enrolled Student Uploaded At}=BLANK())))",
       maxRecords: options.maxRecordsPerTable ?? 100,
     });
 
@@ -148,6 +146,7 @@ export async function syncOfflineConversions(options: {
         continue;
       }
 
+      const errors: string[] = [];
       for (const stage of stages) {
         try {
           await uploadStage(table, record, stage, validateOnly);
@@ -155,31 +154,39 @@ export async function syncOfflineConversions(options: {
           else summary.uploaded += 1;
         } catch (error) {
           summary.failed += 1;
+          errors.push(errorMessage(stage, error));
           console.error("Offline conversion upload failed", {
             table,
             recordId: record.id,
             stage,
             error: error instanceof Error ? error.message : String(error),
           });
-          if (!validateOnly) {
-            try {
-              await airtableUpdate(table, record.id, {
-                "Google Ads Upload Error": errorMessage(error),
-              });
-            } catch (airtableError) {
-              // Keep processing other leads even when the diagnostic write is
-              // the part that failed. The stable transaction ID makes a later
-              // retry safe if Google accepted the conversion first.
-              console.error("Could not write Google Ads error to Airtable", {
-                table,
-                recordId: record.id,
-                error:
-                  airtableError instanceof Error
-                    ? airtableError.message
-                    : String(airtableError),
-              });
-            }
-          }
+        }
+      }
+
+      if (!validateOnly) {
+        try {
+          await airtableUpdate(
+            table,
+            record.id,
+            {
+              "Google Ads Upload Error": errors.length
+                ? `${new Date().toISOString()} — ${errors.join(" | ")}`.slice(0, 10_000)
+                : null,
+            },
+            { preserveNullFields: true }
+          );
+        } catch (airtableError) {
+          // Keep processing other leads even when the diagnostic write is the
+          // part that failed. Stable transaction IDs make later retries safe.
+          console.error("Could not update Google Ads status in Airtable", {
+            table,
+            recordId: record.id,
+            error:
+              airtableError instanceof Error
+                ? airtableError.message
+                : String(airtableError),
+          });
         }
       }
     }

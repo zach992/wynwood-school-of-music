@@ -29,6 +29,7 @@ GOOGLE_ADS_CUSTOMER_ID
 GOOGLE_ADS_QUALIFIED_LEAD_ACTION_ID
 GOOGLE_ADS_ENROLLED_STUDENT_ACTION_ID
 GOOGLE_OFFLINE_CONVERSIONS_ENABLED
+GOOGLE_OFFLINE_CONVERSIONS_LIVE_ENABLED
 ```
 
 Current Google Ads IDs:
@@ -38,10 +39,27 @@ GOOGLE_ADS_CUSTOMER_ID=2525579805
 GOOGLE_ADS_QUALIFIED_LEAD_ACTION_ID=7768102454
 GOOGLE_ADS_ENROLLED_STUDENT_ACTION_ID=7768102457
 GOOGLE_OFFLINE_CONVERSIONS_ENABLED=false
+GOOGLE_OFFLINE_CONVERSIONS_LIVE_ENABLED=false
 ```
 
 Never commit the OAuth client secret, refresh token, Airtable token, or cron
-secret. Configure them in the deployment environment.
+secret. Configure them on the Railway web service.
+
+## Railway schedule
+
+Railway cron jobs must run in a separate service that exits after each run; the
+website service itself must remain a persistent web service. After this code is
+deployed, create a second Railway service from this repository with:
+
+```text
+Start command: npm run sync-google-offline-conversions
+Cron schedule: 0 12 * * *
+GOOGLE_OFFLINE_CONVERSIONS_ENDPOINT=https://www.wynwoodschoolofmusic.com/api/cron/google-ads-offline-conversions
+CRON_SECRET=<the same value configured on the web service>
+```
+
+Do not schedule the preview environment. The endpoint safely returns a disabled
+response until its data-sharing and live-ingestion flags are enabled.
 
 ## Compliance follow-up before live uploads
 
@@ -61,9 +79,12 @@ change them to `CONSENT_GRANTED` globally without a supportable consent record.
 
 1. Enable the Data Manager API in the dedicated Google Cloud project.
 2. Authorize the OAuth client with the `datamanager` scope and add the variables.
-3. Run the endpoint with `?validateOnly=true`; confirm a zero-failure response.
-4. Resolve the privacy/consent follow-up above.
-5. Set `GOOGLE_OFFLINE_CONVERSIONS_ENABLED=true` to allow the daily live cron
-   to upload newly classified leads.
-6. Compare Airtable upload timestamps, Data Manager diagnostics, Google Ads
+3. Resolve the privacy/consent follow-up above.
+4. Set `GOOGLE_OFFLINE_CONVERSIONS_ENABLED=true`. This allows real customer
+   identifiers to be transmitted for validation, but does not enable live
+   conversion ingestion.
+5. Run the endpoint with `?validateOnly=true`; confirm a zero-failure response.
+6. Set `GOOGLE_OFFLINE_CONVERSIONS_LIVE_ENABLED=true` to allow the daily cron
+   to ingest newly classified leads.
+7. Compare Airtable upload timestamps, Data Manager diagnostics, Google Ads
    counts, and PostHog Lead IDs before considering either action for bidding.

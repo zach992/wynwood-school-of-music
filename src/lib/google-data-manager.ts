@@ -1,6 +1,12 @@
 import "server-only";
 
 import { createHash } from "node:crypto";
+import {
+  normalizeEmail,
+  normalizePhone,
+} from "@/lib/google-data-normalization";
+
+export { normalizeEmail, normalizePhone } from "@/lib/google-data-normalization";
 
 const TOKEN_ENDPOINT = "https://oauth2.googleapis.com/token";
 const INGEST_ENDPOINT = "https://datamanager.googleapis.com/v1/events:ingest";
@@ -34,23 +40,6 @@ function requiredEnv(name: string): string {
 
 function sha256Hex(value: string): string {
   return createHash("sha256").update(value, "utf8").digest("hex");
-}
-
-export function normalizeEmail(value?: string): string | undefined {
-  const normalized = value?.trim().toLowerCase();
-  if (!normalized || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized)) return undefined;
-  return normalized;
-}
-
-export function normalizePhone(value?: string): string | undefined {
-  if (!value) return undefined;
-  const digits = value.replace(/\D/g, "");
-  if (digits.length === 10) return `+1${digits}`;
-  if (digits.length === 11 && digits.startsWith("1")) return `+${digits}`;
-  if (value.trim().startsWith("+") && digits.length >= 8 && digits.length <= 15) {
-    return `+${digits}`;
-  }
-  return undefined;
 }
 
 function buildUserIdentifiers(email?: string, phone?: string) {

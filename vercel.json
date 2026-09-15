@@ -1,8 +1,0 @@
-{
-  "crons": [
-    {
-      "path": "/api/cron/google-ads-offline-conversions",
-      "schedule": "0 12 * * *"
-    }
-  ]
-}

@@ -16,11 +16,22 @@ export async function GET(request: NextRequest) {
 
   try {
     const validateOnly = request.nextUrl.searchParams.get("validateOnly") === "true";
-    if (!validateOnly && process.env.GOOGLE_OFFLINE_CONVERSIONS_ENABLED !== "true") {
+    // Validation-only requests still transmit hashed customer identifiers to
+    // Google. Keep *all* real-data access behind the compliance gate.
+    if (process.env.GOOGLE_OFFLINE_CONVERSIONS_ENABLED !== "true") {
       return NextResponse.json({
         ok: true,
         disabled: true,
-        message: "Live Google Ads offline conversion uploads are disabled",
+        message: "Google Ads offline conversion data sharing is disabled",
+      });
+    }
+    // This second switch allows a real-data validation pass after compliance
+    // approval without making the scheduled cron live at the same time.
+    if (!validateOnly && process.env.GOOGLE_OFFLINE_CONVERSIONS_LIVE_ENABLED !== "true") {
+      return NextResponse.json({
+        ok: true,
+        disabled: true,
+        message: "Live Google Ads offline conversion ingestion is disabled",
       });
     }
     const summary = await syncOfflineConversions({ validateOnly });
