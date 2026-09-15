@@ -66,13 +66,13 @@ export default function PrivacyPolicyPage() {
             Cookies and Tracking
           </h2>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-4">
-            We store &ldquo;cookies&rdquo; and other web-based files on user
-            devices for statistical and advertising purposes. Third-party
-            providers, including Google and our analytics providers, may also
-            use cookies, pixels, or local storage to measure visits, form
-            submissions, and advertising performance. You can configure your
-            browser settings to block or delete these technologies, though this
-            may limit site functionality.
+            We use a limited number of standard technologies, such as cookies,
+            pixels, and local storage, to understand how our website is used and
+            whether our advertising is effective. Trusted technology providers,
+            including Google and our analytics providers, process this
+            information on our behalf. You can configure your browser settings
+            to block or delete these technologies, though this may limit site
+            functionality.
           </p>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-8">
             We may also use pixel tags &mdash; tiny tracking files embedded in
@@ -102,20 +102,21 @@ export default function PrivacyPolicyPage() {
             Online Advertising
           </h2>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-4">
-            We use tracking tools to measure ad performance and deliver targeted
-            advertisements. This may include ads served on or through our site
-            and on partner websites.
+            We advertise through services such as Google Ads and use measurement
+            tools to understand whether those advertisements lead to inquiries
+            or enrollments. This helps us improve our advertising and use our
+            resources responsibly.
           </p>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-8">
-            To understand whether our Google advertisements result in inquiries,
-            qualified leads, or enrollments, we may provide Google with
-            advertising click identifiers, conversion information, and
-            normalized, SHA-256-hashed versions of a parent or guardian&apos;s
-            email address or phone number. Google uses this information to match
-            conversions to advertising interactions and provide advertising
-            measurement and related services. We do not send student names,
-            birth dates, instruments, lesson details, or payment information to
-            Google through this conversion-measurement process. Learn more about{" "}
+            For this limited measurement purpose, our systems may send Google an
+            advertising click identifier, the type and time of a conversion, and
+            a one-way, SHA-256-hashed version of a parent or guardian&apos;s email
+            address or phone number. Google uses this protected information to
+            determine whether a WSM conversion followed a Google advertisement;
+            Google does not share it with other advertisers. We do not send
+            student names, birth dates, instruments, lesson details, payment
+            information, or raw contact lists to Google through this process.
+            Learn more about{" "}
             <a
               href="https://business.safety.google/privacy/"
               target="_blank"
@@ -136,12 +137,13 @@ export default function PrivacyPolicyPage() {
             support business operations.
           </p>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-4">
-            We do not sell personal information. We may share aggregated data
-            that is not linked to the Personal Information you provide. We may
-            also provide limited personal information to service providers that
-            help us operate our school and website, communicate with families,
-            process payments, maintain business records, analyze site usage, and
-            measure advertising performance.
+            We do not sell or rent personal information, and we do not provide
+            it to unrelated companies so they can market their own products or
+            services to you. WSM remains responsible for the information families
+            entrust to us. We use trusted technology providers to process only
+            the information needed to help us operate our school and website,
+            communicate with families, process payments, maintain business
+            records, analyze site usage, and measure our advertising.
           </p>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-8">
             Third parties performing functions such as payment processing, data
