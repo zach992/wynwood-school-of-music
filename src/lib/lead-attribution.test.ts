@@ -280,6 +280,34 @@ test("organic attribution survives for the full restored browser session", () =>
   assert.equal(attribution.referrer, "https://www.google.com/");
 });
 
+test("tagged session fallback still expires after 90 days", () => {
+  const sessionStorage = new MemoryStorage();
+  sessionStorage.setItem(
+    "wsm_lead_session_attribution_v1",
+    JSON.stringify({
+      gclid: "expired-session-click",
+      landingPage: "https://www.wynwoodschoolofmusic.com/paid-landing",
+      capturedAt: new Date(Date.now() - 91 * 24 * 60 * 60 * 1_000).toISOString(),
+    })
+  );
+  installBrowser(
+    "https://www.wynwoodschoolofmusic.com/contact",
+    "https://www.google.com/",
+    new MemoryStorage(),
+    sessionStorage
+  );
+
+  captureLeadAttributionFromUrl();
+
+  const attribution = getLeadAttribution();
+  assert.equal(attribution.gclid, undefined);
+  assert.equal(
+    attribution.landingPage,
+    "https://www.wynwoodschoolofmusic.com/contact"
+  );
+  assert.equal(attribution.referrer, "https://www.google.com/");
+});
+
 test("tagged attribution falls back to session storage when persistence is blocked", () => {
   const taggedUrl =
     "https://www.wynwoodschoolofmusic.com/trial-music-lesson?utm_source=google&utm_medium=cpc&gclid=session-click";

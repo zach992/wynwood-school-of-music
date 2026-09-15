@@ -93,13 +93,14 @@ function readStoredAttribution(
     const capturedAt = stored.capturedAt ? Date.parse(stored.capturedAt) : NaN;
     const age = Date.now() - capturedAt;
 
-    // Never let a persistent historical click claim a new lead indefinitely;
-    // session storage already expires with the browser session. Missing or
-    // malformed timestamps are invalid in either store, as are timestamps far
-    // enough in the future to indicate corruption rather than clock skew.
+    // Never let tagged campaign data claim a new lead beyond its 90-day
+    // window, regardless of which store holds the fallback copy. Untagged
+    // session data follows the browser session's lifetime. Missing, malformed,
+    // or implausibly future timestamps remain invalid in either store.
     if (
       !Number.isFinite(capturedAt) ||
-      (storageName === "localStorage" && age > ATTRIBUTION_TTL_MS) ||
+      (age > ATTRIBUTION_TTL_MS &&
+        (storageName === "localStorage" || hasCampaignAttribution(stored))) ||
       age < -MAX_CLOCK_SKEW_MS
     ) {
       removeStoredAttribution();
