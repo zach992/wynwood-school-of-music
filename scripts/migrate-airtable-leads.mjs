@@ -33,6 +33,11 @@ const commonFields = [
   "Google Qualified Lead Uploaded At", "Google Enrolled Student Uploaded At",
   "Google Ads Upload Error",
 ];
+const migratedFieldNames = [
+  ...commonFields,
+  "Form Source",
+  "Legacy Source Record ID",
+];
 
 const choice = (name) => ({ name });
 const dateTimeOptions = {
@@ -160,12 +165,19 @@ function stable(value) {
 
 function compareMapped(expected, actual) {
   const mismatches = [];
-  for (const [key, value] of Object.entries(expected)) {
-    if (JSON.stringify(stable(value)) !== JSON.stringify(stable(actual[key]))) {
+  for (const key of migratedFieldNames) {
+    if (JSON.stringify(stable(expected[key])) !== JSON.stringify(stable(actual[key]))) {
       mismatches.push(key);
     }
   }
   return mismatches;
+}
+
+function fieldsForUpdate(mapped) {
+  return Object.fromEntries(migratedFieldNames.map((name) => [
+    name,
+    Object.hasOwn(mapped, name) ? mapped[name] : null,
+  ]));
 }
 
 async function createTargetIfNeeded(tables) {
@@ -184,6 +196,21 @@ async function createRecords(tableName, records) {
       method: "POST",
       body: JSON.stringify({
         records: records.slice(index, index + 10).map((fields) => ({ fields })),
+        typecast: true,
+      }),
+    });
+  }
+}
+
+async function updateRecords(tableName, records) {
+  for (let index = 0; index < records.length; index += 10) {
+    await request(`/${baseId}/${encodeURIComponent(tableName)}`, {
+      method: "PATCH",
+      body: JSON.stringify({
+        records: records.slice(index, index + 10).map(({ id, mapped }) => ({
+          id,
+          fields: fieldsForUpdate(mapped),
+        })),
         typecast: true,
       }),
     });
@@ -224,15 +251,23 @@ async function main() {
   if (missingFields.length) throw new Error(`Target table is missing fields: ${missingFields.join(", ")}`);
 
   let targetRows = await listRecords(TARGET_TABLE);
+  const targetByLegacyId = new Map(targetRows.map((row) => [row.fields["Legacy Source Record ID"], row]));
   const existingLegacyIds = new Set(targetRows.map((row) => row.fields["Legacy Source Record ID"]).filter(Boolean));
   const pending = sourceRows.filter(({ record }) => !existingLegacyIds.has(record.id));
+  const changed = sourceRows.flatMap(({ record, mapped }) => {
+    const targetRow = targetByLegacyId.get(record.id);
+    return targetRow && compareMapped(mapped, targetRow.fields).length
+      ? [{ id: targetRow.id, mapped }]
+      : [];
+  });
 
   if (!APPLY) {
-    console.log(JSON.stringify({ mode: "plan", target: TARGET_TABLE, sourceRecords: sourceRows.length, existingTargetRecords: targetRows.length, recordsToCreate: pending.length, targetExists: true }, null, 2));
+    console.log(JSON.stringify({ mode: "plan", target: TARGET_TABLE, sourceRecords: sourceRows.length, existingTargetRecords: targetRows.length, recordsToCreate: pending.length, recordsToUpdate: changed.length, targetExists: true }, null, 2));
     return;
   }
 
   await createRecords(TARGET_TABLE, pending.map(({ mapped }) => mapped));
+  await updateRecords(TARGET_TABLE, changed);
   targetRows = await listRecords(TARGET_TABLE);
   const migratedRows = targetRows.filter((row) => row.fields["Legacy Source Record ID"]);
   const byLegacyId = new Map(migratedRows.map((row) => [row.fields["Legacy Source Record ID"], row]));
@@ -253,6 +288,7 @@ async function main() {
     target: TARGET_TABLE,
     sourceRecords: sourceRows.length,
     created: pending.length,
+    updated: changed.length,
     targetRecords: targetRows.length,
     liveTargetRecords: targetRows.length - migratedRows.length,
     migratedRecords: migratedRows.length,
