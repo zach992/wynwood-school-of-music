@@ -29,6 +29,10 @@ export default function PrivacyPolicyPage() {
             digital platforms.
           </p>
 
+          <p className="font-body text-wsm-gray text-sm leading-relaxed mb-8">
+            Last updated: September 15, 2026. Effective: September 25, 2026.
+          </p>
+
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-8">
             By using our site, you acknowledge that your Personal Information
             may be transferred to the United States and processed according to
@@ -62,10 +66,13 @@ export default function PrivacyPolicyPage() {
             Cookies and Tracking
           </h2>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-4">
-            We store &ldquo;cookies&rdquo; and other web-based files on user
-            devices for statistical and advertising purposes. Third-party
-            providers may also place cookies. You can configure your browser
-            settings to block cookies, though this may limit site functionality.
+            We use a limited number of standard technologies, such as cookies,
+            pixels, and local storage, to understand how our website is used and
+            whether our advertising is effective. Trusted technology providers,
+            including Google and our analytics providers, process this
+            information on our behalf. You can configure your browser settings
+            to block or delete these technologies, though this may limit site
+            functionality.
           </p>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-8">
             We may also use pixel tags &mdash; tiny tracking files embedded in
@@ -94,10 +101,31 @@ export default function PrivacyPolicyPage() {
           <h2 className="font-heading text-xl md:text-2xl uppercase font-black text-white mb-4">
             Online Advertising
           </h2>
+          <p className="font-body text-wsm-gray text-base leading-relaxed mb-4">
+            We advertise through services such as Google Ads and use measurement
+            tools to understand whether those advertisements lead to inquiries
+            or enrollments. This helps us improve our advertising and use our
+            resources responsibly.
+          </p>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-8">
-            We use tracking tools to measure ad performance and deliver targeted
-            advertisements. This may include ads served on or through our site
-            and on partner websites.
+            For this limited measurement purpose, our systems may send Google an
+            advertising click identifier, the type and time of a conversion, and
+            a one-way, SHA-256-hashed version of a parent or guardian&apos;s email
+            address or phone number. Google uses this protected information to
+            determine whether a WSM conversion followed a Google advertisement;
+            Google does not share it with other advertisers. We do not send
+            student names, birth dates, instruments, lesson details, payment
+            information, or raw contact lists to Google through this process.
+            Learn more about{" "}
+            <a
+              href="https://business.safety.google/privacy/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-wsm-mauve hover:text-white transition-colors underline"
+            >
+              how Google processes information from businesses
+            </a>
+            .
           </p>
 
           <h2 className="font-heading text-xl md:text-2xl uppercase font-black text-white mb-4">
@@ -109,10 +137,13 @@ export default function PrivacyPolicyPage() {
             support business operations.
           </p>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-4">
-            We may share aggregated demographic data with partners, but this
-            information is not linked to any Personal Information you provide.
-            Email addresses and phone numbers are never shared with third
-            parties.
+            We do not sell or rent personal information, and we do not provide
+            it to unrelated companies so they can market their own products or
+            services to you. WSM remains responsible for the information families
+            entrust to us. We use trusted technology providers to process only
+            the information needed to help us operate our school and website,
+            communicate with families, process payments, maintain business
+            records, analyze site usage, and measure our advertising.
           </p>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-8">
             Third parties performing functions such as payment processing, data
