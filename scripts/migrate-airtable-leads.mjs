@@ -2,8 +2,16 @@
 
 const API = "https://api.airtable.com/v0";
 const SOURCE_TABLES = [
-  { name: "Main Contact Form Leads", formSource: "Contact Us Form", kind: "contact" },
-  { name: "Pvt Lesson Landing Page Leads", formSource: "Trial Lesson Form", kind: "trial" },
+  {
+    name: process.env.AIRTABLE_CONTACT_TABLE?.trim() || "Main Contact Form Leads",
+    formSource: "Contact Us Form",
+    kind: "contact",
+  },
+  {
+    name: process.env.AIRTABLE_TRIAL_TABLE?.trim() || "Pvt Lesson Landing Page Leads",
+    formSource: "Trial Lesson Form",
+    kind: "trial",
+  },
 ];
 const TARGET_TABLE = process.env.AIRTABLE_LEADS_TABLE?.trim() || "Leads";
 const APPLY = process.argv.includes("--apply");
@@ -216,8 +224,9 @@ async function main() {
 
   await createRecords(TARGET_TABLE, pending.map(({ mapped }) => mapped));
   targetRows = await listRecords(TARGET_TABLE);
-  const byLegacyId = new Map(targetRows.map((row) => [row.fields["Legacy Source Record ID"], row]));
-  const duplicateLegacyIds = targetRows.length - new Set(targetRows.map((row) => row.fields["Legacy Source Record ID"])).size;
+  const migratedRows = targetRows.filter((row) => row.fields["Legacy Source Record ID"]);
+  const byLegacyId = new Map(migratedRows.map((row) => [row.fields["Legacy Source Record ID"], row]));
+  const duplicateLegacyIds = migratedRows.length - new Set(migratedRows.map((row) => row.fields["Legacy Source Record ID"])).size;
   const verificationErrors = [];
   for (const { record, mapped } of sourceRows) {
     const migrated = byLegacyId.get(record.id);
@@ -235,11 +244,13 @@ async function main() {
     sourceRecords: sourceRows.length,
     created: pending.length,
     targetRecords: targetRows.length,
+    liveTargetRecords: targetRows.length - migratedRows.length,
+    migratedRecords: migratedRows.length,
     duplicateLegacyIds,
     verificationErrors,
   };
   console.log(JSON.stringify(report, null, 2));
-  if (targetRows.length !== sourceRows.length || duplicateLegacyIds || verificationErrors.length) {
+  if (migratedRows.length !== sourceRows.length || duplicateLegacyIds || verificationErrors.length) {
     process.exitCode = 1;
   }
 }
