@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test:lead-attribution": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test src/lib/lead-attribution.test.ts",
     "test:lead-table": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test src/lib/lead-table.test.ts",
     "migrate:airtable-leads": "node scripts/migrate-airtable-leads.mjs",
     "diff-redirects": "node scripts/diff-squarespace-redirects.mjs",

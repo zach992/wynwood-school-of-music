@@ -19,6 +19,7 @@ export type LeadAttribution = {
 };
 
 const STORAGE_KEY = "wsm_lead_attribution_v1";
+const SESSION_STORAGE_KEY = "wsm_lead_session_attribution_v1";
 const MAX_SHORT_VALUE = 500;
 const MAX_URL_VALUE = 2_000;
 const ATTRIBUTION_TTL_MS = 90 * 24 * 60 * 60 * 1_000;
@@ -70,12 +71,15 @@ export function sanitizeLeadAttribution(value: unknown): LeadAttribution {
   ) as LeadAttribution;
 }
 
-function readStoredAttribution(): LeadAttribution {
+function readStoredAttribution(
+  storageName: "localStorage" | "sessionStorage",
+  storageKey: string
+): LeadAttribution {
   if (typeof window === "undefined") return {};
 
   const removeStoredAttribution = () => {
     try {
-      window.localStorage.removeItem(STORAGE_KEY);
+      window[storageName].removeItem(storageKey);
     } catch {
       // Storage may be blocked by browser policy. Attribution is optional, so
       // failed cleanup must not prevent a lead form from being submitted.
@@ -84,17 +88,35 @@ function readStoredAttribution(): LeadAttribution {
 
   try {
     const stored = sanitizeLeadAttribution(
-      JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "{}")
+      JSON.parse(window[storageName].getItem(storageKey) || "{}")
     );
     const capturedAt = stored.capturedAt ? Date.parse(stored.capturedAt) : NaN;
     const age = Date.now() - capturedAt;
 
-    // Never let a historical click claim a new lead indefinitely. Missing or
-    // malformed timestamps are treated as stale, as are timestamps far enough
-    // in the future to indicate corrupted data rather than ordinary clock skew.
+    if (
+      storageName === "sessionStorage" &&
+      age > ATTRIBUTION_TTL_MS &&
+      hasCampaignAttribution(stored)
+    ) {
+      // Campaign identifiers expire after 90 days, but the landing/referrer
+      // still describe this active browser session. Downgrade the record
+      // instead of discarding the session context with the expired click.
+      const sessionOnly = sanitizeLeadAttribution({
+        landingPage: stored.landingPage,
+        referrer: stored.referrer,
+        capturedAt: stored.capturedAt,
+      });
+      writeStoredAttribution(storageName, storageKey, sessionOnly);
+      return sessionOnly;
+    }
+
+    // Never let tagged campaign data claim a new lead beyond its 90-day
+    // window, regardless of which store holds the fallback copy. Untagged
+    // session data follows the browser session's lifetime. Missing, malformed,
+    // or implausibly future timestamps remain invalid in either store.
     if (
       !Number.isFinite(capturedAt) ||
-      age > ATTRIBUTION_TTL_MS ||
+      (storageName === "localStorage" && age > ATTRIBUTION_TTL_MS) ||
       age < -MAX_CLOCK_SKEW_MS
     ) {
       removeStoredAttribution();
@@ -108,22 +130,92 @@ function readStoredAttribution(): LeadAttribution {
   }
 }
 
+function writeStoredAttribution(
+  storageName: "localStorage" | "sessionStorage",
+  storageKey: string,
+  attribution: LeadAttribution
+): void {
+  try {
+    window[storageName].setItem(
+      storageKey,
+      JSON.stringify(sanitizeLeadAttribution(attribution))
+    );
+  } catch {
+    // Storage may be blocked by browser policy. Attribution is optional, so a
+    // failed write must never prevent navigation or form submission.
+  }
+}
+
+function hasCampaignAttribution(attribution: LeadAttribution): boolean {
+  return Object.values(queryMappings).some((field) => Boolean(attribution[field]));
+}
+
+function newestStoredAttribution(
+  session: LeadAttribution,
+  persistent: LeadAttribution
+): LeadAttribution {
+  const sessionIsTagged = hasCampaignAttribution(session);
+  const persistentIsTagged = hasCampaignAttribution(persistent);
+  if (sessionIsTagged !== persistentIsTagged) {
+    return sessionIsTagged ? session : persistent;
+  }
+
+  const sessionCapturedAt = Date.parse(session.capturedAt || "");
+  const persistentCapturedAt = Date.parse(persistent.capturedAt || "");
+
+  if (!Number.isFinite(sessionCapturedAt)) return persistent;
+  if (!Number.isFinite(persistentCapturedAt)) return session;
+  return sessionCapturedAt > persistentCapturedAt ? session : persistent;
+}
+
+function externalReferrer(): string | undefined {
+  const referrer = cleanString(document.referrer, MAX_URL_VALUE);
+  if (!referrer) return undefined;
+
+  try {
+    return new URL(referrer).origin === new URL(window.location.href).origin
+      ? undefined
+      : referrer;
+  } catch {
+    // Browsers normally expose an absolute referrer. If a nonstandard client
+    // supplies something else, retain the bounded value rather than throwing.
+    return referrer;
+  }
+}
+
 /**
- * Save the most recent tagged visit. Direct/internal navigation does not erase
- * the paid click that brought the lead to the site.
+ * Save the first page of an untagged session or the most recent tagged visit.
+ * Direct/internal navigation does not erase either the current session entry
+ * or a paid click that is still inside its attribution window.
  */
 export function captureLeadAttributionFromUrl(): void {
   if (typeof window === "undefined") return;
   const params = new URLSearchParams(window.location.search);
   const hasAttribution = Object.keys(queryMappings).some((key) => params.has(key));
-  if (!hasAttribution) return;
+
+  if (!hasAttribution) {
+    const session = readStoredAttribution("sessionStorage", SESSION_STORAGE_KEY);
+
+    // Preserve the first page of the current untagged browsing session while
+    // the visitor moves around the site. A separate persistent paid record
+    // still takes precedence until it expires, but this session record remains
+    // available as an organic fallback after that point.
+    if (Object.keys(session).length) return;
+
+    writeStoredAttribution("sessionStorage", SESSION_STORAGE_KEY, {
+      landingPage: window.location.href,
+      referrer: externalReferrer(),
+      capturedAt: new Date().toISOString(),
+    });
+    return;
+  }
 
   // Start fresh for each newly tagged visit. Carrying an older GCLID into a
   // newer UTM-only visit (or vice versa) would join two different touches and
   // could credit the wrong campaign.
   const next: LeadAttribution = {
     landingPage: window.location.href,
-    referrer: document.referrer || undefined,
+    referrer: externalReferrer(),
     capturedAt: new Date().toISOString(),
   };
 
@@ -132,16 +224,20 @@ export function captureLeadAttributionFromUrl(): void {
     if (value) next[field as keyof LeadAttribution] = value;
   }
 
-  try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(sanitizeLeadAttribution(next)));
-  } catch {
-    // Attribution must never interfere with navigation or form submission.
-  }
+  // Tagged visits persist for the attribution window. The session copy is a
+  // fallback for browsers that block persistent storage and also replaces any
+  // untagged landing page captured earlier in the same tab.
+  writeStoredAttribution("localStorage", STORAGE_KEY, next);
+  writeStoredAttribution("sessionStorage", SESSION_STORAGE_KEY, next);
 }
 
 export function getLeadAttribution(posthogDistinctId?: string): LeadAttribution {
+  const stored = newestStoredAttribution(
+    readStoredAttribution("sessionStorage", SESSION_STORAGE_KEY),
+    readStoredAttribution("localStorage", STORAGE_KEY)
+  );
   return sanitizeLeadAttribution({
-    ...readStoredAttribution(),
+    ...stored,
     posthogDistinctId,
   });
 }
