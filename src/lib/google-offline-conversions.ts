@@ -141,11 +141,21 @@ export async function syncOfflineConversions(options: {
   for (const table of new Set(leadTables())) {
     // Only post-deployment leads have a Lead ID. Requiring it prevents an
     // accidental historical backfill and gives every event a stable key.
-    const pendingRecords = await airtableList(table, {
-      fields: [...FIELDS],
-      filterByFormula:
-        "AND(NOT({Lead ID}=BLANK()),OR(AND(OR({Final Outcome}='Qualified – Not Enrolled',{Final Outcome}='Enrolled'),{Google Qualified Lead Uploaded At}=BLANK()),AND({Final Outcome}='Enrolled',{Google Enrolled Student Uploaded At}=BLANK())))",
-    });
+    let pendingRecords: AirtableRecord[];
+    try {
+      pendingRecords = await airtableList(table, {
+        fields: [...FIELDS],
+        filterByFormula:
+          "AND(NOT({Lead ID}=BLANK()),OR(AND(OR({Final Outcome}='Qualified – Not Enrolled',{Final Outcome}='Enrolled'),{Google Qualified Lead Uploaded At}=BLANK()),AND({Final Outcome}='Enrolled',{Google Enrolled Student Uploaded At}=BLANK())))",
+      });
+    } catch (error) {
+      summary.failed += 1;
+      console.error("Could not list pending Google Ads conversions from Airtable", {
+        table,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      continue;
+    }
     const maxRecords = Math.max(0, options.maxRecordsPerTable ?? 100);
     const records = prioritizePendingRecords(pendingRecords);
     let checkpointedRecords = 0;
