@@ -72,8 +72,8 @@ Status legend: ⬜ open · 🔧 in progress · ✅ done · ⏭️ skipped
 - **Owner:** Zach
 - **Status:** ✅ done
 
-### 7. `.env.local.example` Airtable table-name overrides
-- **Current:** `AIRTABLE_LEADS_TABLE`, `AIRTABLE_REPAIR_TABLE`, `AIRTABLE_CAMP_TABLE`, and `AIRTABLE_WGV_TABLE` document the supported table overrides.
+### 7. `.env.local.example` missing 4 Airtable table-name overrides
+- **Missing:** `AIRTABLE_REPAIR_TABLE`, `AIRTABLE_CAMP_TABLE`, `AIRTABLE_TRIAL_TABLE`, `AIRTABLE_WGV_TABLE`
 - **Why fix:** They have safe defaults in code (so nothing breaks), but a future dev cloning the repo wouldn't know the overrides exist. Documentation hygiene.
 - **Owner:** Claude (autonomous)
 - **Status:** ✅ done

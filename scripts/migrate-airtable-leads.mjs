@@ -60,6 +60,8 @@ const targetFields = [
   { name: "Parent Phone", type: "phoneNumber" },
   { name: "How Heard", type: "singleLineText" },
   { name: "Other Info", type: "multilineText" },
+  { name: "Staff Notes", type: "multilineText" },
+  { name: "Next Follow Up", type: "dateTime", options: dateTimeOptions },
   { name: "Lead Status", type: "singleSelect", options: { choices: [
     "New", "Contacted", "Trial Booked", "Took trial, Pending Enrollment",
     "Future contact lead", "Enrolled", "Closed",
