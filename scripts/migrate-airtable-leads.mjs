@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
+// Safe to rerun after cutover: --apply only copies legacy records that are missing.
+// Before cutover only, --apply --reconcile also makes existing migrated copies match
+// the legacy tables. Never reconcile after staff begin editing the unified table.
+
 const API = "https://api.airtable.com/v0";
 const SOURCE_TABLES = [
   {
@@ -15,6 +19,7 @@ const SOURCE_TABLES = [
 ];
 const TARGET_TABLE = process.env.AIRTABLE_LEADS_TABLE?.trim() || "Leads";
 const APPLY = process.argv.includes("--apply");
+const RECONCILE = process.argv.includes("--reconcile");
 
 const token = process.env.AIRTABLE_TOKEN;
 const baseId = process.env.AIRTABLE_BASE_ID;
@@ -218,6 +223,10 @@ async function updateRecords(tableName, records) {
 }
 
 async function main() {
+  if (RECONCILE && !APPLY) {
+    throw new Error("--reconcile requires --apply");
+  }
+
   const distinctTableNames = new Set([
     TARGET_TABLE,
     ...SOURCE_TABLES.map((source) => source.name),
@@ -262,18 +271,22 @@ async function main() {
   });
 
   if (!APPLY) {
-    console.log(JSON.stringify({ mode: "plan", target: TARGET_TABLE, sourceRecords: sourceRows.length, existingTargetRecords: targetRows.length, recordsToCreate: pending.length, recordsToUpdate: changed.length, targetExists: true }, null, 2));
+    console.log(JSON.stringify({ mode: "plan", target: TARGET_TABLE, sourceRecords: sourceRows.length, existingTargetRecords: targetRows.length, recordsToCreate: pending.length, sourceDifferences: changed.length, targetExists: true }, null, 2));
     return;
   }
 
   await createRecords(TARGET_TABLE, pending.map(({ mapped }) => mapped));
-  await updateRecords(TARGET_TABLE, changed);
+  if (RECONCILE) await updateRecords(TARGET_TABLE, changed);
   targetRows = await listRecords(TARGET_TABLE);
   const migratedRows = targetRows.filter((row) => row.fields["Legacy Source Record ID"]);
   const byLegacyId = new Map(migratedRows.map((row) => [row.fields["Legacy Source Record ID"], row]));
   const duplicateLegacyIds = migratedRows.length - new Set(migratedRows.map((row) => row.fields["Legacy Source Record ID"])).size;
   const verificationErrors = [];
+  const idsToVerify = new Set(
+    (RECONCILE ? sourceRows : pending).map(({ record }) => record.id)
+  );
   for (const { record, mapped } of sourceRows) {
+    if (!idsToVerify.has(record.id)) continue;
     const migrated = byLegacyId.get(record.id);
     if (!migrated) {
       verificationErrors.push({ sourceRecordId: record.id, fields: ["missing record"] });
@@ -286,9 +299,11 @@ async function main() {
   const report = {
     mode: "apply",
     target: TARGET_TABLE,
+    reconciled: RECONCILE,
     sourceRecords: sourceRows.length,
     created: pending.length,
-    updated: changed.length,
+    sourceDifferences: changed.length,
+    updated: RECONCILE ? changed.length : 0,
     targetRecords: targetRows.length,
     liveTargetRecords: targetRows.length - migratedRows.length,
     migratedRecords: migratedRows.length,
