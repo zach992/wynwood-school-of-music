@@ -29,6 +29,10 @@ export default function PrivacyPolicyPage() {
             digital platforms.
           </p>
 
+          <p className="font-body text-wsm-gray text-sm leading-relaxed mb-8">
+            Last updated: September 15, 2026. Effective: September 25, 2026.
+          </p>
+
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-8">
             By using our site, you acknowledge that your Personal Information
             may be transferred to the United States and processed according to
@@ -64,8 +68,11 @@ export default function PrivacyPolicyPage() {
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-4">
             We store &ldquo;cookies&rdquo; and other web-based files on user
             devices for statistical and advertising purposes. Third-party
-            providers may also place cookies. You can configure your browser
-            settings to block cookies, though this may limit site functionality.
+            providers, including Google and our analytics providers, may also
+            use cookies, pixels, or local storage to measure visits, form
+            submissions, and advertising performance. You can configure your
+            browser settings to block or delete these technologies, though this
+            may limit site functionality.
           </p>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-8">
             We may also use pixel tags &mdash; tiny tracking files embedded in
@@ -94,10 +101,30 @@ export default function PrivacyPolicyPage() {
           <h2 className="font-heading text-xl md:text-2xl uppercase font-black text-white mb-4">
             Online Advertising
           </h2>
-          <p className="font-body text-wsm-gray text-base leading-relaxed mb-8">
+          <p className="font-body text-wsm-gray text-base leading-relaxed mb-4">
             We use tracking tools to measure ad performance and deliver targeted
             advertisements. This may include ads served on or through our site
             and on partner websites.
+          </p>
+          <p className="font-body text-wsm-gray text-base leading-relaxed mb-8">
+            To understand whether our Google advertisements result in inquiries,
+            qualified leads, or enrollments, we may provide Google with
+            advertising click identifiers, conversion information, and
+            normalized, SHA-256-hashed versions of a parent or guardian&apos;s
+            email address or phone number. Google uses this information to match
+            conversions to advertising interactions and provide advertising
+            measurement and related services. We do not send student names,
+            birth dates, instruments, lesson details, or payment information to
+            Google through this conversion-measurement process. Learn more about{" "}
+            <a
+              href="https://business.safety.google/privacy/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-wsm-mauve hover:text-white transition-colors underline"
+            >
+              how Google processes information from businesses
+            </a>
+            .
           </p>
 
           <h2 className="font-heading text-xl md:text-2xl uppercase font-black text-white mb-4">
@@ -109,10 +136,12 @@ export default function PrivacyPolicyPage() {
             support business operations.
           </p>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-4">
-            We may share aggregated demographic data with partners, but this
-            information is not linked to any Personal Information you provide.
-            Email addresses and phone numbers are never shared with third
-            parties.
+            We do not sell personal information. We may share aggregated data
+            that is not linked to the Personal Information you provide. We may
+            also provide limited personal information to service providers that
+            help us operate our school and website, communicate with families,
+            process payments, maintain business records, analyze site usage, and
+            measure advertising performance.
           </p>
           <p className="font-body text-wsm-gray text-base leading-relaxed mb-8">
             Third parties performing functions such as payment processing, data
