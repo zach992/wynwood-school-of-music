@@ -185,6 +185,25 @@ function fieldsForUpdate(mapped) {
   ]));
 }
 
+function targetSchemaErrors(target) {
+  const actualByName = new Map(target.fields.map((field) => [field.name, field]));
+  return targetFields.flatMap((expected) => {
+    const actual = actualByName.get(expected.name);
+    if (!actual) return [`missing field ${expected.name}`];
+    if (actual.type !== expected.type) {
+      return [`${expected.name} must be ${expected.type}, found ${actual.type}`];
+    }
+
+    const requiredChoices = expected.options?.choices?.map(({ name }) => name) || [];
+    if (!requiredChoices.length) return [];
+    const actualChoices = new Set(actual.options?.choices?.map(({ name }) => name) || []);
+    const missingChoices = requiredChoices.filter((name) => !actualChoices.has(name));
+    return missingChoices.length
+      ? [`${expected.name} is missing choices: ${missingChoices.join(", ")}`]
+      : [];
+  });
+}
+
 async function createTargetIfNeeded(tables) {
   const existing = tables.find((table) => table.name === TARGET_TABLE);
   if (existing) return existing;
@@ -255,9 +274,10 @@ async function main() {
     return;
   }
 
-  const actualFieldNames = new Set(target.fields.map((field) => field.name));
-  const missingFields = targetFields.map((field) => field.name).filter((name) => !actualFieldNames.has(name));
-  if (missingFields.length) throw new Error(`Target table is missing fields: ${missingFields.join(", ")}`);
+  const schemaErrors = targetSchemaErrors(target);
+  if (schemaErrors.length) {
+    throw new Error(`Target table schema is incompatible: ${schemaErrors.join("; ")}`);
+  }
 
   let targetRows = await listRecords(TARGET_TABLE);
   const targetByLegacyId = new Map(targetRows.map((row) => [row.fields["Legacy Source Record ID"], row]));
