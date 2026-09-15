@@ -50,7 +50,12 @@ function cleanFields(fields: AirtableFields): AirtableFields {
 // `AbortController` so a slow Airtable can't hang a customer-facing route
 // (Node `fetch` has no default timeout, so without this a degraded — not
 // failing — Airtable would block forever).
-export type AirtableRequestOptions = { signal?: AbortSignal };
+export type AirtableRequestOptions = {
+  signal?: AbortSignal;
+  // Airtable clears a field when it receives null. This is opt-in so existing
+  // callers keep the historical "omit empty values" behavior.
+  preserveNullFields?: boolean;
+};
 
 export async function airtableCreate(
   tableName: string,
@@ -148,7 +153,11 @@ export async function airtableUpdate(
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        fields: cleanFields(fields),
+        fields: options.preserveNullFields
+          ? Object.fromEntries(
+              Object.entries(fields).filter(([, value]) => value !== undefined && value !== "")
+            )
+          : cleanFields(fields),
         typecast: true,
       }),
       signal: options.signal,
@@ -160,4 +169,64 @@ export async function airtableUpdate(
     throw new AirtableError(res.status, text);
   }
   return (await res.json()) as AirtableRecord;
+}
+
+export type AirtableListOptions = AirtableRequestOptions & {
+  filterByFormula?: string;
+  fields?: string[];
+  maxRecords?: number;
+};
+
+/**
+ * Returns records across all Airtable pages, capped by maxRecords when set.
+ * This is intentionally small and read-only; callers still decide which rows
+ * are eligible before any external side effect occurs.
+ */
+export async function airtableList(
+  tableName: string,
+  options: AirtableListOptions = {}
+): Promise<AirtableRecord[]> {
+  const { token, baseId } = getCreds();
+  const records: AirtableRecord[] = [];
+  let offset: string | undefined;
+
+  do {
+    const remaining = options.maxRecords
+      ? Math.max(options.maxRecords - records.length, 0)
+      : 100;
+    if (remaining === 0) break;
+
+    const params = new URLSearchParams({
+      pageSize: String(Math.min(100, remaining)),
+    });
+    if (options.filterByFormula) {
+      params.set("filterByFormula", options.filterByFormula);
+    }
+    for (const field of options.fields ?? []) {
+      params.append("fields[]", field);
+    }
+    if (offset) params.set("offset", offset);
+
+    const res = await fetch(
+      `${AIRTABLE_API}/${baseId}/${encodeURIComponent(tableName)}?${params}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        signal: options.signal,
+      }
+    );
+
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      throw new AirtableError(res.status, text);
+    }
+
+    const data = (await res.json()) as {
+      records: AirtableRecord[];
+      offset?: string;
+    };
+    records.push(...data.records);
+    offset = data.offset;
+  } while (offset && (!options.maxRecords || records.length < options.maxRecords));
+
+  return options.maxRecords ? records.slice(0, options.maxRecords) : records;
 }
