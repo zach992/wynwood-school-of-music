@@ -20,6 +20,9 @@ export async function POST(req: NextRequest) {
   const { website: _hp, _elapsedMs: _t, _attribution, ...p } = body;
   const studentName = joinNonEmpty(p.studentFirstName, p.studentLastName);
   const parentName = joinNonEmpty(p.parentFirstName, p.parentLastName);
+  const studentAge = calcAge(p.dob);
+  const submittedAt = new Date().toISOString();
+  const notification = buildTrialEmail(p, studentAge);
   const leadId = crypto.randomUUID();
 
   const tableName = leadTableName();
@@ -27,9 +30,9 @@ export async function POST(req: NextRequest) {
   try {
     await airtableCreate(tableName, {
       Name: studentName || "(no name)",
-      Submitted: new Date().toISOString(),
+      Submitted: submittedAt,
       "Student DOB": p.dob,
-      "Student Age": calcAge(p.dob),
+      "Student Age": studentAge,
       "Lesson Type": "Private Lessons",
       Instruments: typeof p.instrument === "string" && p.instrument ? [p.instrument] : undefined,
       "Years Experience": p.experience,
@@ -51,7 +54,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (process.env.RESEND_API_KEY) {
-    sendFormNotification(buildTrialEmail(p, calcAge(p.dob))).catch((err) =>
+    sendFormNotification(notification).catch((err) =>
       console.error("[api/trial-lesson] Resend email failed:", err)
     );
   }
@@ -78,11 +81,30 @@ export async function POST(req: NextRequest) {
 
   const webhookUrl = process.env.ZAPIER_TRIAL_WEBHOOK_URL;
   if (webhookUrl) {
-    fetch(webhookUrl, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ ...p, _form: "trial", _submittedAt: new Date().toISOString() }),
-    }).catch((err) => console.error("[api/trial-lesson] Zapier forward failed:", err));
+    try {
+      const zapierRes = await fetch(webhookUrl, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          ...p,
+          studentAge,
+          studentFullName: studentName,
+          parentFullName: parentName,
+          _form: "trial",
+          _submittedAt: submittedAt,
+          _userAgent: req.headers.get("user-agent") ?? null,
+          _emailSubject: notification.subject,
+          // The existing Basecamp Zap maps this field into the to-do body.
+          // Keep it aligned with the contact-form webhook's stable contract.
+          _emailBody: notification.html,
+        }),
+      });
+      if (!zapierRes.ok) {
+        throw new Error(`Zapier ${zapierRes.status}: ${await zapierRes.text().catch(() => "")}`);
+      }
+    } catch (err) {
+      console.error("[api/trial-lesson] Zapier forward failed:", err);
+    }
   }
 
   return acceptedResponse({ leadId });
