@@ -6,6 +6,7 @@ import { acceptedResponse, calcAge, checkSpamGuard, discardedResponse, fmtBirthd
 import { mailchimpUpsertSubscriber } from "@/lib/mailchimp";
 import { airtableAttributionFields } from "@/lib/lead-attribution";
 import { airtableLeadSourceFields, leadTableName } from "@/lib/lead-table";
+import { BASECAMP_LEAD_FOLLOW_UP_HTML } from "@/lib/basecamp-lead";
 
 export async function POST(req: NextRequest) {
   let body: Record<string, unknown>;
@@ -96,7 +97,7 @@ export async function POST(req: NextRequest) {
           _emailSubject: notification.subject,
           // The existing Basecamp Zap maps this field into the to-do body.
           // Keep it aligned with the contact-form webhook's stable contract.
-          _emailBody: notification.html,
+          _emailBody: notification.html + BASECAMP_LEAD_FOLLOW_UP_HTML,
         }),
       });
       if (!zapierRes.ok) {
