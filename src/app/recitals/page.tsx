@@ -131,9 +131,11 @@ export default function RecitalsPage() {
               {" · "}
               {venueLine(season.venue)}
             </p>
-            <p className="font-body text-wsm-gray-dark text-xs uppercase tracking-wider mt-1">
-              Set times announced closer to the date
-            </p>
+            {season.label !== "Winter 2026" && (
+              <p className="font-body text-wsm-gray-dark text-xs uppercase tracking-wider mt-1">
+                Set times announced closer to the date
+              </p>
+            )}
 
             <div className="mt-8 border-t border-white/10">
               {season.events.map((event) => {
