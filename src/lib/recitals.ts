@@ -62,6 +62,8 @@ export const recitalSeasons: RecitalSeason[] = [
         seoDescription: "Student bands perform full sets, live.",
         date: "2026-12-11",
         price: "$20",
+        // Short branded Eventbrite URL (resolves to the Winter Band Showcase listing).
+        ticketsUrl: "https://wsmrocks.eventbrite.com",
       },
       {
         id: "winter-2026-private-lesson-recitals-sat",
@@ -69,6 +71,8 @@ export const recitalSeasons: RecitalSeason[] = [
         seoDescription: "Students from across the school perform.",
         date: "2026-12-12",
         price: "$15",
+        // Both recital days share one listing with a ticket type per show.
+        ticketsUrl: "https://wsmrecitals.eventbrite.com",
       },
       {
         id: "winter-2026-private-lesson-recitals-sun",
@@ -76,6 +80,7 @@ export const recitalSeasons: RecitalSeason[] = [
         seoDescription: "Students from across the school perform.",
         date: "2026-12-13",
         price: "$15",
+        ticketsUrl: "https://wsmrecitals.eventbrite.com",
       },
     ],
   },
