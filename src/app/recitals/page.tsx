@@ -131,9 +131,11 @@ export default function RecitalsPage() {
               {" · "}
               {venueLine(season.venue)}
             </p>
-            <p className="font-body text-wsm-gray-dark text-xs uppercase tracking-wider mt-1">
-              Set times announced closer to the date
-            </p>
+            {season.label !== "Winter 2026" && (
+              <p className="font-body text-wsm-gray-dark text-xs uppercase tracking-wider mt-1">
+                Set times announced closer to the date
+              </p>
+            )}
 
             <div className="mt-8 border-t border-white/10">
               {season.events.map((event) => {
@@ -176,16 +178,26 @@ export default function RecitalsPage() {
                       </h3>
                     </div>
 
-                    <div className="flex items-center justify-between sm:justify-end sm:flex-col sm:items-end gap-3 sm:gap-2 shrink-0">
-                      <span className="font-heading text-xl font-black text-white">
-                        {event.price}
-                      </span>
+                    <div
+                      className={
+                        event.ticketsUrl
+                          ? "flex items-center justify-end shrink-0"
+                          : "flex items-center justify-between sm:justify-end sm:flex-col sm:items-end gap-3 sm:gap-2 shrink-0"
+                      }
+                    >
                       {event.ticketsUrl ? (
-                        <Button href={event.ticketsUrl}>Tickets</Button>
+                        <Button href={event.ticketsUrl} className="whitespace-nowrap">
+                          Tickets · {event.price}
+                        </Button>
                       ) : (
-                        <span className="font-body text-xs uppercase tracking-wider text-wsm-gray-dark whitespace-nowrap">
-                          Tickets on sale soon
-                        </span>
+                        <>
+                          <span className="font-heading text-xl font-black text-white">
+                            {event.price}
+                          </span>
+                          <span className="font-body text-xs uppercase tracking-wider text-wsm-gray-dark whitespace-nowrap">
+                            Tickets on sale soon
+                          </span>
+                        </>
                       )}
                     </div>
                   </div>
