@@ -116,14 +116,14 @@ Logging a rejection server-side is fine and useful for tuning.
 
 | | |
 |---|---|
-| **Page** | `/repair` |
+| **Page** | `/repair` (retired; archived at `src/app/_archive/repair/page.tsx`) |
 | **Component** | `src/components/RepairForm.tsx` |
-| **API route** | `src/app/api/repair/route.ts` |
+| **API route** | `/api/repair` (retired; archived at `src/app/_archive/repair-api/route.ts`) |
 | **Submit behavior** | Inline "Thank You!" message (no redirect) |
 | **Squarespace formId** | `5fa466058043f470711a8bc9` (legacy) |
-| **Status** | ✅ Wired |
+| **Status** | Inactive — page and submission endpoint return 404; restore both archived files before reactivating |
 
-**Active destinations** (all fired in parallel by `/api/repair`):
+**Former destinations** (used when `/api/repair` was active):
 - 📊 Airtable → `Repair Requests` table.
 - 📧 Resend email → `RESEND_NOTIFY_TO`.
 - 📬 Mailchimp → tag `Lead — Repair Request`.
