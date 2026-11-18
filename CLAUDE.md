@@ -28,7 +28,7 @@ Only one dev server at a time — check `lsof -i :3000` before starting.
 
 ## Forms
 
-All 5 public forms (contact, trial lesson, camp signup, WGV, repair) plus the camp interest form and Stripe deposit checkout are wired end-to-end. Each submission fans out to Airtable + Resend + Mailchimp + (where applicable) Zapier→Basecamp.
+The repair page and API are archived under `src/app/_archive/` while that service is inactive. Other public forms plus the camp interest form and Stripe deposit checkout are wired end-to-end. Each active submission fans out to Airtable + Resend + Mailchimp + (where applicable) Zapier→Basecamp.
 
 `FORMS.md` is the source of truth for the full destination matrix per form.
 `CUTOVER_CHECKLIST.md` tracks remaining pre-DNS-cutover work.

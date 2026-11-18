@@ -7,7 +7,6 @@ const quickLinks = [
   { label: "Summer Camp", href: "/musicperformancecamp" },
   { label: "Team", href: "/team" },
   { label: "Recitals", href: "/recitals" },
-  { label: "Repair", href: "/repair" },
   { label: "Friends of WSM", href: "/friendsofwsm" },
   { label: "Contact Us", href: "/contact" },
 ];
