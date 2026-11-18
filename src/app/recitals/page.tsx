@@ -176,6 +176,14 @@ export default function RecitalsPage() {
                       <h3 className="font-heading text-2xl md:text-3xl uppercase font-black text-white leading-tight">
                         {event.name}
                       </h3>
+                      {event.teachers && event.teachers.length > 0 && (
+                        <p className="mt-2 font-body text-sm md:text-base text-white/70 leading-relaxed">
+                          With performances from the studios of{" "}
+                          {new Intl.ListFormat("en-US", { style: "long", type: "conjunction" }).format(
+                            event.teachers
+                          )}
+                        </p>
+                      )}
                     </div>
 
                     <div

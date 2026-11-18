@@ -27,6 +27,11 @@ export type RecitalEvent = {
   ticketsUrl?: string;
   /** Absent until artwork exists. */
   flyer?: string;
+  /**
+   * Teachers whose students perform, in running order. Rendered as a subtitle
+   * under the event name. Absent until the lineup (usually the flyer) is final.
+   */
+  teachers?: string[];
 };
 
 export type RecitalVenue = {
@@ -73,6 +78,16 @@ export const recitalSeasons: RecitalSeason[] = [
         price: "$15",
         // Both recital days share one listing with a ticket type per show.
         ticketsUrl: "https://wsmrecitals.eventbrite.com",
+        // Show 1 (2:00pm) then Show 2 (5:30pm), per the winter recital flyer.
+        teachers: [
+          "Alex Ibanez",
+          "AJ Hill",
+          "Leo Cattani",
+          "Ana Liu",
+          "Augusto Di Catarina",
+          "Mitchell Mattox",
+          "Yamil Granda",
+        ],
       },
       {
         id: "winter-2026-private-lesson-recitals-sun",
@@ -81,6 +96,16 @@ export const recitalSeasons: RecitalSeason[] = [
         date: "2026-12-13",
         price: "$15",
         ticketsUrl: "https://wsmrecitals.eventbrite.com",
+        // Show 3 (2:30pm) then Show 4 (5:30pm), per the winter recital flyer.
+        teachers: [
+          "Bella Varela",
+          "Patricio Acevedo",
+          "Paola Pierce",
+          "Angel Perez",
+          "Enrique Pulley",
+          "Juan Jaimes",
+          "Renzo Vargas",
+        ],
       },
     ],
   },
